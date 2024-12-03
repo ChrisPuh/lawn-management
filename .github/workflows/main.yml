@@ -25,14 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Static Analysis
-        run: |
-          composer require --dev nunomaduro/larastan
-          php artisan config:clear
-          php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon
-
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@v3
         with:
           php-version: "8.2"
           extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, mysql, zip
@@ -45,49 +39,43 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
       - name: Cache npm dependencies
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Install Composer Dependencies
-        run: |
-          composer install --prefer-dist --no-interaction --no-progress
-          composer require brianium/paratest --dev
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Install NPM Dependencies
-        run: |
-          npm ci
-          npm run build
+        run: npm ci
 
-      - name: Generate key
+      - name: Build Assets
+        run: npm run build
+
+      - name: Generate App Key
         run: php artisan key:generate
 
-      - name: Configure MySQL
+      - name: Prepare MySQL Database
         run: |
           mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "CREATE DATABASE IF NOT EXISTS lawn_test;"
 
-      - name: Prepare Laravel Application
-        run: |
-          php artisan migrate:fresh --seed --force
-          php artisan config:clear
-          php artisan cache:clear
+      - name: Run Migrations and Seed
+        run: php artisan migrate:fresh --seed --force
 
       - name: Run Tests
         env:
@@ -97,23 +85,18 @@ jobs:
           DB_DATABASE: lawn_test
           DB_USERNAME: root
           DB_PASSWORD: password
-        run: |
-          php artisan test --parallel --coverage
+        run: php artisan test --parallel --coverage
 
-      - name: Upload coverage reports to Codecov
+      - name: Upload Coverage Reports to Codecov
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Static Analysis
-        run: |
-          composer require --dev phpstan/phpstan
-          ./vendor/bin/phpstan analyse app tests --level=5
+      - name: Static Analysis with PHPStan
+        run: ./vendor/bin/phpstan analyse app tests --level=5
 
       - name: Security Check
-        run: |
-          composer require --dev enlightn/security-checker
-          php artisan security:check
+        run: composer require --dev enlightn/security-checker && php artisan security:check
 
   deploy:
     needs: tests
@@ -121,5 +104,13 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Deploy to production
-        run: echo "Add deployment configuration"
+      - name: Check out Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v3
+        with:
+          php-version: "8.2"
+
+      - name: Deploy Application
+        run: echo "Add deployment logic here"
