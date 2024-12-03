@@ -1,0 +1,25 @@
+# .github/auto-assign.yml
+addAssignees: true
+addReviewers: true
+
+# Set to author to set PR creator as assignee
+assignees:
+  - ChrisPuh # Replace with your username
+
+reviewers:
+  - octocat # Replace with team members
+
+numberOfReviewers: 1
+
+# Optional: Use reviewGroups
+reviewGroups:
+  backend:
+    - backend-dev1
+    - backend-dev2
+  frontend:
+    - frontend-dev1
+    - frontend-dev2
+
+skipKeywords:
+  - wip
+  - draft

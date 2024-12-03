@@ -1,0 +1,68 @@
+# .github/workflows/main.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: lawn_test
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, mysql, zip
+          coverage: xdebug
+
+      - name: Copy .env
+        run: cp .env.example .env
+
+      - name: Install Dependencies
+        run: |
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+          npm install
+          npm run build
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Run Tests
+        run: |
+          php artisan test --coverage --min=80
+
+      - name: Static Analysis
+        run: |
+          composer require --dev phpstan/phpstan
+          ./vendor/bin/phpstan analyse app tests --level=5
+
+      - name: Security Check
+        run: |
+          composer require --dev enlightn/security-checker
+          php artisan security:check
+
+  deploy:
+    needs: tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy to production
+        # Add deployment steps here
+        run: echo "Add deployment configuration"
