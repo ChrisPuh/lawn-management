@@ -3,6 +3,7 @@
 namespace Tests\Unit\Traits;
 
 use App\Traits\CanGetTableNameStatically;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -10,53 +11,36 @@ use RuntimeException;
 
 class CanGetTableNameStaticallyTest extends TestCase
 {
-    /**
-     * Test valid model returns correct table name
-     */
-    public function test_get_table_name_returns_correct_name(): void
+    public function testGetTableNameReturnsProperly(): void
     {
-        $tableName = ValidTestModel::getTableName();
-        $this->assertEquals('test_table', $tableName);
+        $this->assertEquals('test_table', ValidTestModel::getTableName());
     }
 
-    /**
-     * Test invalid model throws exception
-     */
-    public function test_get_table_name_throws_exception_for_invalid_model(): void
+    public function testGetTableNameThrowsExceptionForNonModel(): void
     {
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Class ' . InvalidTestModel::class . ' must extend ' . Model::class);
         InvalidTestModel::getTableName();
     }
 
-    /**
-     * Test empty table name throws exception
-     */
-    public function test_get_table_name_throws_exception_for_empty_table(): void
+    public function testGetTableNameThrowsExceptionForEmptyTable(): void
     {
         $this->expectException(InvalidArgumentException::class);
         EmptyTableModel::getTableName();
     }
 
-    /**
-     * Test isTable method returns correct comparison
-     */
-    public function test_is_table_returns_correct_comparison(): void
+    public function testIsTableReturnsBooleanCorrectly(): void
     {
         $this->assertTrue(ValidTestModel::isTable('test_table'));
         $this->assertFalse(ValidTestModel::isTable('wrong_table'));
     }
 
-    /**
-     * Test getFullTableName returns prefixed name
-     */
-    public function test_get_full_table_name_returns_prefixed_name(): void
+    public function testGetFullTableNameReturnsPrefixedName(): void
     {
-        $fullTableName = PrefixedTestModel::getFullTableName();
-        $this->assertEquals('prefix_test_table', $fullTableName);
+        $this->assertEquals('prefix_test_table', PrefixedTestModel::getFullTableName());
     }
 }
 
-// Test Models
 class ValidTestModel extends Model
 {
     use CanGetTableNameStatically;
@@ -82,13 +66,21 @@ class PrefixedTestModel extends Model
 
     protected $table = 'test_table';
 
-    public function getConnection()
+    public function getConnection(): Connection
     {
-        return new class {
-            public function getTablePrefix()
-            {
-                return 'prefix_';
-            }
-        };
+        return new TestConnection();
+    }
+}
+
+class TestConnection extends Connection
+{
+    public function __construct()
+    {
+        parent::__construct(function() {}, '');
+    }
+
+    public function getTablePrefix(): string
+    {
+        return 'prefix_';
     }
 }

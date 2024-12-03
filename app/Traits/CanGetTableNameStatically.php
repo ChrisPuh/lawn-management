@@ -2,38 +2,30 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Trait CanGetTableNameStatically
+ * Provides static table name access for Eloquent models.
  *
- * Provides the ability to get the table name of an Eloquent model statically.
- * This trait should only be used with Eloquent models that implement getTable().
- *
- * @method string getTable() Method required from Laravel's Model class
+ * @template TModel of Model
  */
 trait CanGetTableNameStatically
 {
     /**
-     * Get the model's table name statically
+     * Get the table name for the model.
      *
-     * @throws RuntimeException If the class doesn't implement getTable method
-     * @throws InvalidArgumentException If the table name is empty
-     * @return string The name of the database table
+     * @return string
      */
     public static function getTableName(): string
     {
-        $instance = new static();
-
-        if (!method_exists($instance, 'getTable')) {
-            throw new RuntimeException(
-                sprintf('Class %s must implement getTable() method', static::class)
-            );
-        }
-
+        // Create a new instance of the model to access its table property
+        $instance = self::createInstance();
         $tableName = $instance->getTable();
 
+        // Ensure the table name is not empty
         if (empty($tableName)) {
             throw new InvalidArgumentException(
                 sprintf('Table name for %s cannot be empty', static::class)
@@ -44,24 +36,49 @@ trait CanGetTableNameStatically
     }
 
     /**
-     * Check if a given table name matches this model's table
+     * Create a new instance of the model.
      *
-     * @param string $tableName The table name to compare
-     * @return bool Whether the table names match
+     * @return Model
+     * @throws RuntimeException
+     */
+    private static function createInstance(): Model
+    {
+        $calledClass = get_called_class();
+
+        if (!is_a($calledClass, Model::class, true)) {
+            throw new RuntimeException(
+                sprintf('Class %s must extend %s', $calledClass, Model::class)
+            );
+        }
+
+        return new $calledClass();
+    }
+
+    /**
+     * Check if a given table name matches this model's table.
+     *
+     * @param string $tableName The table name to compare.
+     * @return bool Whether the table names match.
      */
     public static function isTable(string $tableName): bool
     {
+        // Get the model's table name and compare it to the given table name
         return static::getTableName() === $tableName;
     }
 
     /**
-     * Get the fully qualified table name including any set prefix
+     * Get the fully qualified table name including any set prefix.
      *
-     * @return string The fully qualified table name
+     * @return string The fully qualified table name.
      */
     public static function getFullTableName(): string
     {
-        $instance = new static();
-        return $instance->getConnection()->getTablePrefix() . static::getTableName();
+        // Create a new instance of the model to access its connection
+        $instance = self::createInstance();
+        $tablePrefix = $instance->getConnection()->getTablePrefix();
+        $tableName = static::getTableName();
+
+        // Combine the table prefix and table name to get the fully qualified table name
+        return $tablePrefix . $tableName;
     }
 }
