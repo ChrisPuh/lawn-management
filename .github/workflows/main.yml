@@ -25,6 +25,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Static Analysis
+        run: |
+          composer require --dev nunomaduro/larastan
+          php artisan config:clear
+          php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
