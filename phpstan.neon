@@ -1,5 +1,5 @@
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+  - ./vendor/larastan/larastan/extension.neon
 
 parameters:
     level: 5
@@ -10,4 +10,3 @@ parameters:
         - 'tests/Feature/*'
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
-      
