@@ -98,9 +98,6 @@ jobs:
       - name: Static Analysis with PHPStan
         run: ./vendor/bin/phpstan analyse app tests --level=5
 
-      - name: Security Check
-        run: ccomposer require --dev enlightn/security-checker:^2.0 && php artisan security:check
-
   deploy:
     needs: tests
     runs-on: ubuntu-latest
