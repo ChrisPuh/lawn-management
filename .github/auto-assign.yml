@@ -1,25 +1,26 @@
-# .github/auto-assign.yml
-addAssignees: true
+# Set to true to add reviewers to pull requests
 addReviewers: true
 
-# Set to author to set PR creator as assignee
-assignees:
-  - ChrisPuh # Replace with your username
+# Set to true to add assignees to pull requests
+addAssignees: false
 
+# A list of reviewers to be added to pull requests (GitHub user name)
 reviewers:
-  - octocat # Replace with team members
+  - ChrisPuh
 
+# A number of reviewers added to the pull request
+# Set 0 to add all the reviewers
 numberOfReviewers: 1
 
-# Optional: Use reviewGroups
-reviewGroups:
-  backend:
-    - backend-dev1
-    - backend-dev2
-  frontend:
-    - frontend-dev1
-    - frontend-dev2
+# A list of assignees, overrides reviewers if set
+assignees:
+  - ChrisPuh
 
+# A number of assignees to add to the pull request
+# Set to 0 to add all of the assignees.
+# Uses numberOfReviewers if unset.
+numberOfAssignees: 0
+
+# A list of keywords to be skipped the process that add reviewers if pull requests include it
 skipKeywords:
   - wip
-  - draft
