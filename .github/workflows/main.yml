@@ -40,7 +40,7 @@ jobs:
           cache: "npm"
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -48,7 +48,7 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Cache npm dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
