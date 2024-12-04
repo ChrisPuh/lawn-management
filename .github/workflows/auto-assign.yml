@@ -1,16 +1,12 @@
-# .github/workflows/auto-assign.yml
 name: Auto Assign
 on:
-  issues:
-    types: [opened]
   pull_request:
-    types: [opened]
+    types: [opened, ready_for_review]
 
 jobs:
-  auto-assign:
+  add-reviews:
     runs-on: ubuntu-latest
     steps:
-      - name: Run auto-assign
-        uses: kentaro-m/auto-assign-action@v1.2.4
+      - uses: kentaro-m/auto-assign-action@v2.0.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
