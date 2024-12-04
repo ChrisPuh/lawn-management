@@ -60,7 +60,7 @@ jobs:
 
       - name: Install Dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
-        
+
       - name: Install ParaTest
         run: composer require brianium/paratest:^7.0 --dev
 
@@ -99,7 +99,7 @@ jobs:
         run: ./vendor/bin/phpstan analyse app tests --level=5
 
       - name: Security Check
-        run: composer require --dev enlightn/security-checker && php artisan security:check
+        run: ccomposer require --dev enlightn/security-checker:^2.0 && php artisan security:check
 
   deploy:
     needs: tests
