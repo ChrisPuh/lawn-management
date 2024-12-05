@@ -9,9 +9,20 @@ Route::controller(PageController::class)->group(function () {
     Route::get('/', 'welcome')->name('welcome');
     Route::get('/about', 'about')->name('about');
     Route::get('/features', 'features')->name('features');
-    Route::get('/privacy', 'privacy')->name('privacy');
-    Route::get('/terms', 'terms')->name('terms');
-    Route::get('/contact', 'contact')->name('contact');
+
+    // Optional: Rate Limiting für Kontaktformular
+    Route::get('/contact', 'contact')
+        ->name('contact')
+        ->middleware(['throttle:60,1']);
+
+    // Optional: Caching für statische Seiten
+    Route::get('/privacy', 'privacy')
+        ->name('privacy')
+        ->middleware(['cache.headers:public;max_age=3600']);
+
+    Route::get('/terms', 'terms')
+        ->name('terms')
+        ->middleware(['cache.headers:public;max_age=3600']);
 });
 
 Route::get('/dashboard', function () {

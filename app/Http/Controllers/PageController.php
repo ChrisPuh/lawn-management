@@ -3,58 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    /**
-     * Show the welcome page.
-     */
     public function welcome(): View
     {
-        return view('welcome');
+        return view('landing.welcome');
     }
 
-    /**
-     * Show the about page.
-     */
     public function about(): View
     {
-        return view('about');
+        return view('landing.about');
     }
 
-    /**
-     * Show the features page.
-     */
     public function features(): View
     {
-        return view('features');
+        return view('landing.features');
     }
 
-    /**
-     * Show the privacy policy page.
-     */
     public function privacy(): View
     {
-        // TODO: Implement privacy page
-        abort(404);
+        return view('landing.privacy');
     }
 
-    /**
-     * Show the terms of service page.
-     */
     public function terms(): View
     {
-        // TODO: Implement terms page
-        abort(404);
+        return view('landing.terms');
     }
 
-    /**
-     * Show the contact page.
-     */
     public function contact(): View
     {
-        // TODO: Implement contact page
-        abort(404);
+        return view('landing.contact');
     }
 }
