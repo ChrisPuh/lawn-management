@@ -1,10 +1,17 @@
 <?php
 
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+// routes/web.php
+Route::controller(PageController::class)->group(function () {
+    Route::get('/', 'welcome')->name('welcome');
+    Route::get('/about', 'about')->name('about');
+    Route::get('/features', 'features')->name('features');
+    Route::get('/privacy', 'privacy')->name('privacy');
+    Route::get('/terms', 'terms')->name('terms');
+    Route::get('/contact', 'contact')->name('contact');
 });
 
 Route::get('/dashboard', function () {
@@ -17,4 +24,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
+#
