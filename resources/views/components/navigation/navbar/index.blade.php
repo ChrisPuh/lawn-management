@@ -20,6 +20,9 @@
                     <a href="{{ route('welcome') }}" class="hover:text-primary-200">Home</a>
                     <a href="{{ route('about') }}" class="hover:text-primary-200">About</a>
                     <a href="{{ route('features') }}" class="hover:text-primary-200">Features</a>
+                    <a href="{{ route('terms') }}" class="hover:text-primary-200">Terms</a>
+                    <a href="{{ route('contact') }}" class="hover:text-primary-200">Contact</a>
+                    <a href="{{ route('privacy') }}" class="hover:text-primary-200">Privacy</a>
                 </div>
                 <div class="">
                     @auth
