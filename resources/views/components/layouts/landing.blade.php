@@ -1,3 +1,4 @@
+<!-- resources/views/components/layouts/landing.blade.php -->
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 
@@ -5,6 +6,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Lawn Management') }} - {{ $title ?? '' }}</title>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+    @livewireStyles
+    @filamentStyles
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -29,6 +37,10 @@
 
     <!-- Footer -->
     <x-navigation.footer />
+
+    @livewireScripts
+    @filamentScripts
+
 </body>
 
 </html>

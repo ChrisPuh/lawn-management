@@ -1,0 +1,7 @@
+Jetzt möchte ich ein input component bauen. Ziel ist sie so aufzurufen:
+
+<x-input.text id="email" />
+
+es soll elles nötige dann enthalten inkl labels etc und die möglichkeit nachträglich noch Attribute zu ergänzen z.B. wire-model
+
+Ordner 

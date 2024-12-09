@@ -17,10 +17,9 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
+    Route::get('login', App\Livewire\Auth\Login::class)->name('login');
 
-  //  Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware(['throttle:login']); // oder 'throttle:6,1' für 6 Versuche pro Minute
+    //  Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware(['throttle:login']); // oder 'throttle:6,1' für 6 Versuche pro Minute
 
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])

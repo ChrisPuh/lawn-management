@@ -2,12 +2,14 @@
 
 namespace Feature\Controller;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 
 class PageControllerTest extends TestCase
 {
+
     #[Test]
     public function landing_pages_are_accessible()
     {
@@ -32,13 +34,6 @@ class PageControllerTest extends TestCase
     }
 
     #[Test]
-    public function cache_headers_are_present()
-    {
-        $response = $this->get(route('privacy'));
-        $response->assertHeader('Cache-Control', 'max-age=3600, public');
-    }
-
-    #[Test]
     public function auth_buttons_switch_correctly()
     {
         $response = $this->get('/');
@@ -52,5 +47,15 @@ class PageControllerTest extends TestCase
     private function actingAsUser()
     {
         return $this->actingAs(\App\Models\User::factory()->create());
+    }
+    #[Test]
+    public function cache_headers_are_present()
+    {
+        $response = $this->get(route('privacy'));
+
+        $response->assertHeader(
+            'Cache-Control',
+            'max-age=0, must-revalidate, no-cache, no-store, private'
+        );
     }
 }
