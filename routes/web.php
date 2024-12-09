@@ -18,7 +18,7 @@ Route::controller(PageController::class)->group(function () {
     // Optional: Caching für statische Seiten
     Route::get('/privacy', 'privacy')
         ->name('privacy')
-        ->middleware(['cache.headers:public;max_age=3600']);
+        ->middleware(['cache.headers:private;max_age=0;no_cache;no_store;must_revalidate']);
 
     Route::get('/terms', 'terms')
         ->name('terms')
