@@ -15,8 +15,16 @@
     <x-navigation.navbar />
 
     <!-- Main Content -->
-    <main class="flex-1">
-        {{ $slot }}
+    <main class="w-full flex-1">
+        <!-- Container for content width control -->
+        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <!-- Content wrapper with background -->
+            <div class="rounded-lg border border-gray-200 bg-surface-light shadow-sm">
+                <div class="px-4 py-6 sm:px-6 lg:px-8">
+                    {{ $slot }}
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->
