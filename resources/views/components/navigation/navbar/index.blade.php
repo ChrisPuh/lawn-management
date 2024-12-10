@@ -16,22 +16,24 @@
 
             <!-- Right: Auth -->
             <div class="flex items-center space-x-12">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('welcome') }}" class="hover:text-primary-200">Home</a>
-                    <a href="{{ route('about') }}" class="hover:text-primary-200">About</a>
-                    <a href="{{ route('features') }}" class="hover:text-primary-200">Features</a>
-                    <a href="{{ route('terms') }}" class="hover:text-primary-200">Terms</a>
-                    <a href="{{ route('contact') }}" class="hover:text-primary-200">Contact</a>
-                    <a href="{{ route('privacy') }}" class="hover:text-primary-200">Privacy</a>
-                </div>
+                @auth
+                    <livewire:components.navigation.nav-menu-dropdown />
+                @else
+                    <div class="flex items-center space-x-4">
+
+                        <a href="{{ route('welcome') }}" class="hover:text-primary-200">Home</a>
+                        <a href="{{ route('about') }}" class="hover:text-primary-200">About</a>
+                        <a href="{{ route('features') }}" class="hover:text-primary-200">Features</a>
+                        <a href="{{ route('terms') }}" class="hover:text-primary-200">Terms</a>
+                        <a href="{{ route('contact') }}" class="hover:text-primary-200">Contact</a>
+                        <a href="{{ route('privacy') }}" class="hover:text-primary-200">Privacy</a>
+                    </div>
+                @endauth
+
+
                 <div class="">
                     @auth
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="rounded bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
-                                Logout
-                            </button>
-                        </form>
+                        <livewire:components.navigation.user-menu-dropdown />
                     @else
                         <a href="{{ route('login') }}" class="hover:text-primary-200">Login</a>
                         <a href="{{ route('register') }}"
