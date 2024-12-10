@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, CanGetTableNameStatically;
+    use HasFactory, Notifiable, CanGetTableNameStatically, Notifiable;
 
      /**
      * The attributes that are mass assignable.
@@ -36,6 +36,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    /**
+     * Name of the table
+     *
+     * @var string
+     */
     protected $table = 'users';
 
     /**
