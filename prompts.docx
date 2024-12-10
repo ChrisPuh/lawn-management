@@ -1,7 +1,6 @@
-Jetzt möchte ich ein input component bauen. Ziel ist sie so aufzurufen:
+jetzt möchte ich die register routes ändern.
 
-<x-input.text id="email" />
-
-es soll elles nötige dann enthalten inkl labels etc und die möglichkeit nachträglich noch Attribute zu ergänzen z.B. wire-model
-
-Ordner 
+dazu nutzen wir fillamentforms in einem Fullpagecomponent(Livewire)
+bitte routes anpassen.
+component erstellen
+tailwind.config benutzen
