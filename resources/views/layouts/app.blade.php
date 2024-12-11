@@ -1,39 +1,37 @@
+<!-- resources/views/layouts/app.blade.php -->
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
+    <title>{{ config('app.name', 'Lawn Management') }} - {{ $title ?? '' }}</title>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+    @livewireStyles
+    @filamentStyles
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        <x-navigation.navbar />
+<body class="flex min-h-screen flex-col bg-background-light font-sans antialiased dark:bg-gray-900">
+    <!-- Navigation -->
+    <x-navigation.navbar />
 
-        <!-- Page Heading -->
-        @isset($header)
-            <header class="bg-white shadow">
-                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endisset
+    <!-- Main Content -->
+    <main class="w-full flex-1">
+        {{ $slot }}
+    </main>
 
-        <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
-    </div>
+    <!-- Footer -->
+    <x-navigation.footer />
+
+    @livewireScripts
+    @filamentScripts
 </body>
 
 </html>
