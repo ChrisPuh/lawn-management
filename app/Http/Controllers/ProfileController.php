@@ -11,6 +11,13 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    function index(Request $request): View
+    {
+        return view('profile.index', [
+            'user' => $request->user(),
+            'title' => 'Dein Profil ',
+        ]);
+    }
     /**
      * Display the user's profile form.
      */
@@ -18,6 +25,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'title' => 'Profil bearbeiten',
         ]);
     }
 
@@ -55,6 +63,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        return Redirect::to(route('welcome'));
     }
 }
