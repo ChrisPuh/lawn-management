@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Auth;
 
 use App\Contracts\Auth\ResendVerificationActionInterface;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Support\Facades\{Auth, RateLimiter};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
-class ResendVerificationAction implements ResendVerificationActionInterface
+final class ResendVerificationAction implements ResendVerificationActionInterface
 {
     /**
      * The number of attempts allowed.
@@ -21,14 +24,14 @@ class ResendVerificationAction implements ResendVerificationActionInterface
 
     public function execute(): bool
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             throw new AuthenticationException('User must be logged in.');
         }
 
         $user = Auth::user();
 
         // Don't send verification email if already verified
-        if (!is_null($user->email_verified_at)) {
+        if (! is_null($user->email_verified_at)) {
             return true;
         }
 
@@ -36,7 +39,7 @@ class ResendVerificationAction implements ResendVerificationActionInterface
 
         if (RateLimiter::tooManyAttempts($key, self::ATTEMPTS_ALLOWED)) {
             throw ValidationException::withMessages([
-                'verification' => __('Please wait a moment before trying again.')
+                'verification' => __('Please wait a moment before trying again.'),
             ]);
         }
 
@@ -51,6 +54,6 @@ class ResendVerificationAction implements ResendVerificationActionInterface
 
     private function getRateLimitKey(): string
     {
-        return 'resend-verification-' . Auth::id();
+        return 'resend-verification-'.Auth::id();
     }
 }

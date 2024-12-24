@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 // Load ENV
 $env = parse_ini_file('create-labels.env');
 if ($env === false) {
-    die("Error loading .env file\n");
+    exit("Error loading .env file\n");
 }
 
 // Validate ENV variables
-if (!isset($env['GITHUB_TOKEN']) || !isset($env['GITHUB_REPO'])) {
-    die("Missing required ENV variables GITHUB_TOKEN or GITHUB_REPO\n");
+if (! isset($env['GITHUB_TOKEN']) || ! isset($env['GITHUB_REPO'])) {
+    exit("Missing required ENV variables GITHUB_TOKEN or GITHUB_REPO\n");
 }
 
-list($owner, $repo) = explode('/', $env['GITHUB_REPO']);
+[$owner, $repo] = explode('/', $env['GITHUB_REPO']);
 
 // Function to make GraphQL requests with better error handling
 function graphqlRequest($query, $token)
@@ -21,10 +23,10 @@ function graphqlRequest($query, $token)
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POSTFIELDS => json_encode(['query' => $query]),
         CURLOPT_HTTPHEADER => [
-            'Authorization: Bearer ' . $token,
+            'Authorization: Bearer '.$token,
             'Content-Type: application/json',
-            'User-Agent: PHP Script'
-        ]
+            'User-Agent: PHP Script',
+        ],
     ]);
 
     $response = curl_exec($ch);
@@ -32,17 +34,17 @@ function graphqlRequest($query, $token)
     curl_close($ch);
 
     echo "API Response (Status $status):\n";
-    echo $response . "\n";
+    echo $response."\n";
 
     if ($status !== 200) {
-        die("GraphQL request failed\n");
+        exit("GraphQL request failed\n");
     }
 
     $decoded = json_decode($response, true);
     if (isset($decoded['errors'])) {
         echo "GraphQL Errors:\n";
         print_r($decoded['errors']);
-        die("GraphQL request had errors\n");
+        exit("GraphQL request had errors\n");
     }
 
     return $decoded;
@@ -63,8 +65,8 @@ query {
 GRAPHQL;
 
 $result = graphqlRequest($testQuery, $env['GITHUB_TOKEN']);
-echo "Connected as: " . $result['data']['viewer']['login'] . "\n";
-echo "Repository ID: " . $result['data']['repository']['id'] . "\n";
+echo 'Connected as: '.$result['data']['viewer']['login']."\n";
+echo 'Repository ID: '.$result['data']['repository']['id']."\n";
 
 // Get repository and owner IDs
 $queryInfo = <<<GRAPHQL
@@ -81,8 +83,8 @@ GRAPHQL;
 echo "\nFetching repository details...\n";
 $result = graphqlRequest($queryInfo, $env['GITHUB_TOKEN']);
 
-if (!isset($result['data']['repository'])) {
-    die("Could not get repository information\n");
+if (! isset($result['data']['repository'])) {
+    exit("Could not get repository information\n");
 }
 
 $repoId = $result['data']['repository']['id'];

@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
-use App\Contracts\Auth\{ResendVerificationActionInterface, LogoutActionInterface};
+use App\Contracts\Auth\LogoutActionInterface;
+use App\Contracts\Auth\ResendVerificationActionInterface;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
-class Verification extends Component implements HasForms
+final class Verification extends Component implements HasForms
 {
     use InteractsWithForms;
 
@@ -17,7 +20,7 @@ class Verification extends Component implements HasForms
 
     public function mount(): void
     {
-        if (!is_null(Auth::user()->email_verified_at)) {
+        if (! is_null(Auth::user()->email_verified_at)) {
             redirect()->intended(route('dashboard'));
         }
 

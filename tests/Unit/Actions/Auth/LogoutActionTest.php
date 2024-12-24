@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Actions\Auth;
 
 use App\Actions\Auth\LogoutAction;
@@ -11,11 +13,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
-class LogoutActionTest extends TestCase
+final class LogoutActionTest extends TestCase
 {
     use RefreshDatabase;
 
     private User $user;
+
     private LogoutActionInterface $action;
 
     protected function setUp(): void
@@ -23,7 +26,7 @@ class LogoutActionTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
-        $this->action = new LogoutAction();
+        $this->action = new LogoutAction;
     }
 
     public function test_logs_out_user(): void

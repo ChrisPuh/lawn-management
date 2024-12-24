@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Actions\Auth;
 
 use App\Actions\Auth\RegisterUserAction;
 use App\Models\User;
+use ErrorException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +16,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class RegisterUserActionTest extends TestCase
+final class RegisterUserActionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -22,7 +25,31 @@ class RegisterUserActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->action = new RegisterUserAction();
+        $this->action = new RegisterUserAction;
+    }
+
+    public static function invalidDataProvider(): array
+    {
+        return [
+            'missing name' => [
+                [
+                    'email' => 'test@example.com',
+                    'password' => 'password123',
+                ],
+            ],
+            'missing email' => [
+                [
+                    'name' => 'Test User',
+                    'password' => 'password123',
+                ],
+            ],
+            'missing password' => [
+                [
+                    'name' => 'Test User',
+                    'email' => 'test@example.com',
+                ],
+            ],
+        ];
     }
 
     #[Test]
@@ -144,31 +171,7 @@ class RegisterUserActionTest extends TestCase
     {
         Event::fake();
 
-        $this->expectException(\ErrorException::class);
+        $this->expectException(ErrorException::class);
         $this->action->register($data);
-    }
-
-    public static function invalidDataProvider(): array
-    {
-        return [
-            'missing name' => [
-                [
-                    'email' => 'test@example.com',
-                    'password' => 'password123',
-                ],
-            ],
-            'missing email' => [
-                [
-                    'name' => 'Test User',
-                    'password' => 'password123',
-                ],
-            ],
-            'missing password' => [
-                [
-                    'name' => 'Test User',
-                    'email' => 'test@example.com',
-                ],
-            ],
-        ];
     }
 }

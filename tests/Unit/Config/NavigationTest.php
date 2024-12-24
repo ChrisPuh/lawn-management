@@ -1,11 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 // tests/Unit/Config/NavigationTest.php
+
 namespace Tests\Unit\Config;
 
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class NavigationTest extends TestCase
+final class NavigationTest extends TestCase
 {
     #[Test]
     public function navigation_config_has_required_structure()

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Auth;
 
 use App\Contracts\Auth\LogoutActionInterface;
@@ -7,12 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-class LogoutAction implements LogoutActionInterface
+final class LogoutAction implements LogoutActionInterface
 {
     /**
      * Execute the basic logout action.
-     *
-     * @return void
      */
     public function execute(): void
     {
@@ -27,9 +27,6 @@ class LogoutAction implements LogoutActionInterface
 
     /**
      * Handle the logout request and return a response.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
      */
     public function handleRequest(Request $request): Response
     {

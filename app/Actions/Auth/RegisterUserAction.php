@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Auth;
 
 use App\Contracts\Auth\RegisterUserInterface;
@@ -8,12 +10,12 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterUserAction implements RegisterUserInterface
+final class RegisterUserAction implements RegisterUserInterface
 {
     /**
      * Register a new user with the given data.
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function register(array $data): User
     {

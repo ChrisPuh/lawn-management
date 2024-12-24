@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Tests\Feature\Components\Navigation;
-
 
 use App\Livewire\Components\Navigation\Breadcrumbs;
 use App\Models\User;
@@ -11,7 +11,7 @@ use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class BreadcrumbsTest extends TestCase
+final class BreadcrumbsTest extends TestCase
 {
     use RefreshDatabase;
 

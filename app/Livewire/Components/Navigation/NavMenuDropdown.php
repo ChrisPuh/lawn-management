@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Components\Navigation;
 
 use Livewire\Component;
 
-class NavMenuDropdown extends Component
+final class NavMenuDropdown extends Component
 {
     public bool $isOpen = false;
 
     public function toggleDropdown()
     {
-        $this->isOpen = !$this->isOpen;
+        $this->isOpen = ! $this->isOpen;
     }
 
     public function render()

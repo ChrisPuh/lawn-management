@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
 use App\Contracts\Auth\AuthenticateUserInterface as AuthAuthenticateUserInterface;
@@ -9,7 +11,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Livewire\Component;
 use Livewire\Features\SupportRedirects\Redirector;
@@ -17,7 +18,7 @@ use Livewire\Features\SupportRedirects\Redirector;
 /**
  * @property Form $form
  */
-class Login extends Component implements HasForms
+final class Login extends Component implements HasForms
 {
     use InteractsWithForms;
 
@@ -30,9 +31,6 @@ class Login extends Component implements HasForms
 
     /**
      * Undocumented function
-     *
-     * @param Form $form
-     * @return Form
      */
     public function form(Form $form): Form
     {
@@ -62,11 +60,8 @@ class Login extends Component implements HasForms
 
     /**
      * Undocumented function
-     *
-     * @param AuthAuthenticateUserInterface $authenticator
-     * @return Redirector|null
      */
-    public function login(AuthAuthenticateUserInterface $authenticator): Redirector|null
+    public function login(AuthAuthenticateUserInterface $authenticator): ?Redirector
     {
         $credentials = $this->form->getState();
 
@@ -75,14 +70,10 @@ class Login extends Component implements HasForms
         }
 
         $this->addError('data.email', 'These credentials do not match our records.');
+
         return null;
     }
 
-    /**
-     *
-     * @return View
-     * 
-     */
     public function render(): View
     {
         return view('livewire.auth.login', [

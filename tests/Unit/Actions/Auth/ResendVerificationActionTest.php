@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Actions\Auth;
 
 use App\Actions\Auth\ResendVerificationAction;
@@ -8,15 +10,18 @@ use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\{Auth, Notification, RateLimiter};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
-class ResendVerificationActionTest extends TestCase
+final class ResendVerificationActionTest extends TestCase
 {
     use RefreshDatabase;
 
     private User $user;
+
     private ResendVerificationActionInterface $action;
 
     protected function setUp(): void
@@ -24,15 +29,15 @@ class ResendVerificationActionTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->unverified()->create();
-        $this->action = new ResendVerificationAction();
+        $this->action = new ResendVerificationAction;
 
         // Clear any existing rate limiters
-        RateLimiter::clear('resend-verification-' . $this->user->id);
+        RateLimiter::clear('resend-verification-'.$this->user->id);
     }
 
     protected function tearDown(): void
     {
-        RateLimiter::clear('resend-verification-' . $this->user->id);
+        RateLimiter::clear('resend-verification-'.$this->user->id);
         Auth::logout();
         parent::tearDown();
     }

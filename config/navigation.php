@@ -1,47 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'breadcrumbs' => [
         'segments' => [
             'dashboard' => [
                 'dashboard' => [
                     'label' => 'Dashboard',
-                    'route' => null
+                    'route' => null,
                 ],
             ],
             'profile.index' => [
                 'profile' => [
                     'label' => 'Profil',
-                    'route' => null
+                    'route' => null,
                 ],
             ],
             'profile.edit' => [
                 'profile' => [
                     'label' => 'Profil',
-                    'route' => 'profile.index'
+                    'route' => 'profile.index',
                 ],
                 'profile.edit' => [
                     'label' => 'Bearbeiten',
-                    'route' => null
+                    'route' => null,
                 ],
             ],
             'lawns.index' => [
                 'lawns' => [
                     'label' => 'Rasenflächen',
-                    'route' => null
+                    'route' => null,
                 ],
             ],
             'lawns.show' => [
                 'lawns' => [
                     'label' => 'Rasenflächen',
-                    'route' => 'lawns.index'
+                    'route' => 'lawns.index',
                 ],
                 'lawn' => [
                     'label' => ':lawn_name',
-                    'route' => null
+                    'route' => null,
                 ],
             ],
             // weitere Routen...
-        ]
-    ]
+        ],
+    ],
 ];

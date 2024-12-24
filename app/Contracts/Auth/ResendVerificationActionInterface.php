@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Contracts\Auth;
+declare(strict_types=1);
 
+namespace App\Contracts\Auth;
 
 interface ResendVerificationActionInterface extends AuthAction
 {
@@ -9,7 +10,6 @@ interface ResendVerificationActionInterface extends AuthAction
      * Resend the verification email.
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @return bool
      */
     public function execute(): bool;
 }

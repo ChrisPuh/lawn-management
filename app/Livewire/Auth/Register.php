@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\RegisterUserAction;
@@ -11,11 +13,10 @@ use Filament\Forms\Form;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
-
 /**
  * @property Form $form
  */
-class Register extends Component implements HasForms
+final class Register extends Component implements HasForms
 {
     use InteractsWithForms;
 
@@ -23,8 +24,6 @@ class Register extends Component implements HasForms
 
     /**
      * mount the form
-     *
-     * @return void
      */
     public function mount(): void
     {
@@ -33,9 +32,6 @@ class Register extends Component implements HasForms
 
     /**
      * create a new form
-     *
-     * @param Form $form
-     * @return Form
      */
     public function form(Form $form): Form
     {
@@ -70,7 +66,6 @@ class Register extends Component implements HasForms
             ])
             ->statePath('data');
     }
-
 
     public function register(RegisterUserAction $registerAction)
     {

@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Auth;
 
 use App\Livewire\Auth\Login;
 use App\Models\User;
-
-use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Livewire;
 use Tests\TestCase;
 
-class AuthenticationTest extends TestCase
+final class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -84,23 +83,23 @@ class AuthenticationTest extends TestCase
             ->call('login')
             ->assertHasErrors([
                 'data.email' => 'email',
-                'data.password' => 'required'
+                'data.password' => 'required',
             ]);
     }
 
     public function test_rate_limiting_is_enforced(): void
-{
-    $user = User::factory()->create();
+    {
+        $user = User::factory()->create();
 
-    // Mehrere fehlgeschlagene Login-Versuche simulieren
-    for ($i = 0; $i < 6; $i++) {
-        $component = Livewire::test(Login::class)
-            ->set('data.email', $user->email)
-            ->set('data.password', 'wrong-password')
-            ->call('login');
+        // Mehrere fehlgeschlagene Login-Versuche simulieren
+        for ($i = 0; $i < 6; $i++) {
+            $component = Livewire::test(Login::class)
+                ->set('data.email', $user->email)
+                ->set('data.password', 'wrong-password')
+                ->call('login');
+        }
+
+        // Der letzte Versuch sollte einen Fehler produzieren
+        $component->assertHasErrors(['data.email']);
     }
-
-    // Der letzte Versuch sollte einen Fehler produzieren
-    $component->assertHasErrors(['data.email']);
-}
 }

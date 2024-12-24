@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
@@ -9,15 +11,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
-class ProfileController extends Controller
+final class ProfileController extends Controller
 {
-    function index(Request $request): View
+    public function index(Request $request): View
     {
         return view('profile.index', [
             'user' => $request->user(),
             'title' => 'Dein Profil ',
         ]);
     }
+
     /**
      * Display the user's profile form.
      */

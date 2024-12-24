@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Components\Navigation;
 
-use Illuminate\Support\Facades\Route;
 use Livewire\Component;
 
-class Breadcrumbs extends Component
+final class Breadcrumbs extends Component
 {
     public array $segments = [];
 
@@ -14,14 +15,16 @@ class Breadcrumbs extends Component
         $this->segments = $this->getSegments();
     }
 
+    public function render()
+    {
+        return view('livewire.components.navigation.breadcrumbs');
+    }
 
     protected function getSegments(): array
     {
         $routeName = request()->route()?->getName() ?? request()->query('_route', '');
         $allConfig = config('navigation.breadcrumbs.segments');
         $configSegments = $allConfig[$routeName] ?? [];
-
-
 
         return $this->processSegments($configSegments, request()->route());
     }
@@ -41,11 +44,5 @@ class Breadcrumbs extends Component
 
             return $segment;
         })->toArray();
-    }
-
-
-    public function render()
-    {
-        return view('livewire.components.navigation.breadcrumbs');
     }
 }

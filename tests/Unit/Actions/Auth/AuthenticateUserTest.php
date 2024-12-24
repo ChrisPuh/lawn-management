@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Actions\Auth;
 
 use App\Actions\Auth\AuthenticateUser;
@@ -9,18 +11,19 @@ use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class AuthenticateUserTest extends TestCase
+final class AuthenticateUserTest extends TestCase
 {
     use RefreshDatabase;
 
     private AuthenticateUser $authenticator;
+
     private User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->authenticator = new AuthenticateUser();
+        $this->authenticator = new AuthenticateUser;
 
         // Erstelle einen Testbenutzer mit bekanntem Passwort
         $this->user = User::factory()->create([
@@ -34,7 +37,7 @@ class AuthenticateUserTest extends TestCase
         $result = $this->authenticator->authenticate([
             'email' => $this->user->email,
             'password' => 'password',
-            'remember' => false
+            'remember' => false,
         ]);
 
         $this->assertTrue($result);
@@ -47,7 +50,7 @@ class AuthenticateUserTest extends TestCase
         $result = $this->authenticator->authenticate([
             'email' => $this->user->email,
             'password' => 'wrong-password',
-            'remember' => false
+            'remember' => false,
         ]);
 
         $this->assertFalse($result);
@@ -60,7 +63,7 @@ class AuthenticateUserTest extends TestCase
         $result = $this->authenticator->authenticate([
             'email' => 'nonexistent@example.com',
             'password' => 'password',
-            'remember' => false
+            'remember' => false,
         ]);
 
         $this->assertFalse($result);
@@ -73,7 +76,7 @@ class AuthenticateUserTest extends TestCase
         $result = $this->authenticator->authenticate([
             'email' => $this->user->email,
             'password' => 'password',
-            'remember' => true
+            'remember' => true,
         ]);
 
         $this->assertTrue($result);
@@ -93,7 +96,7 @@ class AuthenticateUserTest extends TestCase
         $this->authenticator->authenticate([
             'email' => $this->user->email,
             'password' => 'password',
-            'remember' => false
+            'remember' => false,
         ]);
 
         $this->assertNotEquals($oldSessionId, session()->getId());
@@ -104,7 +107,7 @@ class AuthenticateUserTest extends TestCase
     {
         $result = $this->authenticator->authenticate([
             'email' => $this->user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertTrue($result);
@@ -114,7 +117,7 @@ class AuthenticateUserTest extends TestCase
         $this->assertEmpty(
             array_filter(
                 $this->app['cookie']->getQueuedCookies(),
-                fn($cookie) => str_starts_with($cookie->getName(), 'remember_web_')
+                fn ($cookie) => str_starts_with($cookie->getName(), 'remember_web_')
             )
         );
     }
