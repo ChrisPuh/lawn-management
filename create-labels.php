@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 // Load ENV
 $env = parse_ini_file('create-labels.env');
 if ($env === false) {
-    die("Error loading .env file\n");
+    exit("Error loading .env file\n");
 }
 
 // Validate ENV variables
-if (!isset($env['GITHUB_TOKEN']) || !isset($env['GITHUB_REPO'])) {
-    die("Missing required ENV variables GITHUB_TOKEN or GITHUB_REPO\n");
+if (! isset($env['GITHUB_TOKEN']) || ! isset($env['GITHUB_REPO'])) {
+    exit("Missing required ENV variables GITHUB_TOKEN or GITHUB_REPO\n");
 }
 
 $labels = [
@@ -43,17 +45,17 @@ foreach ($labels as $label) {
     $data = json_encode([
         'name' => $label['name'],
         'color' => $label['color'],
-        'description' => $label['description']
+        'description' => $label['description'],
     ]);
 
     $ch = curl_init("https://api.github.com/repos/{$env['GITHUB_REPO']}/labels");
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Accept: application/vnd.github.v3+json',
-        'Authorization: token ' . $env['GITHUB_TOKEN'],
-        'User-Agent: PHP Script'
+        'Authorization: token '.$env['GITHUB_TOKEN'],
+        'User-Agent: PHP Script',
     ]);
 
     $result = curl_exec($ch);

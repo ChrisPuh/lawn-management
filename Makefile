@@ -147,3 +147,6 @@ check: guard-all .env
 	php artisan test --parallel
 	@echo "\nRunning static analysis..."
 	php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon
+	@echo "\nRunning Pint..."
+	php ./vendor/bin/pint --test
+

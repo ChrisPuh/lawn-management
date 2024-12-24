@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
@@ -9,8 +11,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
-class ProfileController extends Controller
+final class ProfileController extends Controller
 {
+    public function index(Request $request): View
+    {
+        return view('profile.index', [
+            'user' => $request->user(),
+            'title' => 'Dein Profil ',
+        ]);
+    }
+
     /**
      * Display the user's profile form.
      */
@@ -18,6 +28,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'title' => 'Profil bearbeiten',
         ]);
     }
 
@@ -55,6 +66,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        return Redirect::to(route('welcome'));
     }
 }
