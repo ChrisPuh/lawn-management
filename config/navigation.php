@@ -3,6 +3,12 @@
 return [
     'breadcrumbs' => [
         'segments' => [
+            'dashboard' => [
+                'dashboard' => [
+                    'label' => 'Dashboard',
+                    'route' => null
+                ],
+            ],
             'profile.index' => [
                 'profile' => [
                     'label' => 'Profil',

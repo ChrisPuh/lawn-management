@@ -35,8 +35,8 @@
     <!-- Main Content -->
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div
-            class="rounded-lg border border-primary-200 bg-surface-light shadow-sm dark:border-primary-700 dark:bg-primary-900">
-            <div class="px-4 py-6 sm:px-6 lg:px-8">
+            class="rounded-lg bg-surface-light dark:border-primary-700 dark:bg-primary-900">
+            <div class="">
                 {{ $slot }}
             </div>
         </div>

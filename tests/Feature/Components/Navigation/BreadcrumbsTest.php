@@ -43,6 +43,19 @@ class BreadcrumbsTest extends TestCase
     }
 
     #[Test]
+    public function it_shows_dashboard_breadcrumbs()
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this->get(route('dashboard'))
+            ->assertOk();
+
+        Livewire::withQueryParams(['_route' => 'dashboard'])
+            ->test(Breadcrumbs::class)
+            ->assertSee('Dashboard');
+    }
+
+    #[Test]
     public function it_shows_lawn_breadcrumbs_with_lawn_name()
     {
         // $user = User::factory()->create();

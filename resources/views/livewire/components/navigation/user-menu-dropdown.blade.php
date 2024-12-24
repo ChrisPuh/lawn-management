@@ -20,9 +20,9 @@
         </div>
 
         <!-- Menu Items -->
-        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             role="menuitem">
-            Profil bearbeiten
+            Profil
         </a>
 
         <form method="POST" action="{{ route('logout') }}">

@@ -21,7 +21,7 @@ class Breadcrumbs extends Component
         $allConfig = config('navigation.breadcrumbs.segments');
         $configSegments = $allConfig[$routeName] ?? [];
 
-       
+
 
         return $this->processSegments($configSegments, request()->route());
     }
@@ -36,7 +36,7 @@ class Breadcrumbs extends Component
                 $model = $route?->parameter($modelName) ??
                     app($modelName)->find(request()->query($modelName));
 
-                $segment['label'] = $model?->name ?? $segment['label'];
+                $segment['label'] = $model && property_exists($model, 'name') ? $model->name : $segment['label'];
             }
 
             return $segment;
