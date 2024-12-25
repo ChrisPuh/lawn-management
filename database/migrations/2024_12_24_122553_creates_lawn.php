@@ -27,7 +27,8 @@ return new class extends Migration
             $table->string('type')->nullable(); //e.g. sport, garden, park
             $table->timestamps();
         });
-        //need to add a schema to track last time mowed and cutting height
+
+
         Schema::create(LawnMowing::getTableName(), function (Blueprint $table) {
             $table->id();
             $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();
@@ -42,7 +43,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lawn_maintenance');
+        Schema::dropIfExists(LawnMowing::getTableName());
         Schema::dropIfExists(Lawn::getTableName());
     }
 };
