@@ -15,6 +15,33 @@ namespace App\Models{
 /**
  * 
  *
+ * @property \App\Enums\GrassSeed $grass_seed
+ * @property \App\Enums\GrassType $type
+ * @method static \Database\Factories\LawnFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn query()
+ */
+	final class Lawn extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property-read \App\Models\Lawn|null $lawn
+ * @method static \Database\Factories\LawnMowingFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing query()
+ */
+	class LawnMowing extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property string $name
  * @property string $email
@@ -38,6 +65,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  */
-	class User extends \Eloquent implements \Illuminate\Contracts\Auth\MustVerifyEmail {}
+	final class User extends \Eloquent implements \Illuminate\Contracts\Auth\MustVerifyEmail {}
 }
 

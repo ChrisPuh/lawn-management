@@ -23,7 +23,7 @@ final class LawnFactory extends Factory
         return [
             'name' => $this->faker->name,
             'location' => $this->faker->address,
-            'size' => $this->faker->randomNumber(2),
+            'size' => $this->faker->randomElement(['50 m²', '100 m²', '200 m²']),
             'grass_seed' => $this->faker->randomElement(GrassSeed::cases()),
             'type' => $this->faker->randomElement(GrassType::cases()),
         ];

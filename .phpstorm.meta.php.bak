@@ -14,7 +14,9 @@ namespace PHPSTORM_META {
     override(new \Illuminate\Contracts\Container\Container, map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -228,7 +230,9 @@ namespace PHPSTORM_META {
     override(\Illuminate\Container\Container::makeWith(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -442,7 +446,9 @@ namespace PHPSTORM_META {
     override(\Illuminate\Contracts\Container\Container::get(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -656,7 +662,9 @@ namespace PHPSTORM_META {
     override(\Illuminate\Contracts\Container\Container::make(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -870,7 +878,9 @@ namespace PHPSTORM_META {
     override(\Illuminate\Contracts\Container\Container::makeWith(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -1084,7 +1094,9 @@ namespace PHPSTORM_META {
     override(\App::get(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -1298,7 +1310,9 @@ namespace PHPSTORM_META {
     override(\App::make(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -1512,7 +1526,9 @@ namespace PHPSTORM_META {
     override(\App::makeWith(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -1726,7 +1742,9 @@ namespace PHPSTORM_META {
     override(\app(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -1940,7 +1958,9 @@ namespace PHPSTORM_META {
     override(\resolve(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
@@ -2154,7 +2174,9 @@ namespace PHPSTORM_META {
     override(\Psr\Container\ContainerInterface::get(0), map([
         '' => '@',
             'App\Contracts\Auth\AuthenticateUserInterface' => \App\Actions\Auth\AuthenticateUser::class,
+            'App\Contracts\Auth\LogoutActionInterface' => \App\Actions\Auth\LogoutAction::class,
             'App\Contracts\Auth\RegisterUserInterface' => \App\Actions\Auth\RegisterUserAction::class,
+            'App\Contracts\Auth\ResendVerificationActionInterface' => \App\Actions\Auth\ResendVerificationAction::class,
             'BladeUI\Icons\Factory' => \BladeUI\Icons\Factory::class,
             'BladeUI\Icons\IconsManifest' => \BladeUI\Icons\IconsManifest::class,
             'Filament\Support\Assets\AssetManager' => \Filament\Support\Assets\AssetManager::class,
