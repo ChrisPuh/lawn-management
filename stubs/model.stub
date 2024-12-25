@@ -1,0 +1,16 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Traits\CanGetTableNameStatically;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class {{ class }} extends Model
+{
+    use HasFactory;
+    use CanGetTableNameStatically;
+
+    protected $fillable = [];
+    protected $table = '';
+}
