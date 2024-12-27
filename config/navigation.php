@@ -27,16 +27,16 @@ return [
                     'route' => null,
                 ],
             ],
-            'lawns.index' => [
-                'lawns' => [
+            'lawn.index' => [
+                'lawn' => [
                     'label' => 'Rasenflächen',
                     'route' => null,
                 ],
             ],
-            'lawns.show' => [
-                'lawns' => [
+            'lawn.show' => [
+                'lawn' => [
                     'label' => 'Rasenflächen',
-                    'route' => 'lawns.index',
+                    'route' => 'lawn.index',
                 ],
                 'lawn' => [
                     'label' => ':lawn_name',

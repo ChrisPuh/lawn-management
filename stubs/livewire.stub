@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace [namespace];
+
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+
+final class [class] extends Component
+{
+
+    public string $title = '';
+
+    #[Layout('components.layouts.authenticated.index', ['title' => ''])]
+    public function render()
+    {
+        return view('[view]');
+    }
+}

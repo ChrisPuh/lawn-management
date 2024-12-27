@@ -19,8 +19,8 @@ final class NavigationTest extends TestCase
         $this->assertIsArray($config);
         $this->assertArrayHasKey('profile.index', $config);
         $this->assertArrayHasKey('profile.edit', $config);
-        $this->assertArrayHasKey('lawns.index', $config);
-        $this->assertArrayHasKey('lawns.show', $config);
+        $this->assertArrayHasKey('lawn.index', $config);
+        $this->assertArrayHasKey('lawn.show', $config);
     }
 
     #[Test]

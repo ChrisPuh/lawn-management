@@ -12,6 +12,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\Features\SupportRedirects\Redirector;
 
@@ -74,6 +75,7 @@ final class Login extends Component implements HasForms
         return null;
     }
 
+    #[Layout('components.layouts.landing')]
     public function render(): View
     {
         return view('livewire.auth.login', [
