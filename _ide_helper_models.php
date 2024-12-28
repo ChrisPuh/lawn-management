@@ -19,16 +19,20 @@ namespace App\Models{
  * @property string $name
  * @property string|null $location
  * @property string|null $size
- * @property \App\Enums\GrassSeed|null $grass_seed
- * @property \App\Enums\GrassType|null $type
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnMowing> $mowingRecords
+ * @property GrassSeed|null $grass_seed
+ * @property GrassType|null $type
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read Collection<int, LawnMowing> $mowingRecords
+ * @method static \Illuminate\Database\Eloquent\Builder|static query()
+ * @method static static make(array $attributes = [])
+ * @method static static create(array $attributes = [])
+ * @method static static forceCreate(array $attributes)
+ * @method HasMany hasMany(string $related, string|null $foreignKey = null, string|null $localKey = null)
  * @property-read int|null $mowing_records_count
  * @method static \Database\Factories\LawnFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereGrassSeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereId($value)
