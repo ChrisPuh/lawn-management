@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Lawn;
 use App\Models\LawnMowing;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,10 +22,12 @@ return new class extends Migration
             $table->string('location')->nullable(); //
             $table->string('size')->nullable();
 
-            //seedtype
             $table->string('grass_seed')->nullable(); //
-
             $table->string('type')->nullable(); //e.g. sport, garden, park
+
+            //relations
+            $table->foreignId('user_id')->references('id')->on(User::getTableName())->constrained()->cascadeOnDelete();
+
             $table->timestamps();
         });
 

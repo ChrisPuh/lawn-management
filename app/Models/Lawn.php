@@ -9,8 +9,8 @@ use App\Enums\GrassType;
 use App\Traits\CanGetTableNameStatically;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -19,9 +19,9 @@ use Illuminate\Support\Collection;
  * @property string|null $size
  * @property GrassSeed|null $grass_seed
  * @property GrassType|null $type
+ * @property int $user_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read Collection<int, LawnMowing> $mowingRecords
  *
  * @method static \Illuminate\Database\Eloquent\Builder|static query()
  * @method static static make(array $attributes = [])
@@ -43,6 +43,7 @@ final class Lawn extends Model
         'location',
         'size',
         'grass_seed',
+        'user_id',
         'type',
     ];
 
@@ -50,6 +51,15 @@ final class Lawn extends Model
         'grass_seed' => GrassSeed::class,
         'type' => GrassType::class,
     ];
+
+    //relations
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * @return HasMany<LawnMowing, Lawn>

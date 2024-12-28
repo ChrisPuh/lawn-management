@@ -13,7 +13,7 @@
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -23,7 +23,6 @@ namespace App\Models{
  * @property GrassType|null $type
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read Collection<int, LawnMowing> $mowingRecords
  * @method static \Illuminate\Database\Eloquent\Builder|static query()
  * @method static static make(array $attributes = [])
  * @method static static create(array $attributes = [])
@@ -47,7 +46,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $lawn_id
@@ -72,7 +71,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name

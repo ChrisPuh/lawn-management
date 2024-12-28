@@ -8,6 +8,7 @@ use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Models\Lawn;
 use App\Models\LawnMowing;
+use App\Models\User;
 use Tests\TestCase;
 
 final class LawnTest extends TestCase
@@ -21,6 +22,7 @@ final class LawnTest extends TestCase
             'location',
             'size',
             'grass_seed',
+            'user_id',
             'type',
         ], $lawn->getFillable());
     }
@@ -36,6 +38,7 @@ final class LawnTest extends TestCase
             'size',
             'grass_seed',
             'type',
+            'user_id',
             'created_at',
             'updated_at',
         ], array_keys($lawn->fresh()->toArray()));
@@ -67,6 +70,17 @@ final class LawnTest extends TestCase
             LawnMowing::class,
             $lawn->mowingRecords()->make()
         );
+    }
+
+    public function test_it_returns_last_mowing_date_with_multiple_records()
+    {
+        $lawn = Lawn::factory()->create();
+        LawnMowing::factory()->create(['lawn_id' => $lawn->id, 'mowed_on' => '2024-12-20']);
+        LawnMowing::factory()->create(['lawn_id' => $lawn->id, 'mowed_on' => '2024-12-25']);
+
+        $lastMowingDate = $lawn->getLastMowingDate();
+
+        $this->assertEquals('25.12.2024', $lastMowingDate);
     }
 
     public function test_it_returns_the_last_mowing_date_as_a_formatted_string()
@@ -116,5 +130,33 @@ final class LawnTest extends TestCase
         $lastMowingDate = $lawn->getLastMowingDate('Y-m-d');
 
         $this->assertEquals('2024-12-25', $lastMowingDate);
+    }
+
+    public function test_it_allows_custom_date_formats()
+    {
+        $lawn = Lawn::factory()->create();
+        LawnMowing::factory()->create(['lawn_id' => $lawn->id, 'mowed_on' => '2024-12-25']);
+
+        $lastMowingDate = $lawn->getLastMowingDate('Y-m-d');
+
+        $this->assertEquals('2024-12-25', $lastMowingDate);
+    }
+
+    public function test_lawn_belongs_to_user()
+    {
+        $user = User::factory()->create();
+        $lawn = Lawn::factory()->create(['user_id' => $user->id]);
+
+        $this->assertInstanceOf(User::class, $lawn->user);
+        $this->assertEquals($user->id, $lawn->user->id);
+    }
+
+    public function test_lawn_has_many_mowing_records()
+    {
+        $lawn = Lawn::factory()->create();
+        $mowings = LawnMowing::factory()->count(3)->create(['lawn_id' => $lawn->id]);
+
+        $this->assertCount(3, $lawn->mowingRecords);
+        $this->assertInstanceOf(LawnMowing::class, $lawn->mowingRecords->first());
     }
 }

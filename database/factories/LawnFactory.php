@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,6 +27,7 @@ final class LawnFactory extends Factory
             'size' => $this->faker->randomElement(['50 m²', '100 m²', '200 m²']),
             'grass_seed' => $this->faker->randomElement(GrassSeed::cases()),
             'type' => $this->faker->randomElement(GrassType::cases()),
+            'user_id' => User::factory(),
         ];
     }
 }
