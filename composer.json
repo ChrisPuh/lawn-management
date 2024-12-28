@@ -21,7 +21,7 @@
         "brianium/paratest": "^7.7",
         "enlightn/security-checker": "^2.0",
         "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.0.2",
+        "larastan/larastan": "^3.0",
         "laravel/pail": "^1.2.1",
         "laravel/pint": "^1.18.3",
         "laravel/sail": "^1.39.1",
