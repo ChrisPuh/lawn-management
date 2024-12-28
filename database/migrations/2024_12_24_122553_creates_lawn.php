@@ -28,7 +28,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
         Schema::create(LawnMowing::getTableName(), function (Blueprint $table) {
             $table->id();
             $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();

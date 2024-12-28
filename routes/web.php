@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Lawn\LawnCreate;
+use App\Livewire\Lawn\LawnEdit;
+use App\Livewire\Lawn\LawnIndex;
+use App\Livewire\Lawn\LawnShow;
 use Illuminate\Support\Facades\Route;
 
 // routes/web.php
@@ -43,3 +47,10 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 //
+
+Route::middleware('auth')->as('lawn.')->prefix('lawn')->group(function () {
+    Route::get('/', LawnIndex::class)->name('index');
+    Route::get('/create', LawnCreate::class)->name('create');
+    Route::get('/{lawn}', LawnShow::class)->name('show');
+    Route::get('/{lawn}/edit', LawnEdit::class)->name('edit');
+});

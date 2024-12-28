@@ -43,6 +43,16 @@ return [
                     'route' => null,
                 ],
             ],
+            'lawn.create' => [
+                'lawn' => [
+                    'label' => 'Rasenflächen',
+                    'route' => 'lawn.index',
+                ],
+                'lawn.create' => [
+                    'label' => 'create',
+                    'route' => null,
+                ],
+            ],
             // weitere Routen...
         ],
     ],

@@ -9,7 +9,26 @@ use App\Enums\GrassType;
 use App\Traits\CanGetTableNameStatically;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string|null $location
+ * @property string|null $size
+ * @property GrassSeed|null $grass_seed
+ * @property GrassType|null $type
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read Collection<int, LawnMowing> $mowingRecords
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|static query()
+ * @method static static make(array $attributes = [])
+ * @method static static create(array $attributes = [])
+ * @method static static forceCreate(array $attributes)
+ * @method HasMany hasMany(string $related, string|null $foreignKey = null, string|null $localKey = null)
+ */
 final class Lawn extends Model
 {
     use CanGetTableNameStatically;
@@ -32,7 +51,10 @@ final class Lawn extends Model
         'type' => GrassType::class,
     ];
 
-    public function mowingRecords()
+    /**
+     * @return HasMany<LawnMowing, Lawn>
+     */
+    public function mowingRecords(): HasMany
     {
         return $this->hasMany(LawnMowing::class);
     }
@@ -46,6 +68,6 @@ final class Lawn extends Model
     {
         $lastMowing = $this->mowingRecords()->latest('mowed_on')->first();
 
-        return $lastMowing?->mowed_on->format($format);
+        return $lastMowing?->mowed_on?->format($format);
     }
 }

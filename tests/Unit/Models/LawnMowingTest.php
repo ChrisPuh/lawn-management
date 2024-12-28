@@ -15,7 +15,7 @@ final class LawnMowingTest extends TestCase
 
         $this->assertEquals([
             'lawn_id',
-            'last_mowed',
+            'mowed_on',
             'cutting_height',
         ], $lawnmMowing->getFillable());
     }
@@ -24,7 +24,7 @@ final class LawnMowingTest extends TestCase
     {
         $lawnmMowing = new LawnMowing;
 
-        $this->assertEquals('lawn_mowing_records', $lawnmMowing->getTable());
+        $this->assertEquals('lawn_mowings', $lawnmMowing->getTable());
     }
 
     public function test_lawn_relationship()
