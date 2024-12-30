@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Components\Navigation;
 
 use App\Livewire\Components\Navigation\Breadcrumbs;
+use App\Models\Lawn;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,7 +20,9 @@ final class BreadcrumbsTest extends TestCase
     #[Test]
     public function it_shows_profile_breadcrumbs()
     {
-        $this->actingAs(User::factory()->create());
+        $user = User::factory()->create();
+        /** @var Authenticatable $user */
+        $this->actingAs($user);
 
         $this->get(route('profile.index'))
             ->assertOk();
@@ -31,7 +35,9 @@ final class BreadcrumbsTest extends TestCase
     #[Test]
     public function it_shows_profile_edit_breadcrumbs()
     {
-        $this->actingAs(User::factory()->create());
+        $user = User::factory()->create();
+        /** @var Authenticatable $user */
+        $this->actingAs($user);
 
         $this->get(route('profile.edit'))
             ->assertOk();
@@ -45,7 +51,9 @@ final class BreadcrumbsTest extends TestCase
     #[Test]
     public function it_shows_dashboard_breadcrumbs()
     {
-        $this->actingAs(User::factory()->create());
+        $user = User::factory()->create();
+        /** @var Authenticatable $user */
+        $this->actingAs($user);
 
         $this->get(route('dashboard'))
             ->assertOk();
@@ -58,22 +66,22 @@ final class BreadcrumbsTest extends TestCase
     #[Test]
     public function it_shows_lawn_breadcrumbs_with_lawn_name()
     {
-        // $user = User::factory()->create();
-        // $lawn = Lawn::factory()->create(['name' => 'Vorgarten']);
+        $user = User::factory()->create();
+        $lawn = Lawn::factory()->create(['name' => 'Vorgarten']);
 
-        // $this->actingAs($user);
+        /** @var Authenticatable $user */
+        $this->actingAs($user);
 
-        // $this->get(route('lawns.show', $lawn))
-        //     ->assertOk();
 
-        // Livewire::withQueryParams([
-        //     '_route' => 'lawns.show',
-        //     'lawn' => $lawn->id
-        // ])
-        //     ->test(Breadcrumbs::class)
-        //     ->assertSee('Rasenflächen')
-        //     ->assertSee('Vorgarten');
+        $this->get(route('lawn.show', $lawn))
+            ->assertOk();
 
-        $this->markTestSkipped('Implement this test, when the lawn model is available.');
+        Livewire::withQueryParams([
+            '_route' => 'lawn.show',
+            'lawn' => $lawn->id
+        ])
+            ->test(Breadcrumbs::class)
+            ->assertSee('Rasenflächen')
+            ->assertSee('Vorgarten');
     }
 }

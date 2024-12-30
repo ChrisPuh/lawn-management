@@ -34,12 +34,17 @@ final class Breadcrumbs extends Component
         return collect($segments)->map(function ($segment) use ($route) {
             if (str_contains($segment['label'], ':')) {
                 $paramName = str_replace(':', '', $segment['label']);
-                $modelName = explode('_', $paramName)[0];
+                $modelName = explode('_', $paramName)[0]; // z.B. 'lawn'
 
-                $model = $route?->parameter($modelName) ??
-                    app($modelName)->find(request()->query($modelName));
+                // Hole das Model-Mapping aus der Config
+                $modelClass = config("navigation.breadcrumbs.models.{$modelName}");
 
-                $segment['label'] = $model && property_exists($model, 'name') ? $model->name : $segment['label'];
+                if ($modelClass) {
+                    $model = $route?->parameter($modelName) ??
+                        $modelClass::find(request()->query($modelName));
+
+                    $segment['label'] = $model?->name ?? $segment['label'];
+                }
             }
 
             return $segment;
