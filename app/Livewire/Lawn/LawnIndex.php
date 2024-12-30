@@ -6,18 +6,16 @@ namespace App\Livewire\Lawn;
 
 use App\Models\Lawn;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-/** @property-read Collection<int, Lawn> $lawns */
 final class LawnIndex extends Component
 {
     #[Layout('components.layouts.authenticated.index', ['title' => 'Rasenflächen'])]
     public function render(): View
     {
         /** @todo extract to repository */
-        $lawns = Lawn::query()
+        $lawns = Lawn::forUser()  // Use the scope to filter lawns for the current user
             ->with('mowingRecords')
             ->get();
 

@@ -7,6 +7,8 @@ namespace App\Models;
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Traits\CanGetTableNameStatically;
+use Auth;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -79,5 +81,17 @@ final class Lawn extends Model
         $lastMowing = $this->mowingRecords()->latest('mowed_on')->first();
 
         return $lastMowing?->mowed_on?->format($format);
+    }
+
+    //scopes
+    /**
+     * Scope a query to only include lawns of the currently authenticated user.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeForUser(Builder $query): Builder
+    {
+        return $query->where('user_id', Auth::id());
     }
 }

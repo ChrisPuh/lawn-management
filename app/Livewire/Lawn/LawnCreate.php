@@ -7,28 +7,24 @@ namespace App\Livewire\Lawn;
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Models\Lawn;
+use Auth;
+use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
+/** @property ComponentContainer $form */
 final class LawnCreate extends Component implements HasForms
 {
     use InteractsWithForms;
 
     public ?array $data = [];
 
-    #[Reactive]
-    public ?Form $form = null;
-
-    public function mount(): void
-    {
-        $this->form->fill();
-    }
+    public function mount(): void {}
 
     public function form(Form $form): Form
     {
@@ -61,6 +57,7 @@ final class LawnCreate extends Component implements HasForms
     public function create(): void
     {
         $data = $this->form->getState();
+        $data['user_id'] = Auth::id();
 
         $lawn = Lawn::create($data);
 

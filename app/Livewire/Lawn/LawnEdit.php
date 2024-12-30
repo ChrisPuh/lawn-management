@@ -7,6 +7,7 @@ namespace App\Livewire\Lawn;
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Models\Lawn;
+use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -14,12 +15,9 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
-/**
- * @property Lawn $lawn
- */
+/** @property ComponentContainer $form */
 final class LawnEdit extends Component implements HasForms
 {
     use InteractsWithForms;
@@ -27,9 +25,6 @@ final class LawnEdit extends Component implements HasForms
     public Lawn $lawn;
 
     public ?array $data = [];
-
-    #[Reactive]
-    public ?Form $form = null;
 
     public function mount(): void
     {

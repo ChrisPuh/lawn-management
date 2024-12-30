@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Lawn;
 
 use App\Models\Lawn;
+use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -12,9 +13,9 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
+/** @property ComponentContainer $form */
 final class LawnShow extends Component implements HasForms
 {
     use InteractsWithForms;
@@ -26,9 +27,6 @@ final class LawnShow extends Component implements HasForms
     public bool $showDeleteModal = false;
 
     public ?array $data = [];
-
-    #[Reactive]
-    public ?Form $form = null;
 
     /**
      * Mounts the component
