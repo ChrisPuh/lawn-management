@@ -62,7 +62,7 @@ final class LawnCreate extends Component implements HasForms
                     ->nullable()
                     ->label('Grassorte')
                     ->options(collect(GrassSeed::cases())->mapWithKeys(
-                        fn(GrassSeed $type) => [$type->value() => $type->label()]
+                        fn (GrassSeed $type) => [$type->value() => $type->label()]
                     ))
                     ->rules(LawnRules::grassSeedRules())
                     ->validationMessages(LawnRules::messages()),
@@ -71,7 +71,7 @@ final class LawnCreate extends Component implements HasForms
                     ->nullable()
                     ->label('Rasentyp')
                     ->options(collect(GrassType::cases())->mapWithKeys(
-                        fn(GrassType $type) => [$type->value() => $type->label()]
+                        fn (GrassType $type) => [$type->value() => $type->label()]
                     ))
                     ->rules(LawnRules::typeRules())
                     ->validationMessages(LawnRules::messages()),
