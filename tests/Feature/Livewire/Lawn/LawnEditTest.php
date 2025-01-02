@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Livewire\Lawn\LawnEdit;

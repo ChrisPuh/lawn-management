@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Livewire\Lawn\LawnEdit;
@@ -48,7 +50,7 @@ describe('LawnEdit', function () {
         it('validates unique name for user', function () {
             Lawn::factory()->create([
                 'user_id' => $this->user->id,
-                'name' => 'Existing Lawn'
+                'name' => 'Existing Lawn',
             ]);
 
             Livewire::test(LawnEdit::class, ['lawn' => $this->lawn])
@@ -61,7 +63,7 @@ describe('LawnEdit', function () {
             $otherUser = User::factory()->create();
             Lawn::factory()->create([
                 'user_id' => $otherUser->id,
-                'name' => 'Same Name'
+                'name' => 'Same Name',
             ]);
 
             Livewire::test(LawnEdit::class, ['lawn' => $this->lawn])

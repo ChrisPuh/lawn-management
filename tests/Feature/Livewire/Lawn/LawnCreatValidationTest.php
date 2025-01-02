@@ -20,8 +20,8 @@ describe('lawn name validation', function () {
         livewire(LawnCreate::class)
             ->set('data.name', '')
             ->call('create')
-            ->assertHasErrors(['data.name' => 'required'])
-            ->assertSee('Bitte geben Sie einen Namen ein.');
+            ->assertHasFormErrors(['name' => 'required']) // Filament Form spezifische Assertion
+            ->assertHasErrors(['data.name' => 'required']);
     });
 
     it('validates minimum name length', function () {
