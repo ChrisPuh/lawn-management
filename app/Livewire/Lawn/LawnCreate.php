@@ -90,10 +90,19 @@ final class LawnCreate extends Component implements HasForms
                     ]),
 
                 Select::make('grass_seed')
+                    ->nullable()
+                    ->label('Grassorte')
                     ->options(collect(GrassSeed::cases())->mapWithKeys(
                         fn(GrassSeed $type) => [$type->value() => $type->label()]
                     ))
-                    ->label('Grassorte'),
+                    ->rules([
+                        'nullable',
+                        'string',
+                        'in:' . collect(GrassSeed::cases())->map->value()->implode(',')
+                    ])
+                    ->validationMessages([
+                        'in' => 'Bitte wählen Sie eine gültige Grassorte.',
+                    ]),
 
                 Select::make('type')
                     ->options(collect(GrassType::cases())->mapWithKeys(
