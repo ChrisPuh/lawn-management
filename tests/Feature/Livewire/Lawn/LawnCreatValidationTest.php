@@ -92,3 +92,36 @@ describe('lawn name uniqueness', function () {
         expect(Lawn::where('name', 'My Garden')->count())->toBe(2);
     });
 });
+
+describe('lawn location validation', function() {
+    it('allows empty location', function () {
+        livewire(LawnCreate::class)
+            ->set('data.location', '')
+            ->call('create')
+            ->assertHasNoErrors('data.location');
+    });
+
+    it('validates maximum location length', function () {
+        livewire(LawnCreate::class)
+            ->set('data.location', str_repeat('a', 256))
+            ->call('create')
+            ->assertHasErrors(['data.location' => 'max']);
+    });
+
+    it('validates location characters', function () {
+        livewire(LawnCreate::class)
+            ->set('data.location', 'Invalid@Location!')
+            ->call('create')
+            ->assertHasErrors(['data.location' => 'regex']);
+    });
+
+    it('allows valid special characters in location', function () {
+        livewire(LawnCreate::class)
+            ->set('data', [
+                'name' => 'Test Garden',
+                'location' => 'Garten-Süd_1 äöü',
+            ])
+            ->call('create')
+            ->assertHasNoErrors(['data.location']);
+    });
+});

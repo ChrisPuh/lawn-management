@@ -56,8 +56,21 @@ final class LawnCreate extends Component implements HasForms
                         'unique' => 'Eine Rasenfläche mit diesem Namen existiert bereits.',
                     ]),
                 TextInput::make('location')
+                    ->nullable()
                     ->maxLength(255)
-                    ->label('Standort'),
+                    ->label('Standort')
+                    ->rules([
+                        'nullable',
+                        'string',
+                        'max:255',
+                        'regex:/^[a-zA-Z0-9\s\-_äöüÄÖÜß]+$/',
+                    ])
+                    ->placeholder('z.B. Vorgarten, Hinterhof')
+                    ->helperText('Erlaubt sind Buchstaben, Zahlen, Leerzeichen, Bindestriche und Unterstriche')
+                    ->validationMessages([
+                        'max' => 'Der Standort darf maximal :max Zeichen lang sein.',
+                        'regex' => 'Der Standort enthält unerlaubte Zeichen.',
+                    ]),
 
                 TextInput::make('size')
                     ->maxLength(255)
