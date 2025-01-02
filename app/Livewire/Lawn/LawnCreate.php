@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -33,8 +34,27 @@ final class LawnCreate extends Component implements HasForms
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255)
-                    ->label('Name der Rasenfläche'),
-
+                    ->label('Name der Rasenfläche')
+                    ->rules([
+                        'required',
+                        'string',
+                        'min:3',
+                        'max:255',
+                        'regex:/^[a-zA-Z0-9\s\-_äöüÄÖÜß]+$/',
+                        Rule::unique('lawns', 'name')->where(
+                            fn($query) =>
+                            $query->where('user_id', Auth::id())
+                        ),
+                    ])
+                    ->placeholder('z.B. Vorgarten, Hinterhof')
+                    ->helperText('Erlaubt sind Buchstaben, Zahlen, Leerzeichen, Bindestriche und Unterstriche')
+                    ->validationMessages([
+                        'required' => 'Bitte geben Sie einen Namen ein.',
+                        'min' => 'Der Name muss mindestens :min Zeichen lang sein.',
+                        'max' => 'Der Name darf maximal :max Zeichen lang sein.',
+                        'regex' => 'Der Name enthält unerlaubte Zeichen.',
+                        'unique' => 'Eine Rasenfläche mit diesem Namen existiert bereits.',
+                    ]),
                 TextInput::make('location')
                     ->maxLength(255)
                     ->label('Standort'),
