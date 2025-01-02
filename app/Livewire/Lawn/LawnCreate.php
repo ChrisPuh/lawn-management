@@ -73,8 +73,21 @@ final class LawnCreate extends Component implements HasForms
                     ]),
 
                 TextInput::make('size')
+                    ->nullable()
                     ->maxLength(255)
-                    ->label('Größe'),
+                    ->label('Größe')
+                    ->rules([
+                        'nullable',
+                        'string',
+                        'max:255',
+                        'regex:/^[0-9,.\s]+m²$/',
+                    ])
+                    ->placeholder('z.B. 100m²')
+                    ->helperText('Bitte geben Sie die Größe in m² an')
+                    ->validationMessages([
+                        'max' => 'Die Größe darf maximal :max Zeichen lang sein.',
+                        'regex' => 'Bitte geben Sie eine gültige Größe an (z.B. 100m²).',
+                    ]),
 
                 Select::make('grass_seed')
                     ->options(collect(GrassSeed::cases())->mapWithKeys(

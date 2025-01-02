@@ -93,7 +93,7 @@ describe('lawn name uniqueness', function () {
     });
 });
 
-describe('lawn location validation', function() {
+describe('lawn location validation', function () {
     it('allows empty location', function () {
         livewire(LawnCreate::class)
             ->set('data.location', '')
@@ -123,5 +123,55 @@ describe('lawn location validation', function() {
             ])
             ->call('create')
             ->assertHasNoErrors(['data.location']);
+    });
+});
+
+describe('lawn size validation', function () {
+    it('allows empty size', function () {
+        livewire(LawnCreate::class)
+            ->set('data.size', '')
+            ->call('create')
+            ->assertHasNoErrors('data.size');
+    });
+
+    it('validates maximum size length', function () {
+        livewire(LawnCreate::class)
+            ->set('data.size', str_repeat('1', 256))
+            ->call('create')
+            ->assertHasErrors(['data.size' => 'max']);
+    });
+
+    it('validates size format', function () {
+        livewire(LawnCreate::class)
+            ->set('data.size', '100')
+            ->call('create')
+            ->assertHasErrors(['data.size' => 'regex']);
+
+        livewire(LawnCreate::class)
+            ->set('data.size', '100m')
+            ->call('create')
+            ->assertHasErrors(['data.size' => 'regex']);
+
+        livewire(LawnCreate::class)
+            ->set('data.size', 'abc m²')
+            ->call('create')
+            ->assertHasErrors(['data.size' => 'regex']);
+    });
+
+    it('allows valid size formats', function () {
+        livewire(LawnCreate::class)
+            ->set('data.size', '100m²')
+            ->call('create')
+            ->assertHasNoErrors('data.size');
+
+        livewire(LawnCreate::class)
+            ->set('data.size', '100.5m²')
+            ->call('create')
+            ->assertHasNoErrors('data.size');
+
+        livewire(LawnCreate::class)
+            ->set('data.size', '1,5m²')
+            ->call('create')
+            ->assertHasNoErrors('data.size');
     });
 });
