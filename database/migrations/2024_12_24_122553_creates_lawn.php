@@ -27,7 +27,7 @@ return new class extends Migration
             $table->enum('grass_seed', collect(GrassSeed::cases())->map->value()->all())->nullable();
             $table->enum('type', collect(GrassType::cases())->map->value()->all())->nullable();
 
-            //relations
+            // relations
             $table->foreignId('user_id')->references('id')->on(User::getTableName())->constrained()->cascadeOnDelete();
 
             $table->timestamps();

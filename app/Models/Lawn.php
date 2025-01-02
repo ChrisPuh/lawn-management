@@ -54,7 +54,7 @@ final class Lawn extends Model
         'type' => GrassType::class,
     ];
 
-    //relations
+    // relations
     /**
      * @return BelongsTo<User, $this>
      */
@@ -83,11 +83,11 @@ final class Lawn extends Model
         return $lastMowing?->mowed_on?->format($format);
     }
 
-    //scopes
+    // scopes
     /**
      * Scope a query to only include lawns of the currently authenticated user.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForUser(Builder $query): Builder

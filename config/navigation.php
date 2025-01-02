@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'breadcrumbs' => [
         'models' => [
-            'lawn' => \App\Models\Lawn::class,
+            'lawn' => App\Models\Lawn::class,
             // Weitere Model-Mappings hier...
         ],
         'segments' => [

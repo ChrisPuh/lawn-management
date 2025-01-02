@@ -33,6 +33,7 @@ final class LawnShow extends Component implements HasForms
      */
     public function mount(): void
     {
+        $this->authorize('view', $this->lawn);
         $this->form->fill();
     }
 
@@ -85,10 +86,10 @@ final class LawnShow extends Component implements HasForms
      */
     public function create(): void
     {
+        $this->authorize('manageMowingRecords', $this->lawn);
+
         $data = $this->form->getState();
-
         $this->lawn->mowingRecords()->create($data);
-
         $this->closeModal();
         $this->form->fill();
     }
@@ -101,6 +102,8 @@ final class LawnShow extends Component implements HasForms
      */
     public function confirmDelete(): void
     {
+        $this->authorize('delete', $this->lawn);
+
         $this->lawn->delete();
         $this->redirect(route('lawn.index'), navigate: true);
     }

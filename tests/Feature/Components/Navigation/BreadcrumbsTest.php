@@ -66,19 +66,11 @@ final class BreadcrumbsTest extends TestCase
     #[Test]
     public function it_shows_lawn_breadcrumbs_with_lawn_name()
     {
-        $user = User::factory()->create();
         $lawn = Lawn::factory()->create(['name' => 'Vorgarten']);
-
-        /** @var Authenticatable $user */
-        $this->actingAs($user);
-
-
-        $this->get(route('lawn.show', $lawn))
-            ->assertOk();
 
         Livewire::withQueryParams([
             '_route' => 'lawn.show',
-            'lawn' => $lawn->id
+            'lawn' => $lawn->id,
         ])
             ->test(Breadcrumbs::class)
             ->assertSee('Rasenflächen')

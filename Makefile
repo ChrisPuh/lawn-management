@@ -144,7 +144,7 @@ help: test-help
 .PHONY: check
 check: guard-all .env
 	@echo "Running tests..."
-	php artisan test --parallel
+	composer test
 	@echo "\nRunning static analysis..."
 	php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon
 	@echo "\nRunning Pint..."

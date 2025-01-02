@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Livewire\Lawn\LawnIndex;
 use App\Models\Lawn;
 use App\Models\User;
@@ -21,18 +23,17 @@ describe('lawn index component', function () {
 
     test('shows only user specific lawns', function () {
         $userLawns = Lawn::factory()->count(2)->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         Lawn::factory()->count(3)->create([
-            'user_id' => User::factory()->create()->id
+            'user_id' => User::factory()->create()->id,
         ]);
 
         livewire(LawnIndex::class)
             ->assertViewHas(
                 'lawns',
-                fn($lawns) =>
-                $lawns->count() === 2 &&
+                fn ($lawns) => $lawns->count() === 2 &&
                     $lawns->pluck('id')->diff($userLawns->pluck('id'))->isEmpty()
             )
             ->assertSee('Gesamtanzahl Rasenflächen')
@@ -41,7 +42,7 @@ describe('lawn index component', function () {
 
     test('displays last mowed date correctly', function () {
         $lawn = Lawn::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $mowingDate = Carbon::now()->subDays(5);
@@ -70,7 +71,7 @@ describe('lawn index component', function () {
 
     test('navigates to show page', function () {
         $lawn = Lawn::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         livewire(LawnIndex::class)
@@ -80,7 +81,7 @@ describe('lawn index component', function () {
 
     test('navigates to edit page', function () {
         $lawn = Lawn::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         livewire(LawnIndex::class)

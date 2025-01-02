@@ -43,7 +43,7 @@ final class Breadcrumbs extends Component
                     $model = $route?->parameter($modelName) ??
                         $modelClass::find(request()->query($modelName));
 
-                    $segment['label'] = $model?->name ?? $segment['label'];
+                    $segment['label'] = $model->name ?? $segment['label'];
                 }
             }
 

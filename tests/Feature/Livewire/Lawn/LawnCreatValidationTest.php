@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Livewire\Lawn\LawnCreate;
 use App\Models\Lawn;
 use App\Models\User;
+
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
@@ -47,7 +50,7 @@ describe('lawn name validation', function () {
             ->set('data', [
                 'name' => 'Garten-Süd_Bereich äöü',
                 'location' => 'Test Location',
-                'size' => '100m²'
+                'size' => '100m²',
             ])
             ->call('create')
             ->assertHasNoErrors(['data.name']);
@@ -59,7 +62,7 @@ describe('lawn name uniqueness', function () {
         // Create an existing lawn for the user
         Lawn::factory()->create([
             'name' => 'Existing Lawn',
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         livewire(LawnCreate::class)
@@ -72,7 +75,7 @@ describe('lawn name uniqueness', function () {
         // Create a lawn for the first user
         Lawn::factory()->create([
             'name' => 'My Garden',
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         // Create and authenticate second user
@@ -84,7 +87,7 @@ describe('lawn name uniqueness', function () {
             ->set('data', [
                 'name' => 'My Garden',
                 'location' => 'Different Location',
-                'size' => '200m²'
+                'size' => '200m²',
             ])
             ->call('create')
             ->assertHasNoErrors(['data.name'])
@@ -178,7 +181,7 @@ describe('lawn size validation', function () {
     });
 });
 
-describe('grass seed validation', function() {
+describe('grass seed validation', function () {
     it('allows empty grass seed', function () {
         livewire(LawnCreate::class)
             ->set('data.grass_seed', '')
@@ -203,7 +206,7 @@ describe('grass seed validation', function() {
     });
 });
 
-describe('grass type validation', function() {
+describe('grass type validation', function () {
     it('allows empty type', function () {
         livewire(LawnCreate::class)
             ->set('data.type', '')

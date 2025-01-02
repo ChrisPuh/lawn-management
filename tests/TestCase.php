@@ -17,7 +17,6 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature');
 
     }
 

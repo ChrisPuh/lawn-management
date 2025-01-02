@@ -42,8 +42,7 @@ final class LawnCreate extends Component implements HasForms
                         'max:255',
                         'regex:/^[a-zA-Z0-9\s\-_äöüÄÖÜß]+$/',
                         Rule::unique('lawns', 'name')->where(
-                            fn($query) =>
-                            $query->where('user_id', Auth::id())
+                            fn ($query) => $query->where('user_id', Auth::id())
                         ),
                     ])
                     ->placeholder('z.B. Vorgarten, Hinterhof')
@@ -93,12 +92,12 @@ final class LawnCreate extends Component implements HasForms
                     ->nullable()
                     ->label('Grassorte')
                     ->options(collect(GrassSeed::cases())->mapWithKeys(
-                        fn(GrassSeed $type) => [$type->value() => $type->label()]
+                        fn (GrassSeed $type) => [$type->value() => $type->label()]
                     ))
                     ->rules([
                         'nullable',
                         'string',
-                        'in:' . collect(GrassSeed::cases())->map->value()->implode(',')
+                        'in:'.collect(GrassSeed::cases())->map->value()->implode(','),
                     ])
                     ->validationMessages([
                         'in' => 'Bitte wählen Sie eine gültige Grassorte.',
@@ -108,16 +107,16 @@ final class LawnCreate extends Component implements HasForms
                     ->nullable()
                     ->label('Rasentyp')
                     ->options(collect(GrassType::cases())->mapWithKeys(
-                        fn(GrassType $type) => [$type->value() => $type->label()]
+                        fn (GrassType $type) => [$type->value() => $type->label()]
                     ))
                     ->rules([
                         'nullable',
                         'string',
-                        'in:' . collect(GrassType::cases())->map->value()->implode(',')
+                        'in:'.collect(GrassType::cases())->map->value()->implode(','),
                     ])
                     ->validationMessages([
                         'in' => 'Bitte wählen Sie einen gültigen Rasentyp.',
-                    ])
+                    ]),
             ])
             ->statePath('data');
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Livewire\Lawn\LawnCreate;
@@ -59,22 +61,21 @@ describe('lawn create component', function () {
             ->assertFormFieldExists('type');
     });
 
-
     test('select fields have correct enum options', function () {
         $component = Livewire::test(LawnCreate::class);
 
         // Get the form schema
         $formSchema = invade($component->instance())
-            ->form(new \Filament\Forms\Form($component->instance()))
+            ->form(new Filament\Forms\Form($component->instance()))
             ->getComponents();
 
         // Find the grass_seed select component
         $grassSeedComponent = collect($formSchema)
-            ->first(fn($component) => $component->getName() === 'grass_seed');
+            ->first(fn ($component) => $component->getName() === 'grass_seed');
 
         // Find the type select component
         $typeComponent = collect($formSchema)
-            ->first(fn($component) => $component->getName() === 'type');
+            ->first(fn ($component) => $component->getName() === 'type');
 
         // Test grass_seed options
         expect($grassSeedComponent->getOptions())->toBe(collect([

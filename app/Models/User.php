@@ -45,7 +45,7 @@ final class User extends Authenticatable implements MustVerifyEmail
      */
     protected $table = 'users';
 
-    //relations
+    // relations
     /**
      * Get the lawns for the user.
      */

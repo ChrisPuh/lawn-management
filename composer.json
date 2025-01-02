@@ -74,7 +74,7 @@
         ],
         "test:coverage-html": [
             "@putenv XDEBUG_MODE=coverage",
-            "@php -d xdebug.mode=coverage vendor/bin/pest --coverage-html coverage --colors=never"
+            "@php -d xdebug.mode=coverage vendor/bin/pest --coverage-html coverage"
         ],
         "test:parallel": "./vendor/bin/pest --parallel"
     },
