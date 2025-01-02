@@ -44,11 +44,15 @@ final class LawnCreate extends Component implements HasForms
                     ->label('Größe'),
 
                 Select::make('grass_seed')
-                    ->options(GrassSeed::class)
+                    ->options(collect(GrassSeed::cases())->mapWithKeys(
+                        fn(GrassSeed $type) => [$type->value() => $type->label()]
+                    ))
                     ->label('Grassorte'),
 
                 Select::make('type')
-                    ->options(GrassType::class)
+                    ->options(collect(GrassType::cases())->mapWithKeys(
+                        fn(GrassType $type) => [$type->value() => $type->label()]
+                    ))
                     ->label('Rasentyp'),
             ])
             ->statePath('data');
