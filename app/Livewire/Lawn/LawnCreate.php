@@ -105,10 +105,19 @@ final class LawnCreate extends Component implements HasForms
                     ]),
 
                 Select::make('type')
+                    ->nullable()
+                    ->label('Rasentyp')
                     ->options(collect(GrassType::cases())->mapWithKeys(
                         fn(GrassType $type) => [$type->value() => $type->label()]
                     ))
-                    ->label('Rasentyp'),
+                    ->rules([
+                        'nullable',
+                        'string',
+                        'in:' . collect(GrassType::cases())->map->value()->implode(',')
+                    ])
+                    ->validationMessages([
+                        'in' => 'Bitte wählen Sie einen gültigen Rasentyp.',
+                    ])
             ])
             ->statePath('data');
     }

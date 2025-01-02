@@ -90,9 +90,9 @@ describe('lawn create component', function () {
 
         // Test type options
         expect($typeComponent->getOptions())->toBe(collect([
-            GrassType::Sport->value() => GrassType::Sport->value(),
-            GrassType::Garden->value() => GrassType::Garden->value(),
-            GrassType::Park->value() => GrassType::Park->value(),
+            GrassType::Sport->value() => GrassType::Sport->label(),
+            GrassType::Garden->value() => GrassType::Garden->label(),
+            GrassType::Park->value() => GrassType::Park->label(),
         ])->toArray());
     });
 });

@@ -13,9 +13,9 @@ enum GrassType
     public function label(): string
     {
         return match ($this) {
-            self::Sport => 'Sport',
-            self::Garden => 'Garden',
-            self::Park => 'Park',
+            self::Sport => 'Sportrasen',
+            self::Garden => 'Gartenrasen',
+            self::Park => 'Parkrasen',
         };
     }
 

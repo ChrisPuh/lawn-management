@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\GrassSeed;
+use App\Enums\GrassType;
 use App\Models\Lawn;
 use App\Models\LawnMowing;
 use App\Models\User;
@@ -24,8 +25,7 @@ return new class extends Migration
             $table->string('size')->nullable();
 
             $table->enum('grass_seed', collect(GrassSeed::cases())->map->value()->all())->nullable();
-
-            $table->string('type')->nullable(); //e.g. sport, garden, park
+            $table->enum('type', collect(GrassType::cases())->map->value()->all())->nullable();
 
             //relations
             $table->foreignId('user_id')->references('id')->on(User::getTableName())->constrained()->cascadeOnDelete();

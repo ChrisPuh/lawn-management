@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\GrassSeed;
+use App\Enums\GrassType;
 use App\Livewire\Lawn\LawnCreate;
 use App\Models\Lawn;
 use App\Models\User;
@@ -198,6 +199,31 @@ describe('grass seed validation', function() {
                 ->set('data.grass_seed', $case->value())
                 ->call('create')
                 ->assertHasNoErrors('grass_seed');
+        }
+    });
+});
+
+describe('grass type validation', function() {
+    it('allows empty type', function () {
+        livewire(LawnCreate::class)
+            ->set('data.type', '')
+            ->call('create')
+            ->assertHasNoErrors('type');
+    });
+
+    it('validates type enum values', function () {
+        livewire(LawnCreate::class)
+            ->set('data.type', 'invalid_type')
+            ->call('create')
+            ->assertHasErrors(['data.type' => ['in']]);
+    });
+
+    it('accepts valid enum values', function () {
+        foreach (GrassType::cases() as $case) {
+            livewire(LawnCreate::class)
+                ->set('data.type', $case->value())
+                ->call('create')
+                ->assertHasNoErrors('type');
         }
     });
 });
