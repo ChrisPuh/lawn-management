@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -111,5 +113,10 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+
+    'verification' => [
+        'enable' => true,
+        'expire' => 60, // Verification link expiry in minutes
+    ],
 
 ];

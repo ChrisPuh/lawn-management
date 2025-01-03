@@ -139,3 +139,14 @@ help: test-help
 .PHONY: guard-root guard-php-version guard-all dev watch install serve \
         test test-filter test-parallel clean autoload route ide-helper \
         migrate-refresh analyse test-help help
+
+        # Combined test and analysis
+.PHONY: check
+check: guard-all .env
+	@echo "Running tests..."
+	composer test
+	@echo "\nRunning static analysis..."
+	php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon
+	@echo "\nRunning Pint..."
+	php ./vendor/bin/pint --test
+

@@ -1,0 +1,7 @@
+<x-slot name="actions">
+    //
+</x-slot>
+
+<div>
+    {{-- [quote] --}}
+</div>

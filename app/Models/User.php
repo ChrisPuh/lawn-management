@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -10,12 +12,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements MustVerifyEmail
+final class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, CanGetTableNameStatically;
+    use CanGetTableNameStatically, HasFactory, Notifiable, Notifiable;
 
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -36,7 +38,21 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    /**
+     * Name of the table
+     *
+     * @var string
+     */
     protected $table = 'users';
+
+    // relations
+    /**
+     * Get the lawns for the user.
+     */
+    public function lawns(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Lawn::class);
+    }
 
     /**
      * Get the attributes that should be cast.

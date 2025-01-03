@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
 use Illuminate\Database\Connection;
@@ -16,8 +18,6 @@ trait CanGetTableNameStatically
 {
     /**
      * Get the table name for the model.
-     *
-     * @return string
      */
     public static function getTableName(): string
     {
@@ -36,28 +36,9 @@ trait CanGetTableNameStatically
     }
 
     /**
-     * Create a new instance of the model.
-     *
-     * @return Model
-     * @throws RuntimeException
-     */
-    private static function createInstance(): Model
-    {
-        $calledClass = get_called_class();
-
-        if (!is_a($calledClass, Model::class, true)) {
-            throw new RuntimeException(
-                sprintf('Class %s must extend %s', $calledClass, Model::class)
-            );
-        }
-
-        return new $calledClass();
-    }
-
-    /**
      * Check if a given table name matches this model's table.
      *
-     * @param string $tableName The table name to compare.
+     * @param  string  $tableName  The table name to compare.
      * @return bool Whether the table names match.
      */
     public static function isTable(string $tableName): bool
@@ -79,6 +60,24 @@ trait CanGetTableNameStatically
         $tableName = static::getTableName();
 
         // Combine the table prefix and table name to get the fully qualified table name
-        return $tablePrefix . $tableName;
+        return $tablePrefix.$tableName;
+    }
+
+    /**
+     * Create a new instance of the model.
+     *
+     * @throws RuntimeException
+     */
+    private static function createInstance(): Model
+    {
+        $calledClass = get_called_class();
+
+        if (! is_a($calledClass, Model::class, true)) {
+            throw new RuntimeException(
+                sprintf('Class %s must extend %s', $calledClass, Model::class)
+            );
+        }
+
+        return new $calledClass;
     }
 }
