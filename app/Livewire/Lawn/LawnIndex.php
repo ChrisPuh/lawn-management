@@ -7,6 +7,7 @@ namespace App\Livewire\Lawn;
 use App\Models\Lawn;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 final class LawnIndex extends Component
@@ -14,15 +15,11 @@ final class LawnIndex extends Component
     #[Layout('components.layouts.authenticated.index', ['title' => 'Rasenflächen'])]
     public function render(): View
     {
-        /** @todo extract to repository */
-        $lawns = Lawn::forUser()  // Use the scope to filter lawns for the current user
+        $lawns = Lawn::forUser()
             ->with('mowingRecords')
             ->get();
 
-        /** @todo extract to repository */
-        $lastMowedDate = $lawns->map(function ($lawn) {
-            return $lawn->getLastMowingDate('Y-m-d');
-        })
+        $lastMowedDate = $lawns->map(fn ($lawn) => $lawn->getLastMowingDate('Y-m-d'))
             ->filter()
             ->sort()
             ->last();
@@ -36,6 +33,7 @@ final class LawnIndex extends Component
     /**
      * Redirect to the create lawn page
      */
+    #[On('createLawn')]
     public function createLawn(): void
     {
         $this->redirect(route('lawn.create'), navigate: true);
@@ -44,6 +42,7 @@ final class LawnIndex extends Component
     /**
      * Redirect to the show lawn page
      */
+    #[On('showLawn')]
     public function showLawn(int $id): void
     {
         $this->redirect(route('lawn.show', $id), navigate: true);
@@ -52,6 +51,7 @@ final class LawnIndex extends Component
     /**
      * Redirect to the edit lawn page
      */
+    #[On('editLawn')]
     public function editLawn(int $id): void
     {
         $this->redirect(route('lawn.edit', $id), navigate: true);
