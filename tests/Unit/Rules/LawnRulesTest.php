@@ -5,9 +5,6 @@ declare(strict_types=1);
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Rules\Validation\LawnRules;
-use Tests\TestCase;
-
-uses(TestCase::class);
 
 describe('LawnRules', function () {
     describe('nameRules', function () {
