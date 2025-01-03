@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Livewire\Lawn\EmptyState;
 use App\Livewire\Lawn\LawnIndex;
 use App\Models\Lawn;
 use App\Models\User;
@@ -50,6 +51,36 @@ describe('lawn index component', function () {
                 )
                 ->assertSee('Gesamtanzahl Rasenflächen')
                 ->assertSee('2');
+        });
+    });
+
+    describe('empty state', function () {
+        test('shows empty state component correctly', function () {
+            $component = livewire(EmptyState::class)
+                ->assertSee('Keine Rasenflächen')
+                ->assertSee('Erstellen Sie Ihre erste Rasenfläche um zu beginnen.')
+                ->assertSee('Rasenfläche anlegen');
+        });
+
+        test('dispatches create lawn event on button click', function () {
+            livewire(EmptyState::class)
+                ->call('createLawn')
+                ->assertDispatched('createLawn');
+        });
+
+        test('empty state is shown within lawn index when no lawns exist', function () {
+            livewire(LawnIndex::class)
+                ->assertSeeLivewire(EmptyState::class)
+                ->assertSee('Keine Rasenflächen');
+        });
+
+        test('empty state is not shown when lawns exist', function () {
+            Lawn::factory()->create([
+                'user_id' => $this->user->id,
+            ]);
+
+            livewire(LawnIndex::class)
+                ->assertDontSeeLivewire(EmptyState::class);
         });
     });
 
