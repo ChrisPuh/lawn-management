@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 return [
     'breadcrumbs' => [
+        'models' => [
+            'lawn' => App\Models\Lawn::class,
+            // Weitere Model-Mappings hier...
+        ],
         'segments' => [
             'dashboard' => [
                 'dashboard' => [
@@ -27,18 +31,39 @@ return [
                     'route' => null,
                 ],
             ],
-            'lawns.index' => [
-                'lawns' => [
+            'lawn.index' => [
+                'lawn' => [
                     'label' => 'Rasenflächen',
                     'route' => null,
                 ],
             ],
-            'lawns.show' => [
-                'lawns' => [
-                    'label' => 'Rasenflächen',
-                    'route' => 'lawns.index',
-                ],
+
+            'lawn.create' => [
                 'lawn' => [
+                    'label' => 'Rasenflächen',
+                    'route' => 'lawn.index',
+                ],
+                'lawn.create' => [
+                    'label' => 'create',
+                    'route' => null,
+                ],
+            ],
+            'lawn.show' => [
+                'lawn' => [
+                    'label' => 'Rasenflächen',
+                    'route' => 'lawn.index',
+                ],
+                'lawn.show' => [
+                    'label' => ':lawn_name',
+                    'route' => null,
+                ],
+            ],
+            'lawn.edit' => [
+                'lawn' => [
+                    'label' => 'Rasenflächen',
+                    'route' => 'lawn.index',
+                ],
+                'lawn.edit' => [
                     'label' => ':lawn_name',
                     'route' => null,
                 ],

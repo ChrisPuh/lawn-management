@@ -45,6 +45,15 @@ final class User extends Authenticatable implements MustVerifyEmail
      */
     protected $table = 'users';
 
+    // relations
+    /**
+     * Get the lawns for the user.
+     */
+    public function lawns(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Lawn::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

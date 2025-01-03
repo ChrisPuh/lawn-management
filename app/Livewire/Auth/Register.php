@@ -11,6 +11,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 /**
@@ -76,6 +77,7 @@ final class Register extends Component implements HasForms
         return $this->redirect(route('dashboard'));
     }
 
+    #[Layout('components.layouts.landing')]
     public function render(): View
     {
         return view('livewire.auth.register');

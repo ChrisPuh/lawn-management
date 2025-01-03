@@ -10,6 +10,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 final class Verification extends Component implements HasForms
@@ -44,6 +45,7 @@ final class Verification extends Component implements HasForms
         $this->redirect(route('login'), navigate: true);
     }
 
+    #[Layout('components.layouts.landing')]
     public function render()
     {
         return view('livewire.auth.verification');

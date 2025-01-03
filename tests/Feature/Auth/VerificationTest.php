@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Livewire\Auth\Verification;
 use App\Models\User;
-use function Pest\Livewire\livewire;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
-use Livewire\Attributes\Form;
-use Livewire\Component;
+
+use function Pest\Livewire\livewire;
 
 beforeEach(function () {
     $this->user = User::factory()->create([
-        'email_verified_at' => null
+        'email_verified_at' => null,
     ]);
 });
 
@@ -32,7 +33,7 @@ test('sends verification link', function () {
 
 test('verified users are redirected from verification page', function () {
     $verifiedUser = User::factory()->create([
-        'email_verified_at' => now()
+        'email_verified_at' => now(),
     ]);
 
     $this->actingAs($verifiedUser)
@@ -54,7 +55,7 @@ test('verification link works', function () {
         now()->addMinutes(60),
         [
             'id' => $this->user->id,
-            'hash' => sha1($this->user->email)
+            'hash' => sha1($this->user->email),
         ]
     );
 

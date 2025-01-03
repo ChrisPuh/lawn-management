@@ -11,6 +11,10 @@
                         <a href="{{ route('dashboard') }}" class="hover:text-primary-200">Dashboard</a>
 
                     </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ route('lawn.index') }}" class="hover:text-primary-200">Lawns</a>
+
+                    </div>
                 @endauth
             </div>
 
