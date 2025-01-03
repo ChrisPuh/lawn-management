@@ -4,6 +4,9 @@
 <!-- resources/views/livewire/lawn/lawn-index.blade.php -->
 <div class="space-y-8">
     <!-- Overview Stats Card -->
+    @php
+        $lastMowedDate = $lawns->map(fn($lawn) => $lawn->getLastMowingDate('Y-m-d'))->filter()->sort()->last();
+    @endphp
     <livewire:lawn.overview-stats-card :total-lawns="$lawns->count()" :last-mowed-date="$lastMowedDate" />
 
     <!-- Lawn List -->
@@ -21,8 +24,7 @@
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @forelse($lawns as $lawn)
-                <livewire:lawn.index-card :lawn="$lawn" />
-
+                <livewire:lawn.index-card :lawn="$lawn" :care-date="$careDates[$lawn->id]" :wire:key="$lawn->id" />
             @empty
                 <livewire:lawn.empty-state />
             @endforelse

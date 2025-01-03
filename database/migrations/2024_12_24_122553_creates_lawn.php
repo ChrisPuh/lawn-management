@@ -47,8 +47,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();
             $table->date('fertilized_on');
-            $table->string('fertilizer_name');
-            $table->decimal('quantity', 8, 2);
+            $table->string('fertilizer_name')->nullable();
+            $table->decimal('quantity', 8, 2)->nullable();
             $table->string('quantity_unit')->default('kg');
             $table->text('notes')->nullable();
             $table->timestamps();

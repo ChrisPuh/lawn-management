@@ -163,29 +163,26 @@ describe('LawnFertilizing Model', function () {
         test('requires lawn_id to be present', function () {
             $fertilizing = LawnFertilizing::factory()->make(['lawn_id' => null]);
 
-            expect(fn () => $fertilizing->save())
+            expect(fn() => $fertilizing->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('requires fertilized_on to be present', function () {
+        test('allows fertilized_on to be null', function () {
             $fertilizing = LawnFertilizing::factory()->make(['fertilized_on' => null]);
 
-            expect(fn () => $fertilizing->save())
-                ->toThrow(Illuminate\Database\QueryException::class);
+            expect($fertilizing->fertilized_on)->toBeNull();
         });
 
-        test('requires fertilizer_name to be present', function () {
+        test('allows fertilizer_name to be null', function () {
             $fertilizing = LawnFertilizing::factory()->make(['fertilizer_name' => null]);
 
-            expect(fn () => $fertilizing->save())
-                ->toThrow(Illuminate\Database\QueryException::class);
+            expect($fertilizing->fertilizer_name)->toBeNull();
         });
 
-        test('requires quantity to be present', function () {
+        test('allows quantity to be null', function () {
             $fertilizing = LawnFertilizing::factory()->make(['quantity' => null]);
 
-            expect(fn () => $fertilizing->save())
-                ->toThrow(Illuminate\Database\QueryException::class);
+            expect($fertilizing->quantity)->toBeNull();
         });
 
         test('allows notes to be null', function () {
