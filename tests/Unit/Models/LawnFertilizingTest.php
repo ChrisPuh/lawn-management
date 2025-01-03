@@ -163,7 +163,7 @@ describe('LawnFertilizing Model', function () {
         test('requires lawn_id to be present', function () {
             $fertilizing = LawnFertilizing::factory()->make(['lawn_id' => null]);
 
-            expect(fn() => $fertilizing->save())
+            expect(fn () => $fertilizing->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
