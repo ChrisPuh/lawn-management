@@ -19,6 +19,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Lawn $lawn
  *
  * @method static \Illuminate\Database\Eloquent\Builder|static query()
+ * @method static \Database\Factories\LawnMowingFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereCuttingHeight($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereLawnId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereMowedOn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereUpdatedAt($value)
+ *
+ * @property string|null $notes
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereNotes($value)
+ *
+ * @mixin \Eloquent
  */
 final class LawnMowing extends Model
 {

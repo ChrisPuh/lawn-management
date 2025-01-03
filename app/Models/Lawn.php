@@ -8,7 +8,7 @@ use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Traits\CanGetTableNameStatically;
 use Auth;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +30,35 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static static create(array $attributes = [])
  * @method static static forceCreate(array $attributes)
  * @method HasMany hasMany(string $related, string|null $foreignKey = null, string|null $localKey = null)
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnMowing> $mowingRecords
+ * @property-read int|null $mowing_records_count
+ * @property-read User $user
+ *
+ * @method static \Database\Factories\LawnFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn forUser()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereGrassSeed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereUserId($value)
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnAerating> $aeratingRecords
+ * @property-read int|null $aerating_records_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnFertilizing> $fertilizingRecords
+ * @property-read int|null $fertilizing_records_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnImage> $images
+ * @property-read int|null $images_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnScarifying> $scarifyingRecords
+ * @property-read int|null $scarifying_records_count
+ *
+ * @mixin \Eloquent
  */
 final class Lawn extends Model
 {
@@ -72,23 +101,91 @@ final class Lawn extends Model
     }
 
     /**
-     * Gibt das letzte Mähdatum zurück, formatiert als String
+     * @return HasMany<LawnFertilizing, Lawn>
+     */
+    public function fertilizingRecords(): HasMany
+    {
+        return $this->hasMany(LawnFertilizing::class);
+    }
+
+    /**
+     * @return HasMany<LawnScarifying, Lawn>
+     */
+    public function scarifyingRecords(): HasMany
+    {
+        return $this->hasMany(LawnScarifying::class);
+    }
+
+    /**
+     * @return HasMany<LawnAerating, Lawn>
+     */
+    public function aeratingRecords(): HasMany
+    {
+        return $this->hasMany(LawnAerating::class);
+    }
+
+    /**
+     * @return HasMany<LawnImage, Lawn>
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(LawnImage::class);
+    }
+
+    /**
+     * Gets the last mowing date formatted as a string
      *
-     * @param  string  $format  (optional) Format für das Datum, Standard ist 'd.m.Y'
+     * @param  string  $format  (optional) Format for the date, default is 'd.m.Y'
      */
     public function getLastMowingDate(string $format = 'd.m.Y'): ?string
     {
+        /** @var LawnMowing|null $lastMowing */
         $lastMowing = $this->mowingRecords()->latest('mowed_on')->first();
 
         return $lastMowing?->mowed_on?->format($format);
     }
 
-    // scopes
+    /**
+     * Gets the last fertilizing date formatted as a string
+     *
+     * @param  string  $format  (optional) Format for the date, default is 'd.m.Y'
+     */
+    public function getLastFertilizingDate(string $format = 'd.m.Y'): ?string
+    {
+        /** @var LawnFertilizing|null $lastFertilizing */
+        $lastFertilizing = $this->fertilizingRecords()->latest('fertilized_on')->first();
+
+        return $lastFertilizing?->fertilized_on?->format($format);
+    }
+
+    /**
+     * Gets the last scarifying date formatted as a string
+     *
+     * @param  string  $format  (optional) Format for the date, default is 'd.m.Y'
+     */
+    public function getLastScarifyingDate(string $format = 'd.m.Y'): ?string
+    {
+        /** @var LawnScarifying|null $lastScarifying */
+        $lastScarifying = $this->scarifyingRecords()->latest('scarified_on')->first();
+
+        return $lastScarifying?->scarified_on?->format($format);
+    }
+
+    /**
+     * Gets the last aerating date formatted as a string
+     *
+     * @param  string  $format  (optional) Format for the date, default is 'd.m.Y'
+     */
+    public function getLastAeratingDate(string $format = 'd.m.Y'): ?string
+    {
+        /** @var LawnAerating|null $lastAerating */
+        $lastAerating = $this->aeratingRecords()->latest('aerated_on')->first();
+
+        return $lastAerating?->aerated_on?->format($format);
+    }
+
     /**
      * Scope a query to only include lawns of the currently authenticated user.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForUser(Builder $query): Builder
     {

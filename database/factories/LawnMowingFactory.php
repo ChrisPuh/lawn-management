@@ -21,7 +21,7 @@ final class LawnMowingFactory extends Factory
         return [
             'lawn_id' => \App\Models\Lawn::factory(),
             'mowed_on' => $this->faker->date(),
-            'cutting_height' => $this->faker->randomElement(['3 cm', '4 cm', '5 cm']),
+            'cutting_height' => fake()->randomElement(['2.5', '3.0', '3.5', '4.0', '4.5', '5.0']).' cm',
         ];
     }
 }
