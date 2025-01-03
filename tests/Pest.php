@@ -29,7 +29,8 @@ pest()->extend(Tests\TestCase::class)
 */
 
 expect()->extend('toBeOne', function () {
-    return expect($this->value)->toBe(1);
+    /** @phpstan-ignore variable.undefined */
+    return $this->toBe(1);
 });
 
 /*
