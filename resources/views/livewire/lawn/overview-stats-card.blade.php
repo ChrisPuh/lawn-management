@@ -9,7 +9,13 @@
         </div>
         <div>
             <dt class="text-sm font-medium text-gray-500">Letzte Pflege</dt>
-            <dd class="text-sm text-gray-900">{{ $lastMowedDate ?? 'Keine Pflege eingetragen' }}</dd>
+            <dd class="text-sm text-gray-900">
+                @if ($lastCareInfo)
+                    {{ $lastCareInfo['lawn'] }} ({{ $lastCareInfo['type'] }} am {{ $lastCareInfo['date'] }})
+                @else
+                    Keine Pflege eingetragen
+                @endif
+            </dd>
         </div>
         <div>
             <dt class="text-sm font-medium text-gray-500">Nächste geplante Pflege</dt>

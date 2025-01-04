@@ -7,10 +7,10 @@ use App\Livewire\Lawn\LawnIndex;
 use App\Models\Lawn;
 use App\Models\User;
 use Carbon\Carbon;
-use function Pest\Laravel\get;
-
-use function Pest\Livewire\livewire;
 use Illuminate\Support\Facades\Auth;
+
+use function Pest\Laravel\get;
+use function Pest\Livewire\livewire;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -37,7 +37,7 @@ describe('lawn index component', function () {
         test('shows only user specific lawns', function () {
             $userLawns = Lawn::factory()->count(2)->create([
                 'user_id' => $this->user->id,
-            ]); 
+            ]);
 
             Lawn::factory()->count(3)->create([
                 'user_id' => User::factory()->create()->id,
@@ -51,6 +51,122 @@ describe('lawn index component', function () {
                 )
                 ->assertSee('Gesamtanzahl Rasenflächen')
                 ->assertSee('2');
+        });
+    });
+
+    describe('overview stats card', function () {
+        test('shows correct total number of lawns', function () {
+            Lawn::factory()->count(3)->create([
+                'user_id' => $this->user->id,
+            ]);
+
+            livewire(LawnIndex::class)
+                ->assertViewHas('lastCareInfo', null)
+                ->assertSee('Gesamtanzahl Rasenflächen')
+                ->assertSee('3');
+        });
+
+        test('shows no care information when no activities exist', function () {
+            Lawn::factory()->create([
+                'user_id' => $this->user->id,
+                'name' => 'Vorgarten',
+            ]);
+
+            livewire(LawnIndex::class)
+                ->assertViewHas('lastCareInfo', null)
+                ->assertSee('Keine Pflege eingetragen');
+        });
+
+        test('shows latest care across all lawns', function () {
+            $lawn1 = Lawn::factory()->create([
+                'user_id' => $this->user->id,
+                'name' => 'Vorgarten',
+            ]);
+
+            $lawn2 = Lawn::factory()->create([
+                'user_id' => $this->user->id,
+                'name' => 'Hintergarten',
+            ]);
+
+            // Create older care record
+            $lawn1->mowingRecords()->create([
+                'mowed_on' => '2024-12-25',
+                'cutting_height' => '5cm',
+            ]);
+
+            // Create newer care record
+            $lawn2->fertilizingRecords()->create([
+                'fertilized_on' => '2024-12-29',
+                'fertilizer_name' => 'NPK Dünger',
+            ]);
+
+            livewire(LawnIndex::class)
+                ->assertViewHas('lastCareInfo', [
+                    'lawn' => 'Hintergarten',
+                    'type' => 'gedüngt',
+                    'date' => '29.12.2024',
+                ])
+                ->assertSee('Hintergarten (gedüngt am 29.12.2024)');
+        });
+
+        test('shows latest care when multiple activities exist for same lawn', function () {
+            $lawn = Lawn::factory()->create([
+                'user_id' => $this->user->id,
+                'name' => 'Vorgarten',
+            ]);
+
+            // Create older records
+            $lawn->mowingRecords()->create([
+                'mowed_on' => '2024-12-25',
+            ]);
+
+            $lawn->fertilizingRecords()->create([
+                'fertilized_on' => '2024-12-26',
+            ]);
+
+            // Create newest record
+            $lawn->scarifyingRecords()->create([
+                'scarified_on' => '2024-12-29',
+            ]);
+
+            livewire(LawnIndex::class)
+                ->assertViewHas('lastCareInfo', [
+                    'lawn' => 'Vorgarten',
+                    'type' => 'vertikutiert',
+                    'date' => '29.12.2024',
+                ])
+                ->assertSee('Vorgarten (vertikutiert am 29.12.2024)');
+        });
+
+        test('only shows care information for authenticated user', function () {
+            // Create lawn and care for current user
+            $userLawn = Lawn::factory()->create([
+                'user_id' => $this->user->id,
+                'name' => 'Mein Rasen',
+            ]);
+
+            $userLawn->mowingRecords()->create([
+                'mowed_on' => '2024-12-25',
+            ]);
+
+            // Create lawn and more recent care for different user
+            $otherLawn = Lawn::factory()->create([
+                'user_id' => User::factory()->create()->id,
+                'name' => 'Fremder Rasen',
+            ]);
+
+            $otherLawn->mowingRecords()->create([
+                'mowed_on' => '2024-12-29',
+            ]);
+
+            livewire(LawnIndex::class)
+                ->assertViewHas('lastCareInfo', [
+                    'lawn' => 'Mein Rasen',
+                    'type' => 'gemäht',
+                    'date' => '25.12.2024',
+                ])
+                ->assertSee('Mein Rasen (gemäht am 25.12.2024)')
+                ->assertDontSee('Fremder Rasen');
         });
     });
 
@@ -184,6 +300,7 @@ describe('lawn index component', function () {
         test('displays last mowed date correctly', function () {
             $lawn = Lawn::factory()->create([
                 'user_id' => $this->user->id,
+                'name' => 'Test Rasen',
             ]);
 
             $mowingDate = Carbon::create(2024, 12, 29);
@@ -192,24 +309,29 @@ describe('lawn index component', function () {
                 'cutting_height' => '5cm',
             ]);
 
-            $expectedCareDate = [
-                'type' => 'Mähen',
-                'date' => '29.12.2024',
-            ];
-
             livewire(LawnIndex::class)
                 ->assertViewHas(
                     'careDates',
-                    fn ($careDates) => $careDates[$lawn->id] === $expectedCareDate
+                    fn ($careDates) => $careDates[$lawn->id] === [
+                        'type' => 'gemäht',
+                        'date' => '29.12.2024',
+                    ]
                 )
-                ->assertSee('29.12.2024')
-                ->assertSee('Mähen');
+                ->assertViewHas(
+                    'lastCareInfo',
+                    [
+                        'lawn' => 'Test Rasen',
+                        'type' => 'gemäht',
+                        'date' => '29.12.2024',
+                    ]
+                );
         });
 
         test('shows latest care date from different activities', function () {
             $lawn = Lawn::factory()
                 ->create([
                     'user_id' => $this->user->id,
+                    'name' => 'Test Rasen',
                 ]);
 
             $lawn->mowingRecords()->create([
@@ -223,15 +345,21 @@ describe('lawn index component', function () {
                 'fertilizer_type' => 'NPK',
             ]);
 
-            $expectedCareDate = [
-                'type' => 'Düngen',
-                'date' => '29.12.2024',
-            ];
-
             livewire(LawnIndex::class)
                 ->assertViewHas(
                     'careDates',
-                    fn ($careDates) => $careDates[$lawn->id] === $expectedCareDate
+                    fn ($careDates) => $careDates[$lawn->id] === [
+                        'type' => 'gedüngt',
+                        'date' => '29.12.2024',
+                    ]
+                )
+                ->assertViewHas(
+                    'lastCareInfo',
+                    [
+                        'lawn' => 'Test Rasen',
+                        'type' => 'gedüngt',
+                        'date' => '29.12.2024',
+                    ]
                 );
         });
 
@@ -245,6 +373,7 @@ describe('lawn index component', function () {
                     'careDates',
                     fn ($careDates) => $careDates[$lawn->id] === null
                 )
+                ->assertViewHas('lastCareInfo', null)
                 ->assertSee('Keine Pflege');
         });
     });

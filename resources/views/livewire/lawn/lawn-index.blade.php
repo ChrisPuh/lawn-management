@@ -3,11 +3,7 @@
 </x-slot>
 <!-- resources/views/livewire/lawn/lawn-index.blade.php -->
 <div class="space-y-8">
-    <!-- Overview Stats Card -->
-    @php
-        $lastMowedDate = $lawns->map(fn($lawn) => $lawn->getLastMowingDate('Y-m-d'))->filter()->sort()->last();
-    @endphp
-    <livewire:lawn.overview-stats-card :total-lawns="$lawns->count()" :last-mowed-date="$lastMowedDate" />
+    <livewire:lawn.overview-stats-card :total-lawns="$lawns->count()" :last-care-info="$lastCareInfo" />
 
     <!-- Lawn List -->
     <div>

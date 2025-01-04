@@ -26,37 +26,67 @@ final class LawnIndex extends Component
             $lawn->id => $this->getLatestCare($lawn),
         ]);
 
+        $lastCareInfo = $this->getLastCareAcrossAllLawns($lawns);
+
         return view('livewire.lawn.lawn-index', [
             'lawns' => $lawns,
             'careDates' => $careDates,
+            'lastCareInfo' => $lastCareInfo,
         ]);
     }
 
-    /**
-     * Redirect to the create lawn page
-     */
     #[On('createLawn')]
     public function createLawn(): void
     {
         $this->redirect(route('lawn.create'), navigate: true);
     }
 
-    /**
-     * Redirect to the show lawn page
-     */
     #[On('showLawn')]
     public function showLawn(int $id): void
     {
         $this->redirect(route('lawn.show', $id), navigate: true);
     }
 
-    /**
-     * Redirect to the edit lawn page
-     */
     #[On('editLawn')]
     public function editLawn(int $id): void
     {
         $this->redirect(route('lawn.edit', $id), navigate: true);
+    }
+
+    /**
+     * Get the latest care information across all lawns
+     *
+     * @param  Collection<int, Lawn>  $lawns
+     * @return array{lawn: string, type: string, date: string}|null
+     */
+    private function getLastCareAcrossAllLawns(Collection $lawns): ?array
+    {
+        $allCares = $lawns->map(function (Lawn $lawn) {
+            $latestCare = $this->getLatestCare($lawn);
+            if (! $latestCare) {
+                return null;
+            }
+
+            return [
+                'lawn' => $lawn->name,
+                'type' => $latestCare['type'],
+                'date' => $latestCare['date'],
+                'timestamp' => strtotime($latestCare['date']),
+            ];
+        })
+            ->filter();
+
+        if ($allCares->isEmpty()) {
+            return null;
+        }
+
+        $latest = $allCares->sortByDesc('timestamp')->first();
+
+        return [
+            'lawn' => $latest['lawn'],
+            'type' => $latest['type'],
+            'date' => $latest['date'],
+        ];
     }
 
     /**
@@ -68,10 +98,10 @@ final class LawnIndex extends Component
     private function getLatestCare(Lawn $lawn): ?array
     {
         $careDates = [
-            'Mähen' => $lawn->getLastMowingDate('Y-m-d'),
-            'Düngen' => $lawn->getLastFertilizingDate('Y-m-d'),
-            'Vertikutieren' => $lawn->getLastScarifyingDate('Y-m-d'),
-            'Aerifizieren' => $lawn->getLastAeratingDate('Y-m-d'),
+            'gemäht' => $lawn->getLastMowingDate('Y-m-d'),
+            'gedüngt' => $lawn->getLastFertilizingDate('Y-m-d'),
+            'vertikutiert' => $lawn->getLastScarifyingDate('Y-m-d'),
+            'aerifiziert' => $lawn->getLastAeratingDate('Y-m-d'),
         ];
 
         $latestCare = collect($careDates)
