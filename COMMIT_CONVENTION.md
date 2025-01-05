@@ -33,18 +33,6 @@ Must be one of:
 -   `ci`: Changes to CI configuration files and scripts
 -   `revert`: Reverts a previous commit
 
-### Scope (mandatory)
-
-Must be one of:
-
--   `auth`: Authentication related
--   `tasks`: Task management
--   `lawn`: Lawn features
--   `garden`: Garden features
--   `ui`: User interface
--   `db`: Database
--   `config`: Configuration
-
 ### Subject (mandatory)
 
 -   Use the imperative, present tense: "change" not "changed" nor "changes"
