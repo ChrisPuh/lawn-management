@@ -13,6 +13,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 /** @property ComponentContainer $form */
@@ -23,8 +24,6 @@ final class LawnShow extends Component implements HasForms
     public Lawn $lawn;
 
     public bool $isModalOpen = false;
-
-    public bool $showDeleteModal = false;
 
     public ?array $data = [];
 
@@ -95,12 +94,10 @@ final class LawnShow extends Component implements HasForms
     }
 
     /**
-     * confirms the deletion of the lawn
-     * deletes the lawn and redirects to the lawn index
-     *
-     * @todo extract to action
+     * Deletes the lawn and redirects to the lawn index
      */
-    public function confirmDelete(): void
+    #[On('deleteConfirmed')]
+    public function deleteLawn(): void
     {
         $this->authorize('delete', $this->lawn);
 
@@ -116,8 +113,6 @@ final class LawnShow extends Component implements HasForms
             'mowingRecords' => $this->lawn->mowingRecords()
                 ->latest('mowed_on')
                 ->get(),
-            'deleteModalTitle' => 'Rasenfläche löschen',
-            'deleteModalMessage' => "Möchten Sie die Rasenfläche \"{$this->lawn->name}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
         ]);
     }
 }

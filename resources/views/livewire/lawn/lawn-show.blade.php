@@ -163,10 +163,13 @@
 
             <div class="border-t border-primary-200 px-6 py-4">
                 <div class="flex justify-between">
-                    <button wire:click="$toggle('showDeleteModal')"
-                        class="rounded-lg px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
-                        Rasenfläche löschen
-                    </button>
+                    <div>
+                        <livewire:components.delete-modal :title="'Rasenfläche löschen'" :message="'Möchten Sie die Rasenfläche \'' .
+                            $lawn->name .
+                            '\' wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.'" :on-confirm="'delete-confirmed'">
+
+                        </livewire:components.delete-modal>
+                    </div>
                     <div class="flex gap-x-3">
                         <a href="{{ route('lawn.index') }}" wire:navigate
                             class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
@@ -175,55 +178,10 @@
                         <a href="{{ route('lawn.edit', $lawn) }}" wire:navigate
                             class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600">
                             Bearbeiten
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Delete Modal -->
-        <div x-show="$wire.showDeleteModal" x-cloak class="fixed inset-0 z-10 overflow-y-auto"
-            aria-labelledby="modal-title">
-            <div class="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
-                <!-- Background overlay -->
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-
-                <!-- Modal panel -->
-                <div
-                    class="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-                    <div class="sm:flex sm:items-start">
-                        <div
-                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                            </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                            <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">
-                                Rasenfläche löschen
-                            </h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500">
-                                    Möchten Sie die Rasenfläche "{{ $lawn->name }}" wirklich löschen? Diese Aktion
-                                    kann nicht rückgängig gemacht werden.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                        <button type="button" wire:click="confirmDelete"
-                            class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
-                            Löschen
-                        </button>
-                        <button type="button" wire:click="$toggle('showDeleteModal')"
-                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
-                            Abbrechen
-                        </button>
+                        </a>qpß0
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-

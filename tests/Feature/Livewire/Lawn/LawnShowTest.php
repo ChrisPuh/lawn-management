@@ -36,7 +36,6 @@ describe('Component Display', function () {
     test('mounts with correct initial state', function () {
         Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
             ->assertSet('isModalOpen', false)
-            ->assertSet('showDeleteModal', false)
             ->assertSet('data', [
                 'mowed_on' => now()->format('Y-m-d'),
                 'cutting_height' => null,
@@ -137,24 +136,25 @@ describe('Form Validation & Modal', function () {
 });
 
 describe('Lawn Deletion', function () {
-    test('deletes lawn and associated records', function () {
+    test('deletes lawn after confirmation', function () {
         $mowing = LawnMowing::factory()->create([
             'lawn_id' => $this->lawn->id,
         ]);
 
-        Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
-            ->call('confirmDelete');
+        $component = Livewire::test(LawnShow::class, ['lawn' => $this->lawn]);
 
-        assertDatabaseMissing('lawns', ['id' => $this->lawn->id])
-            ->assertDatabaseMissing('lawn_mowings', ['id' => $mowing->id]);
+        // Simuliere DeleteModal Event
+        $component->dispatch('deleteConfirmed');
+
+        assertDatabaseMissing('lawns', ['id' => $this->lawn->id]);
+        assertDatabaseMissing('lawn_mowings', ['id' => $mowing->id]);
     });
 
-    test('shows delete confirmation with lawn name', function () {
-        Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
-            ->assertViewHas(
-                'deleteModalMessage',
-                fn ($message) => str_contains($message, $this->lawn->name)
-            );
+    describe('DeleteModal Integration', function () {
+        test('renders delete trigger button', function () {
+            Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
+                ->assertSeeHtml('Rasenfläche löschen');
+        });
     });
 });
 
