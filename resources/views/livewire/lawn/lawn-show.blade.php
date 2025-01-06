@@ -16,6 +16,7 @@
     <div class="space-y-8">
         <!-- Rasenfläche Info Card -->
         <div class="overflow-hidden rounded-lg border border-primary-200 bg-white shadow-sm">
+            <!-- Header -->
             <div class="flex items-center justify-between border-b border-primary-200 px-6 py-4">
                 <div>
                     <h2 class="text-xl font-semibold text-gray-900">{{ $lawn->name }}</h2>
@@ -29,7 +30,9 @@
                 </div>
             </div>
 
+            <!-- Body -->
             <div class="grid gap-6 p-6 sm:grid-cols-2">
+                <!-- left -->
                 <div>
                     <h3 class="font-medium text-gray-900">Details</h3>
                     <dl class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -52,115 +55,21 @@
                         </div>
                     </dl>
                 </div>
-
+                <!-- right -->
                 <div>
                     <div class="flex items-center justify-between">
-                        <h3 class="font-medium text-gray-900">Mähverlauf</h3>
-                        <button wire:click="openModal"
-                            class="text-sm font-medium text-primary-600 hover:text-primary-500">
-                            Neuen Eintrag erstellen
-                        </button>
 
-                        <!-- Modal -->
-                        <div x-show="$wire.isModalOpen" x-cloak class="fixed inset-0 z-10 overflow-y-auto"
-                            aria-labelledby="modal-title" x-transition:enter="ease-out duration-300"
-                            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                            x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
-                            x-transition:leave-end="opacity-0">
-                            <div
-                                class="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
-                                <!-- Background overlay -->
-                                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-                                    aria-hidden="true">
-                                </div>
 
-                                <!-- Modal panel -->
-                                <div
-                                    class="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-                                    <div class="absolute right-0 top-0 pr-4 pt-4">
-                                        <button wire:click="closeModal" type="button"
-                                            class="rounded-md bg-white text-gray-400 hover:text-gray-500">
-                                            <span class="sr-only">Schließen</span>
-                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
 
-                                    <div class="sm:flex sm:items-start">
-                                        <div class="mt-3 w-full text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                            <h3 class="text-base font-semibold leading-6 text-gray-900"
-                                                id="modal-title">
-                                                Neuer Mäheintrag
-                                            </h3>
-                                            <div class="mt-4">
-                                                <form wire:submit="create">
-                                                    {{ $this->form }}
-
-                                                    <div class="mt-6 flex justify-end gap-x-3">
-                                                        <button type="button" wire:click="closeModal"
-                                                            class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                                                            Abbrechen
-                                                        </button>
-                                                        <button type="submit"
-                                                            class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600">
-                                                            Eintrag erstellen
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="mt-2 flow-root">
-                        <div class="-my-2 overflow-x-auto">
-                            <div class="inline-block min-w-full align-middle">
-                                <div class="overflow-hidden rounded-lg border border-gray-200">
-                                    <table class="min-w-full divide-y divide-gray-200">
-                                        <thead class="bg-gray-50">
-                                            <tr>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Datum
-                                                </th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Schnitthöhe
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-200 bg-white">
-                                            @forelse($mowingRecords as $record)
-                                                <tr>
-                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                                                        {{ $record->mowed_on->format('d.m.Y') }}
-                                                    </td>
-                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                                        {{ $record->cutting_height ?? 'Nicht angegeben' }}
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="2"
-                                                        class="px-6 py-4 text-center text-sm text-gray-500">
-                                                        Noch keine Mäheinträge vorhanden
-                                                    </td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+
+                        
                     </div>
                 </div>
             </div>
 
+            <!-- Footer -->
             <div class="border-t border-primary-200 px-6 py-4">
                 <div class="flex justify-between">
                     <div>
@@ -178,7 +87,7 @@
                         <a href="{{ route('lawn.edit', $lawn) }}" wire:navigate
                             class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600">
                             Bearbeiten
-                        </a>qpß0
+                        </a>
                     </div>
                 </div>
             </div>
