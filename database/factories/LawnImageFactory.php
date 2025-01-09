@@ -11,15 +11,12 @@ use App\Models\LawnFertilizing;
 use App\Models\LawnMowing;
 use App\Models\LawnScarifying;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\UploadedFile;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\LawnImage>
- */
 final class LawnImageFactory extends Factory
 {
     public function definition(): array
     {
-        // Randomly select one of the possible imageable types
         $imageableTypes = [
             LawnMowing::class,
             LawnFertilizing::class,
@@ -28,9 +25,13 @@ final class LawnImageFactory extends Factory
         ];
         $imageableType = fake()->randomElement($imageableTypes);
 
+        // Erstelle ein echtes Testbild und speichere es
+        $file = UploadedFile::fake()->image('test.jpg');
+        $path = $file->store('lawn-images', 'public');
+
         return [
             'lawn_id' => Lawn::factory(),
-            'image_path' => fake()->filePath(),
+            'image_path' => $path,
             'imageable_type' => $imageableType,
             'imageable_id' => $imageableType::factory(),
             'type' => fake()->randomElement(LawnImageType::cases()),
@@ -38,22 +39,16 @@ final class LawnImageFactory extends Factory
         ];
     }
 
-    /**
-     * Configure the model factory to create a "before" image.
-     */
-    public function before(): Factory
+    public function before(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'type' => LawnImageType::BEFORE,
         ]);
     }
 
-    /**
-     * Configure the model factory to create an "after" image.
-     */
-    public function after(): Factory
+    public function after(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'type' => LawnImageType::AFTER,
         ]);
     }

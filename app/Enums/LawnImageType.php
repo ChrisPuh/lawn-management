@@ -12,8 +12,8 @@ enum LawnImageType: string
     public function label(): string
     {
         return match ($this) {
-            self::BEFORE => 'Before',
-            self::AFTER => 'After',
+            self::BEFORE => 'Vorher',
+            self::AFTER => 'Nachher',
         };
     }
 }

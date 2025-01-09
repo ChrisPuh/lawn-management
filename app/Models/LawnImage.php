@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\LawnImageType;
 use App\Traits\CanGetTableNameStatically;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -59,6 +60,11 @@ final class LawnImage extends Model
         'type',
         'description',
     ];
+
+    protected $casts = [
+        'type' => LawnImageType::class,
+    ];
+
 
     public function lawn(): BelongsTo
     {
