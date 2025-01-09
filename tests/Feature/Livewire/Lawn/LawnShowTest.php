@@ -6,12 +6,14 @@ use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Livewire\Lawn\LawnShow;
 use App\Models\Lawn;
+use App\Models\LawnFertilizing;
+use App\Models\LawnMowing;
 use App\Models\User;
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\assertDatabaseMissing;
-
 use Illuminate\Contracts\Auth\Authenticatable;
 use Livewire\Livewire;
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseMissing;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -45,13 +47,47 @@ describe('Lawn show Component', function () {
             Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
                 ->assertSeeHtml($this->lawn->created_at->format('d.m.Y'));
         });
+
+        test('displays image upload placeholder message', function () {
+            Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
+                ->assertSeeHtml('Bildupload in Kürze verfügbar')
+                ->assertSeeHtml('disabled');
+        });
+
+        test('displays maintenance history with no records', function () {
+            Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
+                ->assertSeeHtml('Noch nie') // Sollte mehrmals vorkommen für verschiedene Pflegearten
+                ->assertSeeHtml('Letzte Mahd')
+                ->assertSeeHtml('Letzte Düngung')
+                ->assertSeeHtml('Letztes Vertikutieren')
+                ->assertSeeHtml('Letzte Aerifizierung');
+        });
+
+        test('displays maintenance history with records', function () {
+            $mowingDate = now()->subDays(2);
+            $fertilizingDate = now()->subDays(5);
+
+            LawnMowing::factory()->create([
+                'lawn_id' => $this->lawn->id,
+                'mowed_on' => $mowingDate,
+            ]);
+
+            LawnFertilizing::factory()->create([
+                'lawn_id' => $this->lawn->id,
+                'fertilized_on' => $fertilizingDate,
+            ]);
+
+            Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
+                ->assertSeeHtml($mowingDate->format('d.m.Y'))
+                ->assertSeeHtml($fertilizingDate->format('d.m.Y'));
+        });
     });
 
     describe('deletion', function () {
         test('deletes lawn after confirmation', function () {
             $component = Livewire::test(LawnShow::class, ['lawn' => $this->lawn]);
 
-            $component->dispatch('deleteConfirmed');
+            $component->dispatch('delete-confirmed'); // Geändert von deleteConfirmed zu delete-confirmed
 
             assertDatabaseMissing('lawns', ['id' => $this->lawn->id]);
         });
@@ -75,7 +111,7 @@ describe('Lawn show Component', function () {
         test('redirects to index after deletion', function () {
             $component = Livewire::test(LawnShow::class, ['lawn' => $this->lawn]);
 
-            $component->dispatch('deleteConfirmed')
+            $component->dispatch('delete-confirmed') // Geändert von deleteConfirmed zu delete-confirmed
                 ->assertRedirect(route('lawn.index'));
         });
     });
