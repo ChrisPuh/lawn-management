@@ -15,6 +15,7 @@ describe('LawnMowing Model', function () {
                 'lawn_id',
                 'mowed_on',
                 'cutting_height',
+                'notes',
             ]);
         });
 

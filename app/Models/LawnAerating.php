@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 /**
  * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnImage> $images
  * @property-read int|null $images_count
- * @property-read Lawn|null $lawn
+ * @property-read Lawn $lawn
  *
  * @method static \Database\Factories\LawnAeratingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating newModelQuery()
@@ -33,8 +33,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereLawnId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereUpdatedAt($value)
- *
- * @mixin \Eloquent
  */
 final class LawnAerating extends Model
 {
@@ -53,13 +51,25 @@ final class LawnAerating extends Model
         'aerated_on' => 'date',
     ];
 
+    /**
+     * Get the lawn that owns the aerating record.
+     *
+     * @return BelongsTo<Lawn, LawnAerating>
+     */
     public function lawn(): BelongsTo
     {
+        /** @var BelongsTo<Lawn, LawnAerating> */
         return $this->belongsTo(Lawn::class);
     }
 
+    /**
+     * Get the images for this aerating record.
+     *
+     * @return MorphMany<LawnImage, LawnAerating>
+     */
     public function images(): MorphMany
     {
+        /** @var MorphMany<LawnImage, LawnAerating> */
         return $this->morphMany(LawnImage::class, 'imageable');
     }
 }

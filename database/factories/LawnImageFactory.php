@@ -41,14 +41,14 @@ final class LawnImageFactory extends Factory
 
     public function before(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => LawnImageType::BEFORE,
         ]);
     }
 
     public function after(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => LawnImageType::AFTER,
         ]);
     }

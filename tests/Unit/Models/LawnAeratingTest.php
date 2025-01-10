@@ -82,11 +82,14 @@ describe('LawnAerating Model', function () {
                 ]);
 
                 expect($aerating->images->count())->toBe(3);
-                expect($aerating->images->first())->toBeInstanceOf(LawnImage::class);
+                /** @var LawnImage $firstImage */
+                $firstImage = $aerating->images->first();
+                expect($firstImage)->toBeInstanceOf(LawnImage::class);
             });
 
             test('can access related images through relationship', function () {
                 $aerating = LawnAerating::factory()->create();
+                /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
                     'imageable_id' => $aerating->id,
                     'imageable_type' => LawnAerating::class,
@@ -94,7 +97,10 @@ describe('LawnAerating Model', function () {
 
                 $aerating->refresh();
 
-                expect($aerating->images->first()->id)->toBe($image->id);
+                /** @var LawnImage $firstImage */
+                $firstImage = $aerating->images->first();
+                expect($firstImage)->toBeInstanceOf(LawnImage::class);
+                expect($firstImage->id)->toBe($image->id);
             });
         });
     });

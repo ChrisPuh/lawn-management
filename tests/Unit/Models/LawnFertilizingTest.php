@@ -107,11 +107,14 @@ describe('LawnFertilizing Model', function () {
                 ]);
 
                 expect($fertilizing->images->count())->toBe(3);
-                expect($fertilizing->images->first())->toBeInstanceOf(LawnImage::class);
+                /** @var LawnImage $firstImage */
+                $firstImage = $fertilizing->images->first();
+                expect($firstImage)->toBeInstanceOf(LawnImage::class);
             });
 
             test('can access related images through relationship', function () {
                 $fertilizing = LawnFertilizing::factory()->create();
+                /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
                     'imageable_id' => $fertilizing->id,
                     'imageable_type' => LawnFertilizing::class,
@@ -119,7 +122,10 @@ describe('LawnFertilizing Model', function () {
 
                 $fertilizing->refresh();
 
-                expect($fertilizing->images->first()->id)->toBe($image->id);
+                /** @var LawnImage $firstImage */
+                $firstImage = $fertilizing->images->first();
+                expect($firstImage)->toBeInstanceOf(LawnImage::class);
+                expect($firstImage->id)->toBe($image->id);
             });
         });
     });

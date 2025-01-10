@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 /**
  * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnImage> $images
  * @property-read int|null $images_count
- * @property-read Lawn|null $lawn
+ * @property-read Lawn $lawn
  *
  * @method static \Database\Factories\LawnFertilizingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing newModelQuery()
@@ -22,25 +22,13 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  *
  * @property int $id
  * @property int $lawn_id
- * @property \Illuminate\Support\Carbon $fertilized_on
- * @property string $fertilizer_name
- * @property numeric $quantity
- * @property string $quantity_unit
+ * @property \Illuminate\Support\Carbon|null $fertilized_on
+ * @property string|null $fertilizer_name
+ * @property string|null $quantity
+ * @property string|null $quantity_unit
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereFertilizedOn($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereFertilizerName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereLawnId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereQuantity($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereQuantityUnit($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnFertilizing whereUpdatedAt($value)
- *
- * @mixin \Eloquent
  */
 final class LawnFertilizing extends Model
 {
@@ -63,13 +51,25 @@ final class LawnFertilizing extends Model
         'quantity' => 'decimal:2',
     ];
 
+    /**
+     * Get the lawn that owns the fertilizing record.
+     *
+     * @return BelongsTo<Lawn, LawnFertilizing>
+     */
     public function lawn(): BelongsTo
     {
+        /** @var BelongsTo<Lawn, LawnFertilizing> */
         return $this->belongsTo(Lawn::class);
     }
 
+    /**
+     * Get the images for this fertilizing record.
+     *
+     * @return MorphMany<LawnImage, LawnFertilizing>
+     */
     public function images(): MorphMany
     {
+        /** @var MorphMany<LawnImage, LawnFertilizing> */
         return $this->morphMany(LawnImage::class, 'imageable');
     }
 }

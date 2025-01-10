@@ -33,8 +33,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereNotes($value)
  *
  * @property string|null $notes
- *
- * @mixin \Eloquent
  */
 final class LawnMowing extends Model
 {
@@ -51,29 +49,29 @@ final class LawnMowing extends Model
     protected $table = 'lawn_mowings';
 
     protected $casts = [
-        'mowed_on' => 'date',          // Datum wird in ein Carbon-Objekt umgewandelt
-        'cutting_height' => 'string',  // Sicherstellen, dass cutting_height als String behandelt wird
+        'mowed_on' => 'date',
+        'cutting_height' => 'string',
     ];
 
     /**
      * Get the lawn that owns the mowing record.
      *
-     * @return BelongsTo<Lawn, $this>
+     * @phpstan-return BelongsTo<Lawn, LawnMowing>
      */
     public function lawn(): BelongsTo
     {
-        return $this->belongsTo(
-            related: Lawn::class,
-        );
+        /** @var BelongsTo<Lawn, LawnMowing> */
+        return $this->belongsTo(Lawn::class);
     }
 
     /**
      * Get the images for this mowing record.
      *
-     * @return MorphMany<LawnImage>
+     * @return MorphMany<LawnImage, LawnMowing>
      */
     public function images(): MorphMany
     {
+        /** @var MorphMany<LawnImage, LawnMowing> */
         return $this->morphMany(LawnImage::class, 'imageable');
     }
 }
