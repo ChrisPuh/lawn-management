@@ -1,6 +1,21 @@
 <div class="flex w-full flex-col items-center justify-center space-y-4">
+    <!-- Image Container -->
     <div class="relative aspect-video w-full rounded-lg bg-gray-100">
-        @if ($latestImage)
+        @if ($showConfirmation && $image)
+            <!-- Image Preview -->
+            <img src="{{ $image->temporaryUrl() }}" alt="Bildvorschau" class="h-full w-full rounded-lg object-cover">
+            <div class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-x-3 bg-black/50 p-4">
+                <button wire:click="cancelUpload" type="button"
+                    class="inline-flex items-center gap-x-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Abbrechen
+                </button>
+                <button wire:click="save" type="button"
+                    class="inline-flex items-center gap-x-2 rounded-md bg-primary-500 px-3 py-2 text-sm font-semibold text-white hover:bg-primary-600">
+                    Speichern
+                </button>
+            </div>
+        @elseif($latestImage)
+            <!-- Current Image -->
             <img src="{{ Storage::url($latestImage->image_path) }}" alt="Aktuelles Rasenbild"
                 class="h-full w-full rounded-lg object-cover">
             <button wire:click="delete({{ $latestImage->id }})"
@@ -13,19 +28,27 @@
                 </svg>
             </button>
         @else
-            <div class="absolute inset-0 flex flex-col items-center justify-center space-y-3">
-                <div class="rounded-full bg-gray-100 p-3">
-                    <svg class="h-8 w-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <!-- Empty State Placeholder -->
+            <div
+                class="absolute inset-0 flex flex-col items-center justify-center space-y-3 bg-gradient-to-br from-primary-100 to-primary-50">
+                <div class="rounded-lg bg-white/80 p-4 shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="h-10 w-10 text-primary-500">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
                     </svg>
                 </div>
-                <span class="text-sm text-gray-500">Noch kein Bild vorhanden</span>
+                <span class="text-center">
+                    <span class="block font-medium text-gray-900">Noch kein Bild vorhanden</span>
+                    <span class="mt-1 block text-sm text-gray-500">Klicken Sie unten auf "Bild auswählen"</span>
+                </span>
             </div>
         @endif
 
-        @if ($image)
+        @if ($image && !$showConfirmation)
+            <!-- Loading State -->
             <div wire:loading.delay wire:target="image"
                 class="absolute inset-0 flex items-center justify-center rounded-lg bg-gray-900 bg-opacity-50">
                 <div class="flex items-center space-x-2 text-white">
@@ -37,13 +60,14 @@
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                         </path>
                     </svg>
-                    <span>Wird hochgeladen...</span>
+                    <span>Wird verarbeitet...</span>
                 </div>
             </div>
         @endif
     </div>
 
-    <div>
+    <!-- Upload Input & Button -->
+    <div class="flex justify-center">
         <input type="file" wire:model="image" class="hidden" id="lawn-image-upload" accept="image/*">
         <label for="lawn-image-upload"
             class="inline-flex cursor-pointer items-center gap-x-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600"
@@ -53,7 +77,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
-            Bild hochladen
+            {{ $latestImage ? 'Bild ändern' : 'Bild auswählen' }}
         </label>
     </div>
 
