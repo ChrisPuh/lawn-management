@@ -98,3 +98,4 @@ auth.json
 # Optionally, if you want to keep some example or template files
 !/storage/app/public/example/
 !/storage/app/private/templates/
+.env.testing
