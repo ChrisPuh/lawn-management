@@ -1,28 +1,100 @@
-/.phpunit.cache
+# Dependency directories
 /node_modules
+/vendor
+
+# Build and compiled assets
 /public/build
 /public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
+
+# Environment files
 .env
 .env.backup
 .env.production
-.phpactor.json
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
-auth.json
+
+# Storage and cache
+/.phpunit.cache
+/storage/*.key
+/storage/pail
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
+# Temporary and log files
 npm-debug.log
 yarn-error.log
+*.log
+
+# IDE and editor directories
 /.fleet
 /.idea
 /.nova
 /.vscode
 /.zed
+/.phpactor.json
+.phpunit.result.cache
+
+# Coverage reports
 /coverage/*
 /coverage/**/*
 *.lcov
 clover.xml
 coverage-final.json
+
+# Vagrant and Homestead
+Homestead.json
+Homestead.yaml
+
+# Authentication and tokens
+auth.json
+
+# Keep important storage directories
+# and ensure specific files/directories are tracked
+!storage/app/public/.gitkeep
+!storage/app/public/lawn-images/.gitkeep
+!storage/framework/views/.gitkeep
+!storage/logs/.gitkeep
+
+# Public storage exceptions
+# Track specific images or uploads
+!/public/storage/lawn-images/placeholder.png
+!/public/storage/user-avatars/default.jpg
+
+# Specific application-related files to ignore
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Ignore compiled application files
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.tmp
+
+# Allow certain configuration files
+!.gitkeep
+
+# Ignore all files in local storage directories
+/storage/app/public/*
+!/storage/app/public/.gitkeep
+
+/storage/app/private/*
+!/storage/app/private/.gitkeep
+
+# Exclude specific types of local files
+*.local
+*.dev
+*.development
+
+# Ignore user-specific or machine-specific files in these directories
+/storage/app/public/**/*.user
+/storage/app/private/**/*.user
+/storage/app/public/**/*.local
+/storage/app/private/**/*.local
+
+# Optionally, if you want to keep some example or template files
+!/storage/app/public/example/
+!/storage/app/private/templates/
