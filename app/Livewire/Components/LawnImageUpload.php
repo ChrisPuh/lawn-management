@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
+use RuntimeException;
 
 final class LawnImageUpload extends Component
 {
@@ -60,7 +61,7 @@ final class LawnImageUpload extends Component
     {
         $this->authorize('update', $this->lawn);
 
-        if (!$this->image instanceof TemporaryUploadedFile) {
+        if (! $this->image instanceof TemporaryUploadedFile) {
             return;
         }
 
@@ -75,7 +76,7 @@ final class LawnImageUpload extends Component
 
         // Ensure directory exists
         $directory = sprintf('lawns/%d/images', $this->lawn->id);
-        if (!Storage::disk('public')->exists($directory)) {
+        if (! Storage::disk('public')->exists($directory)) {
             Storage::disk('public')->makeDirectory($directory);
         }
 
@@ -87,19 +88,19 @@ final class LawnImageUpload extends Component
 
         // Create GD image from source
         $source = imagecreatefromstring(file_get_contents($sourcePath));
-        if (!$source) {
-            throw new \RuntimeException('Could not create image from file');
+        if (! $source) {
+            throw new RuntimeException('Could not create image from file');
         }
 
         // Get original dimensions
-        $width = (int)imagesx($source);
-        $height = (int)imagesy($source);
+        $width = (int) imagesx($source);
+        $height = (int) imagesy($source);
 
         // Calculate new dimensions (max width 1200px)
         $maxWidth = 1200;
         if ($width > $maxWidth) {
             $newWidth = $maxWidth;
-            $newHeight = (int)floor($height * ($maxWidth / $width));
+            $newHeight = (int) floor($height * ($maxWidth / $width));
         } else {
             $newWidth = $width;
             $newHeight = $height;
@@ -168,35 +169,6 @@ final class LawnImageUpload extends Component
     }
 
     /**
-     * Clean up old temporary files
-     */
-    private function cleanupTempFiles(): void
-    {
-        $tempDirectory = storage_path('app/livewire-tmp');
-        if (!is_dir($tempDirectory)) {
-            return;
-        }
-
-        // Cleanup files older than 24 hours
-        $files = scandir($tempDirectory);
-        $now = time();
-
-        foreach ($files as $file) {
-            if ($file === '.' || $file === '..') {
-                continue;
-            }
-
-            $filePath = $tempDirectory . '/' . $file;
-            if (is_file($filePath)) {
-                // Delete if older than 24 hours
-                if ($now - filemtime($filePath) >= 24 * 60 * 60) {
-                    unlink($filePath);
-                }
-            }
-        }
-    }
-
-    /**
      * Delete an image
      */
     public function delete(int $imageId): void
@@ -231,5 +203,34 @@ final class LawnImageUpload extends Component
         return view('livewire.components.lawn-image-upload', [
             'latestImage' => $this->getLatestImage(),
         ]);
+    }
+
+    /**
+     * Clean up old temporary files
+     */
+    private function cleanupTempFiles(): void
+    {
+        $tempDirectory = storage_path('app/livewire-tmp');
+        if (! is_dir($tempDirectory)) {
+            return;
+        }
+
+        // Cleanup files older than 24 hours
+        $files = scandir($tempDirectory);
+        $now = time();
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            $filePath = $tempDirectory.'/'.$file;
+            if (is_file($filePath)) {
+                // Delete if older than 24 hours
+                if ($now - filemtime($filePath) >= 24 * 60 * 60) {
+                    unlink($filePath);
+                }
+            }
+        }
     }
 }

@@ -50,8 +50,8 @@ describe('Lawn show Component', function () {
 
         test('displays image upload placeholder message', function () {
             Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
-                ->assertSeeHtml('Bildupload in Kürze verfügbar')
-                ->assertSeeHtml('disabled');
+                ->assertSeeHtml('Noch kein Bild vorhanden')
+                ->assertSeeHtml('Klicken Sie unten auf "Bild auswählen');
         });
 
         test('displays maintenance history with no records', function () {
