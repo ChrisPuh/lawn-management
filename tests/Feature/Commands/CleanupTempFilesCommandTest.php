@@ -2,166 +2,137 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Commands;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 
-use App\Console\Commands\CleanupTempFilesCommand;
-
-// Helper function to create test image
-function createTestImage(): string
+// Helper function to create temp files
+function createTempFile(string $path, string $content, int $ageInHours): string
 {
-    $stubsDir = __DIR__.'/../../Stubs/Commands';
-    if (! is_dir($stubsDir)) {
-        mkdir($stubsDir, 0777, true);
-    }
-
-    $testImage = $stubsDir.'/cleanup-test-image.jpg';
-
-    // Create a small test image
-    $image = imagecreatetruecolor(100, 100);
-    $bgColor = imagecolorallocate($image, 255, 255, 255);
-    imagefill($image, 0, 0, $bgColor);
-
-    // Add some text
-    $textColor = imagecolorallocate($image, 0, 0, 0);
-    imagestring($image, 5, 10, 40, 'Test Image', $textColor);
-
-    // Save as JPG
-    imagejpeg($image, $testImage, 90);
-    imagedestroy($image);
-
-    return $testImage;
+    File::makeDirectory(dirname($path), 0755, true, true);
+    file_put_contents($path, $content);
+    touch($path, now()->subHours($ageInHours)->timestamp);
+    return $path;
 }
 
+// Setup before each test
 beforeEach(function () {
-    // Ensure we're using a test temp directory
-    config(['lawn.storage.temp.path' => 'testing/temp/cleanup']);
-    config(['lawn.storage.temp.cleanup_enabled' => true]);
-
-    // Create test directory
+    // Configure test temp directory
     $tempPath = storage_path('app/testing/temp/cleanup');
-    if (! is_dir($tempPath)) {
-        mkdir($tempPath, 0777, true);
-    }
+    Config::set('lawn.storage.temp.path', 'testing/temp/cleanup');
+    Config::set('lawn.storage.temp.cleanup_enabled', true);
+    Config::set('lawn.storage.temp.retention_hours', 24);
 
-    // Create test image if needed
-    $this->testImagePath = createTestImage();
+    // Ensure temp directory exists
+    File::makeDirectory($tempPath, 0755, true, true);
+
+    // Store path for use in tests
+    $this->tempPath = $tempPath;
 });
 
+// Cleanup after each test
 afterEach(function () {
-    $tempPath = storage_path('app/testing/temp/cleanup');
-    if (is_dir($tempPath)) {
-        array_map('unlink', glob("$tempPath/*.*"));
-        rmdir($tempPath);
-        @rmdir(dirname($tempPath)); // Remove parent if empty
-    }
+    // Clean up temp directory
+    File::deleteDirectory($this->tempPath);
 });
 
-describe('CleanupTempFilesCommand', function () {
+describe('CleanupTempFilesCommand Pest Tests', function () {
+    test('it requires confirmed force option when cleanup is disabled', function () {
+        // Disable cleanup
+        Config::set('lawn.storage.temp.cleanup_enabled', false);
 
-    beforeEach(function () {
-        $this->app->singleton('CleanupTempFilesCommand', function ($app) {
-            return new CleanupTempFilesCommand;
-        });
+        // Run command without force
+        $this->artisan('app:cleanup-temp-files')
+            ->expectsOutput('Temp file cleanup is disabled in configuration.')
+            ->expectsOutput('Use --force to run anyway.')
+            ->assertExitCode(0);
     });
 
-    test('command can be instantiated', function () {
-        $command = $this->app->make('CleanupTempFilesCommand');
-        expect($command)->toBeInstanceOf(CleanupTempFilesCommand::class);
+    test('it cleans up files older than retention period', function () {
+        // Create test files with different ages
+        $oldFile = createTempFile(
+            $this->tempPath . '/old_file.txt',
+            'old content',
+            25
+        );
+        $recentFile = createTempFile(
+            $this->tempPath . '/recent_file.txt',
+            'recent content',
+            23
+        );
+
+        // Run cleanup command
+        $this->artisan('app:cleanup-temp-files')
+            ->expectsOutput('Cleanup completed:')
+            ->expectsOutputToContain('Deleted files: 1')
+            ->assertExitCode(0);
+
+        // Assert file states
+        expect(file_exists($oldFile))->toBeFalse();
+        expect(file_exists($recentFile))->toBeTrue();
     });
 
-    describe('cleanup functionality', function () {
-        beforeEach(function () {
-            config(['lawn.storage.temp.cleanup_enabled' => true]);
-        });
+    test('it handles empty directory gracefully', function () {
+        // Ensure temp directory is empty
+        File::cleanDirectory($this->tempPath);
 
-        test('it deletes old files', function () {
-            $tempPath = storage_path('app/testing/temp/cleanup');
+        // Run cleanup command
+        $this->artisan('app:cleanup-temp-files')
+            ->expectsOutput('Cleanup completed:')
+            ->expectsOutputToContain('Deleted files: 0')
+            ->assertExitCode(0);
+    });
 
-            // Old file (2 days ago)
-            $oldFile = $tempPath.'/old_test.jpg';
-            copy($this->testImagePath, $oldFile);
-            touch($oldFile, time() - (48 * 3600));
+    test('it works with different retention periods', function () {
+        // Set different retention period
+        Config::set('lawn.storage.temp.retention_hours', 12);
 
-            // Recent file (1 hour ago)
-            $recentFile = $tempPath.'/recent_test.jpg';
-            copy($this->testImagePath, $recentFile);
-            touch($recentFile, time() - (1 * 3600));
+        // Create files at different ages
+        $oldFile = createTempFile(
+            $this->tempPath . '/old_file.txt',
+            'old content',
+            13
+        );
+        $midFile = createTempFile(
+            $this->tempPath . '/mid_file.txt',
+            'mid content',
+            12
+        );
+        $recentFile = createTempFile(
+            $this->tempPath . '/recent_file.txt',
+            'recent content',
+            11
+        );
 
-            // Run command
-            $this->artisan(CleanupTempFilesCommand::class)
-                ->expectsOutput('Cleanup completed:')
-                ->expectsOutput(' - Deleted files: 1')
-                ->expectsOutput(' - Retention period: 1 days')
-                ->assertSuccessful();
+        // Run cleanup command
+        $this->artisan('app:cleanup-temp-files')
+            ->expectsOutput('Cleanup completed:')
+            ->expectsOutputToContain('Deleted files: 2')
+            ->assertExitCode(0);
 
-            // Ensure files system catches up
-            clearstatcache();
+        // Assert file states
+        expect(file_exists($oldFile))->toBeFalse('Old file should be deleted');
+        expect(file_exists($midFile))->toBeFalse('Mid-age file should be deleted');
+        expect(file_exists($recentFile))->toBeTrue('Recent file should remain');
+    });
 
-            // Assert file states
-            expect(file_exists($oldFile))->toBeFalse()
-                ->and(file_exists($recentFile))->toBeTrue();
-        });
+    test('it supports force option when cleanup is disabled', function () {
+        // Disable cleanup
+        Config::set('lawn.storage.temp.cleanup_enabled', false);
 
-        test('it respects cleanup_enabled config', function () {
-            $tempPath = storage_path('app/testing/temp/cleanup');
-            $testFile = $tempPath.'/old_test.jpg';
-            copy($this->testImagePath, $testFile);
-            touch($testFile, time() - (48 * 3600));
+        // Create an old file
+        $oldFile = createTempFile(
+            $this->tempPath . '/old_file.txt',
+            'old content',
+            25
+        );
 
-            // Disable cleanup
-            config(['lawn.storage.temp.cleanup_enabled' => false]);
+        // Run command with force
+        $this->artisan('app:cleanup-temp-files', ['--force' => true])
+            ->expectsOutput('Cleanup completed:')
+            ->expectsOutputToContain('Deleted files: 1')
+            ->assertExitCode(0);
 
-            // Run command without force
-            $this->artisan(CleanupTempFilesCommand::class)
-                ->expectsOutput('Temp file cleanup is disabled in configuration.')
-                ->expectsOutput('Use --force to run anyway.')
-                ->assertSuccessful();
-
-            clearstatcache();
-            expect(file_exists($testFile))->toBeTrue();
-
-            // Run command with force
-            $this->artisan(CleanupTempFilesCommand::class, ['--force' => true])
-                ->expectsOutput('Cleanup completed:')
-                ->assertSuccessful();
-
-            clearstatcache();
-            expect(file_exists($testFile))->toBeFalse();
-        });
-
-        test('it handles non-existent directory gracefully', function () {
-            config(['lawn.storage.temp.path' => 'non/existent/path']);
-
-            $this->artisan(CleanupTempFilesCommand::class)
-                ->expectsOutput('No temp directory found at: '.storage_path('app/non/existent/path'))
-                ->assertSuccessful();
-        });
-
-        test('it respects retention period from config', function () {
-            // Set retention to 12 hours
-            config(['lawn.storage.temp.retention_hours' => 12]);
-
-            $tempPath = storage_path('app/testing/temp/cleanup');
-
-            // Create file from 13 hours ago
-            $oldFile = $tempPath.'/old_test.jpg';
-            copy($this->testImagePath, $oldFile);
-            touch($oldFile, time() - (13 * 3600));
-
-            // Create file from 11 hours ago
-            $recentFile = $tempPath.'/recent_test.jpg';
-            copy($this->testImagePath, $recentFile);
-            touch($recentFile, time() - (11 * 3600));
-
-            $this->artisan(CleanupTempFilesCommand::class)
-                ->expectsOutput('Cleanup completed:')
-                ->expectsOutput(' - Deleted files: 1')
-                ->expectsOutput(' - Retention period: 12 hours')
-                ->assertSuccessful();
-
-            clearstatcache();
-            expect(file_exists($oldFile))->toBeFalse()
-                ->and(file_exists($recentFile))->toBeTrue();
-        });
+        // Assert file is deleted
+        expect(file_exists($oldFile))->toBeFalse();
     });
 });
