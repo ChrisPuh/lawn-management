@@ -46,6 +46,12 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
+# Testing Setup
+
+1. Copy `.env.testing.example` to `.env.testing`
+2. Run `./setup-testing-env.sh`
+3. Customize your testing environment as needed
+
 # Database setup
 php artisan migrate
 
