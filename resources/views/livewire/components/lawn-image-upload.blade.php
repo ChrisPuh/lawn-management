@@ -5,7 +5,7 @@
             <!-- Image Preview -->
             <img src="{{ $image->temporaryUrl() }}" alt="Bildvorschau" class="h-full w-full rounded-lg object-cover">
             <div class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-x-3 bg-black/50 p-4">
-                <button wire:click="cancelUpload" type="button"
+                <button wire:click="cancel" type="button"
                     class="inline-flex items-center gap-x-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Abbrechen
                 </button>

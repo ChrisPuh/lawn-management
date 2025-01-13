@@ -56,7 +56,7 @@ final class LawnImageUpload extends Component
         $this->showConfirmation = true;
     }
 
-    public function cancelUpload(): void
+    public function cancel(): void
     {
         $this->image = null;
         $this->showConfirmation = false;
