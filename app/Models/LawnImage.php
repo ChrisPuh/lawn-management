@@ -40,10 +40,14 @@ final class LawnImage extends Model
         'imageable_type',
         'type',
         'description',
+        'archived_at',
+        'delete_after',
     ];
 
     protected $casts = [
         'type' => LawnImageType::class,
+        'archived_at' => 'datetime',
+        'delete_after' => 'datetime',
     ];
 
     /**

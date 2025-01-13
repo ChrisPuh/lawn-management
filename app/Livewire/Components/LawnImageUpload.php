@@ -8,6 +8,7 @@ use App\Enums\LawnImageType;
 use App\Models\Lawn;
 use App\Models\LawnImage;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -34,16 +35,8 @@ final class LawnImageUpload extends Component
     private array $validationMessages = [
         'image.required' => 'Bitte wählen Sie ein Bild aus.',
         'image.image' => 'Die Datei muss ein Bild sein.',
-        'image.max' => 'Das Bild darf maximal 5MB groß sein.',
-    ];
-
-    /**
-     * Validation rules for file upload
-     *
-     * @var array<string, array<string>>
-     */
-    private array $validationRules = [
-        'image' => ['required', 'image', 'max:5120'], // 5MB max
+        'image.max' => 'Das Bild darf maximal :max KB groß sein.',
+        'image.mimes' => 'Das Bild muss eines der folgenden Formate haben: :values.',
     ];
 
     public function mount(Lawn $lawn): void
@@ -52,11 +45,22 @@ final class LawnImageUpload extends Component
         $this->lawn = $lawn;
     }
 
+    public function getValidationRules(): array
+    {
+        return [
+            'image' => [
+                'required',
+                'image',
+                'max:' . Config::get('lawn.images.max_file_size'),
+                'mimes:' . implode(',', Config::get('lawn.images.allowed_types')),
+            ],
+        ];
+    }
+
     public function updatedImage(): void
     {
-        $this->validate($this->validationRules, $this->validationMessages);
+        $this->validate($this->getValidationRules(), $this->validationMessages);
         $this->showConfirmation = true;
-        $this->showSuccessMessage = false;
     }
 
     public function cancel(): void
@@ -68,42 +72,48 @@ final class LawnImageUpload extends Component
 
     public function save(): void
     {
-        $this->validate($this->validationRules, $this->validationMessages);
+        $this->validate($this->getValidationRules(), $this->validationMessages);
         $this->authorize('update', $this->lawn);
 
         if (! $this->image instanceof TemporaryUploadedFile) {
             return;
         }
 
-        // Handle old image deletion
+        // Handle old image archival or deletion
         $oldImage = $this->getLatestImage();
+        if ($oldImage !== null) {
+            if (Config::get('lawn.storage.archive.enabled')) {
+                $this->archiveOldImage($oldImage);
+            } else {
+                // Direct delete if archiving is disabled
+                Storage::disk('public')->delete($oldImage->image_path);
+                $oldImage->delete();
+            }
+        }
 
-        // Generate storage path
+        // Generate storage path for new image
         $extension = $this->image->getClientOriginalExtension();
         $filename = sprintf(
-            'lawns/%d/images/%s.%s',
+            '%s/%d/images/%s.%s',
+            Config::get('lawn.storage.base_path'),
             $this->lawn->id,
             uniqid(),
             $extension
         );
 
         // Ensure directory exists
-        $directory = sprintf('lawns/%d/images', $this->lawn->id);
+        $directory = sprintf('%s/%d/images', Config::get('lawn.storage.base_path'), $this->lawn->id);
         if (! Storage::disk('public')->exists($directory)) {
             Storage::disk('public')->makeDirectory($directory);
         }
 
-        // Clean up old temp files
-        $this->cleanupTempFiles();
+        // Clean up old temp files if enabled
+        if (Config::get('lawn.storage.temp.cleanup_enabled')) {
+            $this->cleanupTempFiles();
+        }
 
         // Process and save new image
         $this->processAndSaveImage($filename);
-
-        // Delete old image after successful upload
-        if ($oldImage !== null) {
-            Storage::disk('public')->delete($oldImage->image_path);
-            $oldImage->delete();
-        }
 
         // Create database record
         LawnImage::create([
@@ -118,9 +128,50 @@ final class LawnImageUpload extends Component
         $this->showConfirmation = false;
         $this->showSuccessMessage = true;
 
-        // Hide success message after 3 seconds using JS dispatch
         $this->dispatch('hide-success')->self();
         $this->dispatch('image-uploaded');
+    }
+
+    private function archiveOldImage(LawnImage $image): void
+    {
+        // Create archive path with timestamp
+        $archivePath = sprintf(
+            '%s/%s/%d/%s_%s',
+            Config::get('lawn.storage.base_path'),
+            Config::get('lawn.storage.archive.path'),
+            $this->lawn->id,
+            now()->format('Y-m-d_His'),
+            basename($image->image_path)
+        );
+
+        // Ensure archive directory exists
+        $archiveDir = dirname($archivePath);
+        if (! Storage::disk('public')->exists($archiveDir)) {
+            Storage::disk('public')->makeDirectory($archiveDir);
+        }
+
+        // Move file to archive
+        $archiveDisk = Config::get('lawn.storage.archive.disk');
+
+        if (Storage::disk('public')->exists($image->image_path)) {
+            // If archive disk is different from public, copy then delete
+            if ($archiveDisk !== 'public') {
+                Storage::disk($archiveDisk)->put(
+                    $archivePath,
+                    Storage::disk('public')->get($image->image_path)
+                );
+                Storage::disk('public')->delete($image->image_path);
+            } else {
+                Storage::disk('public')->move($image->image_path, $archivePath);
+            }
+        }
+
+        // Update database record
+        $image->update([
+            'image_path' => $archivePath,
+            'archived_at' => now(),
+            'delete_after' => now()->addMonths(config('lawn.storage.archive.retention_months')),
+        ]);
     }
 
     /**
@@ -143,8 +194,8 @@ final class LawnImageUpload extends Component
         $height = imagesy($source);
         $extension = $this->image->getClientOriginalExtension();
 
-        // Calculate new dimensions (max width 1200px)
-        $maxWidth = 1200;
+        // Calculate new dimensions (max width from config)
+        $maxWidth = Config::get('lawn.images.max_width');
         if ($width > $maxWidth) {
             $newWidth = $maxWidth;
             $newHeight = (int) floor($height * ($maxWidth / $width));
@@ -175,12 +226,14 @@ final class LawnImageUpload extends Component
         );
 
         $tempPath = tempnam(sys_get_temp_dir(), 'img');
+        $quality = Config::get('lawn.images.quality');
 
         // Save processed image
         match ($extension) {
-            'jpg', 'jpeg' => imagejpeg($new, $tempPath, 80),
-            'png' => imagepng($new, $tempPath, 8),
-            default => imagejpeg($new, $tempPath, 80),
+            'jpg', 'jpeg' => imagejpeg($new, $tempPath, $quality),
+            'png' => imagepng($new, $tempPath, (int) floor(($quality * 9) / 100)),
+            'webp' => imagewebp($new, $tempPath, $quality),
+            default => imagejpeg($new, $tempPath, $quality),
         };
 
         // Clean up GD resources
@@ -196,33 +249,6 @@ final class LawnImageUpload extends Component
         unlink($tempPath);
     }
 
-    /**
-     * Delete an image
-     */
-    public function delete(int $imageId): void
-    {
-        $this->authorize('delete', $this->lawn);
-
-        $image = LawnImage::find($imageId);
-
-        if ($image && $image->lawn_id === $this->lawn->id) {
-            Storage::disk('public')->delete($image->image_path);
-            $image->delete();
-        }
-
-        $this->dispatch('image-deleted');
-    }
-
-    /**
-     * Get the latest image for the lawn
-     */
-    public function getLatestImage(): ?LawnImage
-    {
-        return $this->lawn->images()
-            ->latest()
-            ->first();
-    }
-
     public function hideSuccessMessage(): void
     {
         $this->showSuccessMessage = false;
@@ -236,17 +262,29 @@ final class LawnImageUpload extends Component
     }
 
     /**
+     * Get the latest image for the lawn
+     */
+    private function getLatestImage(): ?LawnImage
+    {
+        return $this->lawn->images()
+            ->whereNull('archived_at')
+            ->latest()
+            ->first();
+    }
+
+    /**
      * Clean up old temporary files
      */
     private function cleanupTempFiles(): void
     {
-        $tempDirectory = storage_path('app/livewire-tmp');
+        $tempDirectory = storage_path(Config::get('lawn.storage.temp.path'));
         if (! is_dir($tempDirectory)) {
             return;
         }
 
         $files = scandir($tempDirectory);
         $now = time();
+        $retentionHours = Config::get('lawn.storage.temp.retention_hours');
 
         foreach ($files as $file) {
             if ($file === '.' || $file === '..') {
@@ -254,7 +292,7 @@ final class LawnImageUpload extends Component
             }
 
             $filePath = $tempDirectory . '/' . $file;
-            if (is_file($filePath) && $now - filemtime($filePath) >= 24 * 60 * 60) {
+            if (is_file($filePath) && $now - filemtime($filePath) >= $retentionHours * 3600) {
                 unlink($filePath);
             }
         }

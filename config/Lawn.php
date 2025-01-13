@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 // config/lawn.php
 
 return [
@@ -21,6 +22,13 @@ return [
             'retention_hours' => (int) env('LAWN_TEMP_RETENTION_HOURS', 24),
             'cleanup_enabled' => (bool) env('LAWN_TEMP_CLEANUP_ENABLED', true),
             'disk' => env('LAWN_TEMP_DISK', 'local'),
+        ],
+
+        'archive' => [
+            'enabled' => (bool) env('LAWN_ARCHIVE_ENABLED', true),
+            'path' => env('LAWN_ARCHIVE_PATH', 'archive'),
+            'retention_months' => (int) env('LAWN_ARCHIVE_RETENTION_MONTHS', 3),
+            'disk' => env('LAWN_ARCHIVE_DISK', 'public'),
         ],
     ],
 
