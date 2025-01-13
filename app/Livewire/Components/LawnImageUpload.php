@@ -24,6 +24,8 @@ final class LawnImageUpload extends Component
 
     public bool $showConfirmation = false;
 
+    public bool $showSuccessMessage = false;
+
     /**
      * Validation messages for file upload
      *
@@ -54,24 +56,27 @@ final class LawnImageUpload extends Component
     {
         $this->validate($this->validationRules, $this->validationMessages);
         $this->showConfirmation = true;
+        $this->showSuccessMessage = false;
     }
 
     public function cancel(): void
     {
         $this->image = null;
         $this->showConfirmation = false;
+        $this->showSuccessMessage = false;
     }
 
-    // Explicitly call validation in methods that need it
     public function save(): void
     {
         $this->validate($this->validationRules, $this->validationMessages);
-
         $this->authorize('update', $this->lawn);
 
         if (! $this->image instanceof TemporaryUploadedFile) {
             return;
         }
+
+        // Handle old image deletion
+        $oldImage = $this->getLatestImage();
 
         // Generate storage path
         $extension = $this->image->getClientOriginalExtension();
@@ -88,21 +93,55 @@ final class LawnImageUpload extends Component
             Storage::disk('public')->makeDirectory($directory);
         }
 
-        // Clean up old temp files (älter als 24 Stunden)
+        // Clean up old temp files
         $this->cleanupTempFiles();
 
-        // Get the source image
-        $sourcePath = $this->image->getRealPath();
+        // Process and save new image
+        $this->processAndSaveImage($filename);
 
-        // Create GD image from source
+        // Delete old image after successful upload
+        if ($oldImage !== null) {
+            Storage::disk('public')->delete($oldImage->image_path);
+            $oldImage->delete();
+        }
+
+        // Create database record
+        LawnImage::create([
+            'lawn_id' => $this->lawn->id,
+            'image_path' => $filename,
+            'type' => LawnImageType::GENERAL->value,
+            'imageable_id' => $this->lawn->id,
+            'imageable_type' => Lawn::class,
+        ]);
+
+        $this->image = null;
+        $this->showConfirmation = false;
+        $this->showSuccessMessage = true;
+
+        // Hide success message after 3 seconds using JS dispatch
+        $this->dispatch('hide-success')->self();
+        $this->dispatch('image-uploaded');
+    }
+
+    /**
+     * Process and save the image with resizing
+     */
+    private function processAndSaveImage(string $filename): void
+    {
+        if (! $this->image instanceof TemporaryUploadedFile) {
+            throw new RuntimeException('No image provided');
+        }
+
+        $sourcePath = $this->image->getRealPath();
         $source = imagecreatefromstring(file_get_contents($sourcePath));
+
         if (! $source) {
             throw new RuntimeException('Could not create image from file');
         }
 
-        // Get original dimensions
         $width = imagesx($source);
         $height = imagesy($source);
+        $extension = $this->image->getClientOriginalExtension();
 
         // Calculate new dimensions (max width 1200px)
         $maxWidth = 1200;
@@ -114,7 +153,6 @@ final class LawnImageUpload extends Component
             $newHeight = $height;
         }
 
-        // Create new image
         $new = imagecreatetruecolor($newWidth, $newHeight);
 
         // Preserve transparency for PNG images
@@ -123,7 +161,6 @@ final class LawnImageUpload extends Component
             imagesavealpha($new, true);
         }
 
-        // Resize image
         imagecopyresampled(
             $new,
             $source,
@@ -137,17 +174,14 @@ final class LawnImageUpload extends Component
             $height
         );
 
-        // Create temp file for processed image
         $tempPath = tempnam(sys_get_temp_dir(), 'img');
 
         // Save processed image
-        if ($extension === 'jpg' || $extension === 'jpeg') {
-            imagejpeg($new, $tempPath, 80);
-        } elseif ($extension === 'png') {
-            imagepng($new, $tempPath, 8);
-        } else {
-            imagejpeg($new, $tempPath, 80);
-        }
+        match ($extension) {
+            'jpg', 'jpeg' => imagejpeg($new, $tempPath, 80),
+            'png' => imagepng($new, $tempPath, 8),
+            default => imagejpeg($new, $tempPath, 80),
+        };
 
         // Clean up GD resources
         imagedestroy($source);
@@ -159,21 +193,7 @@ final class LawnImageUpload extends Component
             file_get_contents($tempPath)
         );
 
-        // Clean up temp file
         unlink($tempPath);
-
-        // Create database record
-        LawnImage::create([
-            'lawn_id' => $this->lawn->id,
-            'image_path' => $filename,
-            'type' => LawnImageType::GENERAL->value,
-            'imageable_id' => $this->lawn->id,
-            'imageable_type' => Lawn::class,
-        ]);
-
-        $this->image = null;
-        $this->showConfirmation = false;
-        $this->dispatch('image-uploaded');
     }
 
     /**
@@ -186,10 +206,7 @@ final class LawnImageUpload extends Component
         $image = LawnImage::find($imageId);
 
         if ($image && $image->lawn_id === $this->lawn->id) {
-            // Delete the physical file
             Storage::disk('public')->delete($image->image_path);
-
-            // Delete the database record
             $image->delete();
         }
 
@@ -204,6 +221,11 @@ final class LawnImageUpload extends Component
         return $this->lawn->images()
             ->latest()
             ->first();
+    }
+
+    public function hideSuccessMessage(): void
+    {
+        $this->showSuccessMessage = false;
     }
 
     public function render(): View
@@ -223,19 +245,15 @@ final class LawnImageUpload extends Component
             return;
         }
 
-        // Cleanup files older than 24 hours
         $files = scandir($tempDirectory);
         $now = time();
 
         foreach ($files as $file) {
-            if ($file === '.') {
+            if ($file === '.' || $file === '..') {
                 continue;
             }
-            if ($file === '..') {
-                continue;
-            }
-            $filePath = $tempDirectory.'/'.$file;
-            // Delete if older than 24 hours
+
+            $filePath = $tempDirectory . '/' . $file;
             if (is_file($filePath) && $now - filemtime($filePath) >= 24 * 60 * 60) {
                 unlink($filePath);
             }
