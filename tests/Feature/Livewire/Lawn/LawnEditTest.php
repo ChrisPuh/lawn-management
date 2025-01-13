@@ -8,8 +8,8 @@ use App\Livewire\Lawn\LawnEdit;
 use App\Models\Lawn;
 use Livewire\Livewire;
 
-describe('LawnEdit', function () {
-    beforeEach(function () {
+describe('LawnEdit', function (): void {
+    beforeEach(function (): void {
         $this->lawn = Lawn::factory()->create([
             'name' => 'Test Lawn',
             'location' => 'Backyard',
@@ -19,7 +19,7 @@ describe('LawnEdit', function () {
         ]);
     });
 
-    it('mounts with lawn data', function () {
+    it('mounts with lawn data', function (): void {
         $component = Livewire::test(LawnEdit::class, [
             'lawn' => $this->lawn,
         ]);
@@ -31,7 +31,7 @@ describe('LawnEdit', function () {
             ->assertSet('data.type', GrassType::Sport->value());
     });
 
-    it('updates lawn and redirects', function () {
+    it('updates lawn and redirects', function (): void {
         $component = Livewire::test(LawnEdit::class, [
             'lawn' => $this->lawn,
         ]);
@@ -59,7 +59,7 @@ describe('LawnEdit', function () {
         $component->assertRedirect(route('lawn.show', $this->lawn));
     });
 
-    it('persists the updated data in database', function () {
+    it('persists the updated data in database', function (): void {
         $component = Livewire::test(LawnEdit::class, [
             'lawn' => $this->lawn,
         ]);

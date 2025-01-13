@@ -30,7 +30,8 @@
         "nunomaduro/collision": "^8.5",
         "pestphp/pest": "^3.7.1",
         "pestphp/pest-plugin-laravel": "^3.0",
-        "pestphp/pest-plugin-livewire": "^3.0"
+        "pestphp/pest-plugin-livewire": "^3.0",
+        "rector/rector": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -77,7 +78,10 @@
             "@putenv XDEBUG_MODE=coverage",
             "@php -d xdebug.mode=coverage vendor/bin/pest --coverage-html coverage --parallel"
         ],
-        "test:parallel": "./vendor/bin/pest --parallel"
+        "test:parallel": "./vendor/bin/pest --parallel",
+        "pint": "./vendor/bin/pint",
+        "rector": "./vendor/bin/rector",
+        "rector:dry": "./vendor/bin/rector --dry-run"
     },
     "extra": {
         "laravel": {

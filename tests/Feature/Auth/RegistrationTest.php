@@ -143,8 +143,6 @@ final class RegistrationTest extends TestCase
         $this->assertTrue(Hash::check($userData['password'], $user->password));
 
         // Assert the Registered event was dispatched with the correct user
-        Event::assertDispatched(Registered::class, function ($event) use ($user) {
-            return $event->user->id === $user->id;
-        });
+        Event::assertDispatched(Registered::class, fn ($event): bool => $event->user->id === $user->id);
     }
 }

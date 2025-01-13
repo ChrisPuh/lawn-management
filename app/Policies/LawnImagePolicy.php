@@ -13,7 +13,7 @@ final class LawnImagePolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool
+    public function viewAny(): bool
     {
         return true;
     }
@@ -26,7 +26,7 @@ final class LawnImagePolicy
         return $user->id === $lawn->user_id;
     }
 
-    public function create(User $user): bool
+    public function create(): bool
     {
         return true;
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Livewire\Components\DeleteModal;
 
-describe('DeleteModal', function () {
-    it('renders delete modal with correct props', function () {
+describe('DeleteModal', function (): void {
+    it('renders delete modal with correct props', function (): void {
         Livewire::test(DeleteModal::class, [
             'title' => 'Delete Test',
             'message' => 'Are you sure?',
@@ -17,7 +17,7 @@ describe('DeleteModal', function () {
             ->assertSet('onConfirm', 'delete-confirmed');
     });
 
-    it('toggles visibility', function () {
+    it('toggles visibility', function (): void {
         Livewire::test(DeleteModal::class, [
             'title' => 'Test',
             'message' => 'Test',
@@ -30,7 +30,7 @@ describe('DeleteModal', function () {
             ->assertSet('show', false);
     });
 
-    it('dispatches confirm event and closes modal', function () {
+    it('dispatches confirm event and closes modal', function (): void {
         Livewire::test(DeleteModal::class, [
             'title' => 'Test',
             'message' => 'Test',
@@ -42,7 +42,7 @@ describe('DeleteModal', function () {
             ->assertSet('show', false);
     });
 
-    it('resets state after confirmation', function () {
+    it('resets state after confirmation', function (): void {
         Livewire::test(DeleteModal::class, [
             'title' => 'Test',
             'message' => 'Test',

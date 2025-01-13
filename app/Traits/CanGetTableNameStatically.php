@@ -70,7 +70,7 @@ trait CanGetTableNameStatically
      */
     private static function createInstance(): Model
     {
-        $calledClass = get_called_class();
+        $calledClass = static::class;
 
         if (! is_a($calledClass, Model::class, true)) {
             throw new RuntimeException(

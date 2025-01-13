@@ -24,15 +24,23 @@ final class LawnImageUpload extends Component
 
     public bool $showConfirmation = false;
 
-    /** @var array<string, string> */
-    protected $messages = [
+    /**
+     * Validation messages for file upload
+     *
+     * @var array<string, string>
+     */
+    private array $validationMessages = [
         'image.required' => 'Bitte wählen Sie ein Bild aus.',
         'image.image' => 'Die Datei muss ein Bild sein.',
         'image.max' => 'Das Bild darf maximal 5MB groß sein.',
     ];
 
-    /** @var array<string, string|array<string>> */
-    protected $rules = [
+    /**
+     * Validation rules for file upload
+     *
+     * @var array<string, array<string>>
+     */
+    private array $validationRules = [
         'image' => ['required', 'image', 'max:5120'], // 5MB max
     ];
 
@@ -44,7 +52,7 @@ final class LawnImageUpload extends Component
 
     public function updatedImage(): void
     {
-        $this->validate();
+        $this->validate($this->validationRules, $this->validationMessages);
         $this->showConfirmation = true;
     }
 
@@ -54,11 +62,11 @@ final class LawnImageUpload extends Component
         $this->showConfirmation = false;
     }
 
-    /**
-     * Save the uploaded image
-     */
+    // Explicitly call validation in methods that need it
     public function save(): void
     {
+        $this->validate($this->validationRules, $this->validationMessages);
+
         $this->authorize('update', $this->lawn);
 
         if (! $this->image instanceof TemporaryUploadedFile) {
@@ -93,8 +101,8 @@ final class LawnImageUpload extends Component
         }
 
         // Get original dimensions
-        $width = (int) imagesx($source);
-        $height = (int) imagesy($source);
+        $width = imagesx($source);
+        $height = imagesy($source);
 
         // Calculate new dimensions (max width 1200px)
         $maxWidth = 1200;
@@ -220,16 +228,16 @@ final class LawnImageUpload extends Component
         $now = time();
 
         foreach ($files as $file) {
-            if ($file === '.' || $file === '..') {
+            if ($file === '.') {
                 continue;
             }
-
+            if ($file === '..') {
+                continue;
+            }
             $filePath = $tempDirectory.'/'.$file;
-            if (is_file($filePath)) {
-                // Delete if older than 24 hours
-                if ($now - filemtime($filePath) >= 24 * 60 * 60) {
-                    unlink($filePath);
-                }
+            // Delete if older than 24 hours
+            if (is_file($filePath) && $now - filemtime($filePath) >= 24 * 60 * 60) {
+                unlink($filePath);
             }
         }
     }
