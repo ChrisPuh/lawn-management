@@ -18,6 +18,20 @@
             <!-- Current Image -->
             <img src="{{ Storage::url($latestImage->image_path) }}" alt="Aktuelles Rasenbild"
                 class="h-full w-full rounded-lg object-cover">
+
+            <!-- Success Message -->
+            @if ($showSuccessMessage)
+                <div wire:transition.opacity.duration.1000ms x-data x-init="$wire.on('hide-success', () => setTimeout(() => $wire.hideSuccessMessage(), 3000))"
+                    class="absolute inset-x-0 top-0 mx-auto flex w-auto max-w-sm items-center justify-center gap-x-2  bg-success-500/90 px-4 py-2 text-sm font-medium text-white shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="h-5 w-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Bild erfolgreich aktualisiert
+                </div>
+            @endif
+
             <button wire:click="delete({{ $latestImage->id }})"
                 class="absolute right-2 top-2 rounded-full bg-white/80 p-1.5 text-gray-700 transition hover:bg-red-100 hover:text-red-600"
                 title="Bild löschen">
