@@ -27,7 +27,7 @@ final class LawnImageFactory extends Factory
 
         // Erstelle ein echtes Testbild und speichere es
         $file = UploadedFile::fake()->image('test.jpg');
-        $path = $file->store('lawn-images', 'public');
+        $path = $file->store('lawns/local-dev', 'public');
 
         return [
             'lawn_id' => Lawn::factory(),

@@ -42,15 +42,15 @@ The application includes an automated task to clean up temporary files:
 
 - **Local Development:**
 
-  ```bash
-  php artisan schedule:work
-  ```
+    ```bash
+    php artisan schedule:work
+    ```
 
 - **Production (Crontab):**
 
-  ```bash
-  * * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1
-  ```
+    ```bash
+    * * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1
+    ```
 
 ### Configuring Scheduler
 
@@ -68,7 +68,7 @@ class ScheduleServiceProvider extends ServiceProvider
     {
         $this->app->booted(function () {
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
-            
+
             $schedule->command('app:cleanup-temp-files')
                 ->daily()
                 ->appendOutputTo(storage_path('logs/temp-cleanup.log'));
@@ -154,6 +154,26 @@ composer analyse
 3. Commit changes (`git commit -m 'feat(lawn): add amazing feature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open pull request
+
+## 🧹 Development Cleanup Commands
+
+### Clear Lawn Images
+
+During local development, you may want to clear all lawn images:
+
+```bash
+# Clear images with confirmation prompt
+php artisan lawn:clear-images
+
+# Force clear without confirmation
+php artisan lawn:clear-images --force
+```
+
+**Warning:**
+
+- This command is ONLY available in non-production environments
+- It deletes ALL lawn images from storage and database
+- Use with caution
 
 ## 📝 Commit Convention
 
