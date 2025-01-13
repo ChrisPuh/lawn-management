@@ -16,7 +16,7 @@ final class LawnPolicy
     /**
      * Determine whether the user can view any lawns.
      */
-    public function viewAny(User $user): Response
+    public function viewAny(): Response
     {
         return Response::allow();
     }
@@ -34,7 +34,7 @@ final class LawnPolicy
     /**
      * Determine whether the user can create lawns.
      */
-    public function create(User $user): Response
+    public function create(): Response
     {
         return Response::allow();
     }

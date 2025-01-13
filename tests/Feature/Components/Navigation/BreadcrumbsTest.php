@@ -18,7 +18,7 @@ final class BreadcrumbsTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_shows_profile_breadcrumbs()
+    public function it_shows_profile_breadcrumbs(): void
     {
         $user = User::factory()->create();
         /** @var Authenticatable $user */
@@ -33,7 +33,7 @@ final class BreadcrumbsTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_profile_edit_breadcrumbs()
+    public function it_shows_profile_edit_breadcrumbs(): void
     {
         $user = User::factory()->create();
         /** @var Authenticatable $user */
@@ -49,7 +49,7 @@ final class BreadcrumbsTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_dashboard_breadcrumbs()
+    public function it_shows_dashboard_breadcrumbs(): void
     {
         $user = User::factory()->create();
         /** @var Authenticatable $user */
@@ -64,7 +64,7 @@ final class BreadcrumbsTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_lawn_breadcrumbs_with_lawn_name()
+    public function it_shows_lawn_breadcrumbs_with_lawn_name(): void
     {
         $lawn = Lawn::factory()->create(['name' => 'Vorgarten']);
 

@@ -39,8 +39,10 @@ final class CleanupTempFilesCommand extends Command
 
         foreach ($files as $file) {
             $this->output->progressAdvance();
-
-            if ($file === '.' || $file === '..') {
+            if ($file === '.') {
+                continue;
+            }
+            if ($file === '..') {
                 continue;
             }
 
@@ -52,7 +54,7 @@ final class CleanupTempFilesCommand extends Command
                         unlink($filePath);
                         $count++;
                     }
-                } catch (Exception $e) {
+                } catch (Exception) {
                     $this->error("Could not delete file: {$file}");
                     $errors++;
                 }

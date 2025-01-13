@@ -10,7 +10,7 @@ final class UserMenuDropdown extends Component
 {
     public bool $isOpen = false;
 
-    public function toggleDropdown()
+    public function toggleDropdown(): void
     {
         $this->isOpen = ! $this->isOpen;
     }

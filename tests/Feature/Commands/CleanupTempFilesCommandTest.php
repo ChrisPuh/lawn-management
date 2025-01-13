@@ -11,11 +11,12 @@ function createTempFile(string $path, string $content, int $ageInHours): string
     File::makeDirectory(dirname($path), 0755, true, true);
     file_put_contents($path, $content);
     touch($path, now()->subHours($ageInHours)->timestamp);
+
     return $path;
 }
 
 // Setup before each test
-beforeEach(function () {
+beforeEach(function (): void {
     // Configure test temp directory
     $tempPath = storage_path('app/testing/temp/cleanup');
     Config::set('lawn.storage.temp.path', 'testing/temp/cleanup');
@@ -30,13 +31,13 @@ beforeEach(function () {
 });
 
 // Cleanup after each test
-afterEach(function () {
+afterEach(function (): void {
     // Clean up temp directory
     File::deleteDirectory($this->tempPath);
 });
 
-describe('CleanupTempFilesCommand Pest Tests', function () {
-    test('it requires confirmed force option when cleanup is disabled', function () {
+describe('CleanupTempFilesCommand Pest Tests', function (): void {
+    test('it requires confirmed force option when cleanup is disabled', function (): void {
         // Disable cleanup
         Config::set('lawn.storage.temp.cleanup_enabled', false);
 
@@ -47,15 +48,15 @@ describe('CleanupTempFilesCommand Pest Tests', function () {
             ->assertExitCode(0);
     });
 
-    test('it cleans up files older than retention period', function () {
+    test('it cleans up files older than retention period', function (): void {
         // Create test files with different ages
         $oldFile = createTempFile(
-            $this->tempPath . '/old_file.txt',
+            $this->tempPath.'/old_file.txt',
             'old content',
             25
         );
         $recentFile = createTempFile(
-            $this->tempPath . '/recent_file.txt',
+            $this->tempPath.'/recent_file.txt',
             'recent content',
             23
         );
@@ -71,7 +72,7 @@ describe('CleanupTempFilesCommand Pest Tests', function () {
         expect(file_exists($recentFile))->toBeTrue();
     });
 
-    test('it handles empty directory gracefully', function () {
+    test('it handles empty directory gracefully', function (): void {
         // Ensure temp directory is empty
         File::cleanDirectory($this->tempPath);
 
@@ -82,23 +83,23 @@ describe('CleanupTempFilesCommand Pest Tests', function () {
             ->assertExitCode(0);
     });
 
-    test('it works with different retention periods', function () {
+    test('it works with different retention periods', function (): void {
         // Set different retention period
         Config::set('lawn.storage.temp.retention_hours', 12);
 
         // Create files at different ages
         $oldFile = createTempFile(
-            $this->tempPath . '/old_file.txt',
+            $this->tempPath.'/old_file.txt',
             'old content',
             13
         );
         $midFile = createTempFile(
-            $this->tempPath . '/mid_file.txt',
+            $this->tempPath.'/mid_file.txt',
             'mid content',
             12
         );
         $recentFile = createTempFile(
-            $this->tempPath . '/recent_file.txt',
+            $this->tempPath.'/recent_file.txt',
             'recent content',
             11
         );
@@ -115,13 +116,13 @@ describe('CleanupTempFilesCommand Pest Tests', function () {
         expect(file_exists($recentFile))->toBeTrue('Recent file should remain');
     });
 
-    test('it supports force option when cleanup is disabled', function () {
+    test('it supports force option when cleanup is disabled', function (): void {
         // Disable cleanup
         Config::set('lawn.storage.temp.cleanup_enabled', false);
 
         // Create an old file
         $oldFile = createTempFile(
-            $this->tempPath . '/old_file.txt',
+            $this->tempPath.'/old_file.txt',
             'old content',
             25
         );
