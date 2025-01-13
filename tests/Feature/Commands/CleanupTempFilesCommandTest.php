@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 
@@ -135,5 +137,36 @@ describe('CleanupTempFilesCommand Pest Tests', function (): void {
 
         // Assert file is deleted
         expect(file_exists($oldFile))->toBeFalse();
+    });
+    describe('Temporary Files Cleanup Scheduler', function (): void {
+        it('is configured to run daily', function (): void {
+            // Create a Schedule instance
+            $schedule = App::make(Schedule::class);
+
+            // Get all scheduled events
+            $scheduledEvents = $schedule->events();
+
+            // Find cleanup command events
+            $cleanupEvents = array_filter($scheduledEvents, fn ($event): bool => str_contains($event->command, 'app:cleanup-temp-files'));
+
+            // Assert that exactly one cleanup command is scheduled
+            expect($cleanupEvents)->toHaveCount(
+                1,
+                'Expected only one cleanup event, but found '.count($cleanupEvents)
+            );
+
+            // Get the first (and only) scheduled cleanup command
+            $cleanupEvent = reset($cleanupEvents);
+
+            // Verify it's configured to run daily
+            expect($cleanupEvent->expression)->toBe('0 0 * * *')
+                ->and($cleanupEvent->command)->toContain('app:cleanup-temp-files');
+        });
+
+        it('has the correct configuration for cleanup', function (): void {
+            // Verify configuration settings
+            expect(config('lawn.storage.temp.cleanup_enabled'))->toBeTrue()
+                ->and(config('lawn.storage.temp.retention_hours'))->toBe(24);
+        });
     });
 });
