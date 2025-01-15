@@ -176,7 +176,7 @@ describe('LawnImage Model', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['lawn_id' => null]);
 
-            expect(fn() => $image->save())
+            expect(fn () => $image->save())
                 ->toThrow(QueryException::class);
         });
 
@@ -184,7 +184,7 @@ describe('LawnImage Model', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['image_path' => null]);
 
-            expect(fn() => $image->save())
+            expect(fn () => $image->save())
                 ->toThrow(QueryException::class);
         });
 
@@ -192,7 +192,7 @@ describe('LawnImage Model', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['imageable_id' => null]);
 
-            expect(fn() => $image->save())
+            expect(fn () => $image->save())
                 ->toThrow(QueryException::class);
         });
 
@@ -200,7 +200,7 @@ describe('LawnImage Model', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['imageable_type' => null]);
 
-            expect(fn() => $image->save())
+            expect(fn () => $image->save())
                 ->toThrow(QueryException::class);
         });
 
@@ -208,7 +208,7 @@ describe('LawnImage Model', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['type' => null]);
 
-            expect(fn() => $image->save())
+            expect(fn () => $image->save())
                 ->toThrow(QueryException::class);
         });
 
