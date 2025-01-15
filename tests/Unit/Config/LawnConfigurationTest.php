@@ -7,7 +7,7 @@ uses()
     ->beforeEach(function () {
         // Ensure the configuration is loaded
         if (! config('lawn')) {
-            $this->markTestSkipped('Lawn configuration is not loaded');
+            test()->skip('Lawn configuration is not loaded');
         }
     });
 
@@ -126,7 +126,7 @@ describe('Lawn Configuration Comprehensive Tests', function () {
             expect($allowedTypes)
                 ->toBeArray()
                 ->and($allowedTypes)->not()->toBeEmpty()
-                ->and(array_map(fn($type) => is_string($type), $allowedTypes))->toBe(array_fill(0, count($allowedTypes), true))
+                ->and(array_map(fn ($type) => is_string($type), $allowedTypes))->toBe(array_fill(0, count($allowedTypes), true))
                 ->and($allowedTypes)->toBe(['jpg', 'jpeg', 'png', 'gif', 'webp']);
         });
 

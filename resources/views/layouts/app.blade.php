@@ -6,19 +6,39 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Lawn Management') }} - {{ $title ?? '' }}</title>
+
     <style>
         [x-cloak] {
             display: none !important;
         }
+
+        /* Add this to prevent initial Alpine.js rendering flicker */
+        [x-cloak] * {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        body.loading * {
+            opacity: 0;
+        }
     </style>
+
     @livewireStyles
     @filamentStyles
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <script>
+        // Prevent Alpine.js flickering
+        document.addEventListener('alpine:init', () => {
+            document.body.classList.remove('loading');
+        });
+    </script>
 </head>
 
-<body class="flex min-h-screen flex-col bg-background-light font-sans antialiased dark:bg-gray-900">
+<body class="loading flex min-h-screen flex-col bg-background-light font-sans antialiased dark:bg-gray-900">
     <!-- Navigation -->
     <x-navigation.navbar />
 

@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 use App\Console\Commands\CleanupArchivedImages;
-use App\Enums\LawnImageType;
 use App\Models\Lawn;
 use App\Models\LawnImage;
 use Illuminate\Support\Facades\Config;
@@ -13,9 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Output\OutputInterface;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Configure archive settings for testing
     Config::set('lawn.storage.archive', [
         'enabled' => true,
@@ -31,8 +29,8 @@ beforeEach(function () {
     $this->lawn = Lawn::factory()->create();
 });
 
-describe('CleanupArchivedImages Command - Basic Functionality', function () {
-    test('skips cleanup when archiving is disabled', function () {
+describe('CleanupArchivedImages Command - Basic Functionality', function (): void {
+    test('skips cleanup when archiving is disabled', function (): void {
         // Disable archiving
         Config::set('lawn.storage.archive.enabled', false);
 
@@ -42,7 +40,7 @@ describe('CleanupArchivedImages Command - Basic Functionality', function () {
             ->assertExitCode(Command::SUCCESS);
     });
 
-    test('handles scenario with no images to cleanup', function () {
+    test('handles scenario with no images to cleanup', function (): void {
         // Ensure no archived images exist
         LawnImage::query()->delete();
 
@@ -53,8 +51,8 @@ describe('CleanupArchivedImages Command - Basic Functionality', function () {
     });
 });
 
-describe('CleanupArchivedImages Command - Image Deletion', function () {
-    test('successfully cleans up archived images', function () {
+describe('CleanupArchivedImages Command - Image Deletion', function (): void {
+    test('successfully cleans up archived images', function (): void {
         // Create some archived images (some to delete, some to keep)
         $imagesToDelete = LawnImage::factory()
             ->count(5)
@@ -84,8 +82,8 @@ describe('CleanupArchivedImages Command - Image Deletion', function () {
 
         // Run the command
         $this->artisan(CleanupArchivedImages::class)
-            ->expectsOutputToContain("Found 5 images to cleanup")
-            ->expectsOutputToContain("Cleaned up 5 archived images.")
+            ->expectsOutputToContain('Found 5 images to cleanup')
+            ->expectsOutputToContain('Cleaned up 5 archived images.')
             ->assertExitCode(Command::SUCCESS);
 
         // Assert database state
@@ -102,8 +100,8 @@ describe('CleanupArchivedImages Command - Image Deletion', function () {
     });
 });
 
-describe('CleanupArchivedImages Command - Error Handling', function () {
-    test('handles partial failures during cleanup', function () {
+describe('CleanupArchivedImages Command - Error Handling', function (): void {
+    test('handles partial failures during cleanup', function (): void {
         // Create some archived images
         $imagesToDelete = LawnImage::factory()
             ->count(5)
@@ -122,7 +120,7 @@ describe('CleanupArchivedImages Command - Error Handling', function () {
 
         // Capture log messages
         $loggedErrors = [];
-        Log::listen(function ($level, $message, $context) use (&$loggedErrors) {
+        Log::listen(function ($level, $message, $context) use (&$loggedErrors): void {
             if ($level === 'error' && $message === 'Failed to cleanup image') {
                 $loggedErrors[] = $context;
             }
@@ -130,9 +128,9 @@ describe('CleanupArchivedImages Command - Error Handling', function () {
 
         // Run the command
         $this->artisan(CleanupArchivedImages::class)
-            ->expectsOutputToContain("Found 5 images to cleanup")
-            ->expectsOutputToContain("Failed to cleanup image")
-            ->expectsOutputToContain("Cleaned up 4 archived images.")
+            ->expectsOutputToContain('Found 5 images to cleanup')
+            ->expectsOutputToContain('Failed to cleanup image')
+            ->expectsOutputToContain('Cleaned up 4 archived images.')
             ->assertExitCode(Command::FAILURE);
 
         // Verify error logging
@@ -141,8 +139,8 @@ describe('CleanupArchivedImages Command - Error Handling', function () {
     });
 })->todo('implement when archive image is working');
 
-describe('CleanupArchivedImages Command - Configuration Options', function () {
-    test('respects chunk size option', function () {
+describe('CleanupArchivedImages Command - Configuration Options', function (): void {
+    test('respects chunk size option', function (): void {
         // Create a large number of images to test chunking
         $images = LawnImage::factory()
             ->count(50)
@@ -155,15 +153,15 @@ describe('CleanupArchivedImages Command - Configuration Options', function () {
 
         // Run the command with custom chunk size
         $this->artisan(CleanupArchivedImages::class, ['--chunk' => 10])
-            ->expectsOutputToContain("Found 50 images to cleanup")
-            ->expectsOutputToContain("Cleaned up 50 archived images.")
+            ->expectsOutputToContain('Found 50 images to cleanup')
+            ->expectsOutputToContain('Cleaned up 50 archived images.')
             ->assertExitCode(Command::SUCCESS);
 
         // Assert all images are cleaned up
         $this->assertDatabaseCount('lawn_images', 0);
     })->todo('implement when archive image is working');
 
-    test('allows disabling progress bar', function () {
+    test('allows disabling progress bar', function (): void {
         // Create some archived images
         LawnImage::factory()
             ->count(5)
@@ -176,8 +174,8 @@ describe('CleanupArchivedImages Command - Configuration Options', function () {
 
         // Run the command with no-progress option
         $this->artisan(CleanupArchivedImages::class, ['--no-progress' => true])
-            ->expectsOutputToContain("Found 5 images to cleanup")
-            ->expectsOutputToContain("Cleaned up 5 archived images.")
+            ->expectsOutputToContain('Found 5 images to cleanup')
+            ->expectsOutputToContain('Cleaned up 5 archived images.')
             ->assertExitCode(Command::SUCCESS);
     });
 });

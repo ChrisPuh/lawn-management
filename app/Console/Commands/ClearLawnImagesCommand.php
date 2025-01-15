@@ -9,7 +9,6 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
-use Log;
 
 final class ClearLawnImagesCommand extends Command
 {
@@ -55,7 +54,7 @@ final class ClearLawnImagesCommand extends Command
                     $disk->delete($file);
                     $deletedFiles++;
                 } catch (Exception $e) {
-                    $this->warn("Could not delete file: {$file}. " . $e->getMessage());
+                    $this->warn("Could not delete file: {$file}. ".$e->getMessage());
                 }
             }
         }
@@ -79,7 +78,7 @@ final class ClearLawnImagesCommand extends Command
                     $disk->deleteDirectory($directory);
                 }
             } catch (Exception $e) {
-                $this->warn("Could not delete directory: {$directory}. " . $e->getMessage());
+                $this->warn("Could not delete directory: {$directory}. ".$e->getMessage());
             }
         }
 
