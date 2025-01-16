@@ -11,11 +11,12 @@ use App\Models\LawnFertilizing;
 use App\Models\LawnImage;
 use App\Models\LawnMowing;
 use App\Models\LawnScarifying;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 
-describe('LawnImage Model', function (): void {
-    describe('attributes', function (): void {
-        test('has correct fillable attributes', function (): void {
+describe('LawnImage Model', function () {
+    describe('attributes', function () {
+        test('has correct fillable attributes', function () {
             $image = new LawnImage;
 
             expect($image->getFillable())->toBe([
@@ -25,10 +26,12 @@ describe('LawnImage Model', function (): void {
                 'imageable_type',
                 'type',
                 'description',
+                'archived_at',
+                'delete_after',
             ]);
         });
 
-        test('converts to array with correct keys', function (): void {
+        test('converts to array with correct keys', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create();
 
@@ -40,20 +43,33 @@ describe('LawnImage Model', function (): void {
                 'imageable_id',
                 'type',
                 'description',
+                'archived_at',
+                'delete_after',
                 'created_at',
                 'updated_at',
             ]);
         });
 
-        test('uses correct table name', function (): void {
+        test('casts datetime fields correctly', function () {
+            /** @var LawnImage $image */
+            $image = LawnImage::factory()->create([
+                'archived_at' => now(),
+                'delete_after' => now()->addMonths(3),
+            ]);
+
+            expect($image->archived_at)->toBeInstanceOf(Carbon::class);
+            expect($image->delete_after)->toBeInstanceOf(Carbon::class);
+        });
+
+        test('uses correct table name', function () {
             $image = new LawnImage;
 
             expect($image->getTable())->toBe('lawn_images');
         });
     });
 
-    describe('relationships', function (): void {
-        test('belongs to lawn', function (): void {
+    describe('relationships', function () {
+        test('belongs to lawn', function () {
             $lawn = Lawn::factory()->create();
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create(['lawn_id' => $lawn->id]);
@@ -62,8 +78,8 @@ describe('LawnImage Model', function (): void {
             expect($image->lawn->id)->toBe($lawn->id);
         });
 
-        describe('polymorphic relationships', function (): void {
-            test('can be associated with lawn mowing', function (): void {
+        describe('polymorphic relationships', function () {
+            test('can be associated with lawn mowing', function () {
                 $mowing = LawnMowing::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -75,7 +91,7 @@ describe('LawnImage Model', function (): void {
                 expect($image->imageable->id)->toBe($mowing->id);
             });
 
-            test('can be associated with lawn fertilizing', function (): void {
+            test('can be associated with lawn fertilizing', function () {
                 $fertilizing = LawnFertilizing::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -87,7 +103,7 @@ describe('LawnImage Model', function (): void {
                 expect($image->imageable->id)->toBe($fertilizing->id);
             });
 
-            test('can be associated with lawn scarifying', function (): void {
+            test('can be associated with lawn scarifying', function () {
                 $scarifying = LawnScarifying::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -99,7 +115,7 @@ describe('LawnImage Model', function (): void {
                 expect($image->imageable->id)->toBe($scarifying->id);
             });
 
-            test('can be associated with lawn aerating', function (): void {
+            test('can be associated with lawn aerating', function () {
                 $aerating = LawnAerating::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -113,8 +129,8 @@ describe('LawnImage Model', function (): void {
         });
     });
 
-    describe('factory', function (): void {
-        test('can create image record using factory', function (): void {
+    describe('factory', function () {
+        test('can create image record using factory', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create();
 
@@ -123,12 +139,14 @@ describe('LawnImage Model', function (): void {
             expect($image->lawn)->toBeInstanceOf(Lawn::class);
         });
 
-        test('can override attributes when creating', function (): void {
+        test('can override attributes when creating', function () {
             $lawn = Lawn::factory()->create();
             $mowing = LawnMowing::factory()->create();
             $customPath = 'images/test.jpg';
             $customDescription = 'Test Description';
             $customType = LawnImageType::AFTER->value;
+            $archivedAt = now();
+            $deleteAfter = now()->addMonths(3);
 
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create([
@@ -138,6 +156,8 @@ describe('LawnImage Model', function (): void {
                 'imageable_type' => LawnMowing::class,
                 'type' => $customType,
                 'description' => $customDescription,
+                'archived_at' => $archivedAt,
+                'delete_after' => $deleteAfter,
             ]);
 
             expect($image->lawn_id)->toBe($lawn->id);
@@ -146,11 +166,13 @@ describe('LawnImage Model', function (): void {
             expect($image->imageable_type)->toBe(LawnMowing::class);
             expect($image->type->value)->toBe($customType);
             expect($image->description)->toBe($customDescription);
+            expect($image->archived_at->timestamp)->toBe($archivedAt->timestamp);
+            expect($image->delete_after->timestamp)->toBe($deleteAfter->timestamp);
         });
     });
 
-    describe('validation', function (): void {
-        test('requires lawn_id to be present', function (): void {
+    describe('validation', function () {
+        test('requires lawn_id to be present', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['lawn_id' => null]);
 
@@ -158,7 +180,7 @@ describe('LawnImage Model', function (): void {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires image_path to be present', function (): void {
+        test('requires image_path to be present', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['image_path' => null]);
 
@@ -166,7 +188,7 @@ describe('LawnImage Model', function (): void {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires imageable_id to be present', function (): void {
+        test('requires imageable_id to be present', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['imageable_id' => null]);
 
@@ -174,7 +196,7 @@ describe('LawnImage Model', function (): void {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires imageable_type to be present', function (): void {
+        test('requires imageable_type to be present', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['imageable_type' => null]);
 
@@ -182,7 +204,7 @@ describe('LawnImage Model', function (): void {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires type to be present', function (): void {
+        test('requires type to be present', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['type' => null]);
 
@@ -190,11 +212,70 @@ describe('LawnImage Model', function (): void {
                 ->toThrow(QueryException::class);
         });
 
-        test('allows description to be null', function (): void {
+        test('allows description to be null', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create(['description' => null]);
 
             expect($image->description)->toBeNull();
+        });
+
+        test('allows archived_at to be null', function () {
+            /** @var LawnImage $image */
+            $image = LawnImage::factory()->create(['archived_at' => null]);
+
+            expect($image->archived_at)->toBeNull();
+        });
+
+        test('allows delete_after to be null', function () {
+            /** @var LawnImage $image */
+            $image = LawnImage::factory()->create(['delete_after' => null]);
+
+            expect($image->delete_after)->toBeNull();
+        });
+    });
+
+    describe('archiving', function () {
+        test('can archive an image', function () {
+            /** @var LawnImage $image */
+            $image = LawnImage::factory()->create();
+
+            $archivedAt = now();
+            $deleteAfter = now()->addMonths(3);
+
+            $image->update([
+                'archived_at' => $archivedAt,
+                'delete_after' => $deleteAfter,
+            ]);
+
+            expect($image->archived_at->timestamp)->toBe($archivedAt->timestamp);
+            expect($image->delete_after->timestamp)->toBe($deleteAfter->timestamp);
+        });
+
+        test('can query archived images', function () {
+            // Create some archived and non-archived images
+            LawnImage::factory()->count(3)->create(['archived_at' => null]);
+            LawnImage::factory()->count(2)->create(['archived_at' => now()]);
+
+            $archivedCount = LawnImage::whereNotNull('archived_at')->count();
+            $nonArchivedCount = LawnImage::whereNull('archived_at')->count();
+
+            expect($archivedCount)->toBe(2);
+            expect($nonArchivedCount)->toBe(3);
+        });
+
+        test('can query images pending deletion', function () {
+            // Create images with different delete_after dates
+            LawnImage::factory()->count(2)->create([
+                'archived_at' => now(),
+                'delete_after' => now()->subDay(),
+            ]);
+            LawnImage::factory()->count(3)->create([
+                'archived_at' => now(),
+                'delete_after' => now()->addDay(),
+            ]);
+
+            $pendingDeletionCount = LawnImage::where('delete_after', '<', now())->count();
+            expect($pendingDeletionCount)->toBe(2);
         });
     });
 });
