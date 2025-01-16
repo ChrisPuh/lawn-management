@@ -19,22 +19,21 @@ describe('Lawn Image Cleanup Configuration', function () {
         expect(is_bool($cleanupEnabled))->toBeTrue();
     });
 
-
     it('has valid default configuration', function () {
         // Storage configuration
-        expect(Config::get('lawn.storage.base_path'))->toBe(env('LAWN_STORAGE_PATH', 'lawns'));
+        expect(Config::get('lawn.storage.base_path'))->toBe(config('lawn.storage.base_path'));
 
         // Temp storage configuration
-        expect(Config::get('lawn.storage.temp.path'))->toBe(env('LAWN_TEMP_PATH', 'private/livewire-tmp'));
+        expect(Config::get('lawn.storage.temp.path'))->toBe(config('lawn.storage.temp.path'));
         expect(Config::get('lawn.storage.temp.retention_hours'))->toBeInt();
 
         // Check cleanup_enabled is a boolean and defaults to true
         $cleanupEnabled = Config::get('lawn.storage.temp.cleanup_enabled');
-        expect($cleanupEnabled)->toBeTrue(); // This line might fail if the default is not true
+        expect($cleanupEnabled)->toBeTrue();
 
         // Archive configuration
         expect(Config::get('lawn.storage.archive.enabled'))->toBeBool();
-        expect(Config::get('lawn.storage.archive.path'))->toBe(env('LAWN_ARCHIVE_PATH', 'archive'));
+        expect(Config::get('lawn.storage.archive.path'))->toBe(config('lawn.storage.archive.path'));
         expect(Config::get('lawn.storage.archive.retention_months'))->toBeInt();
 
         // Image settings

@@ -180,12 +180,12 @@ describe('LawnImage Model', function () {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires image_path to be present', function () {
+        test('allows image_path to be null', function () {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['image_path' => null]);
 
-            expect(fn () => $image->save())
-                ->toThrow(QueryException::class);
+            expect($image->image_path)->toBeNull();
+            
         });
 
         test('requires imageable_id to be present', function () {

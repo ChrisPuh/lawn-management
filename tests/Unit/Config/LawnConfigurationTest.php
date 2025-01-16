@@ -44,11 +44,14 @@ describe('Lawn Configuration Comprehensive Tests', function () {
         });
 
         test('cleanup can be enabled or disabled', function () {
-            $cleanupEnabled = config('lawn.storage.temp.cleanup_enabled');
+            // Default state
+            $defaultCleanupEnabled = config('lawn.storage.temp.cleanup_enabled');
+            expect($defaultCleanupEnabled)->toBeTrue();
 
-            expect($cleanupEnabled)
-                ->toBeBool()
-                ->toBeFalse();
+            // Test configurable state
+            Config::set('lawn.storage.temp.cleanup_enabled', false);
+            $modifiedCleanupEnabled = config('lawn.storage.temp.cleanup_enabled');
+            expect($modifiedCleanupEnabled)->toBeFalse();
         });
 
         test('temp storage disk is configured', function () {
@@ -126,7 +129,7 @@ describe('Lawn Configuration Comprehensive Tests', function () {
             expect($allowedTypes)
                 ->toBeArray()
                 ->and($allowedTypes)->not()->toBeEmpty()
-                ->and(array_map(fn ($type) => is_string($type), $allowedTypes))->toBe(array_fill(0, count($allowedTypes), true))
+                ->and(array_map(fn($type) => is_string($type), $allowedTypes))->toBe(array_fill(0, count($allowedTypes), true))
                 ->and($allowedTypes)->toBe(['jpg', 'jpeg', 'png', 'gif', 'webp']);
         });
 
