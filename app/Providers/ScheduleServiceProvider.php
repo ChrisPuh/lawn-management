@@ -29,6 +29,12 @@ final class ScheduleServiceProvider extends ServiceProvider
             $schedule->command('app:cleanup-temp-files')
                 ->daily()
                 ->appendOutputTo(storage_path('logs/temp-cleanup.log'));
+
+            // Run the archived images cleanup daily at midnight
+            $schedule->command('lawn:cleanup-archived-images')
+                ->daily()
+                ->withoutOverlapping()
+                ->runInBackground();
         });
     }
 }
