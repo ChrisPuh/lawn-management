@@ -24,10 +24,26 @@ final class SuccessMessage extends Component
     }
 
     #[On('show-success-message')]
-    public function showMessage(string $message, int $duration = 3000): void
+    public function showMessage($payload): void
     {
-        $this->message = $message;
-        $this->duration = $duration;
+        // Handle different payload types
+        if (is_array($payload)) {
+            // If payload is an array with 'message' and 'duration'
+            if (isset($payload['message'])) {
+                $this->message = $payload['message'];
+                $this->duration = $payload['duration'] ?? 3000;
+            }
+            // If payload is a nested array (from Livewire event)
+            elseif (isset($payload[0]['message'])) {
+                $this->message = $payload[0]['message'];
+                $this->duration = $payload[0]['duration'] ?? 3000;
+            }
+        }
+        // If payload is a simple string
+        elseif (is_string($payload)) {
+            $this->message = $payload;
+        }
+
         $this->show = true;
     }
 
