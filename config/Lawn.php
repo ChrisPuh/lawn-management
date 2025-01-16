@@ -20,7 +20,7 @@ return [
         'temp' => [
             'path' => env('LAWN_TEMP_PATH', 'private/livewire-tmp'),
             'retention_hours' => (int) env('LAWN_TEMP_RETENTION_HOURS', 24),
-            'cleanup_enabled' => (bool) env('LAWN_TEMP_CLEANUP_ENABLED', true),
+            'cleanup_enabled' => true, // Explicitly set to true
             'disk' => env('LAWN_TEMP_DISK', 'local'),
         ],
 

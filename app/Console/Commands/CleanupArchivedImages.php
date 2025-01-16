@@ -23,6 +23,7 @@ final class CleanupArchivedImages extends Command
 
     public function handle(): int
     {
+
         if (! Config::get('lawn.storage.archive.enabled')) {
             $this->info('Image archiving is disabled. Skipping cleanup.');
 
@@ -46,6 +47,11 @@ final class CleanupArchivedImages extends Command
         $chunkSize = $this->option('chunk') ?? 100;
         $count = 0;
         $failed = 0;
+
+        Log::channel('cleanup')->info('Started archived images cleanup', [
+            'total_images' => $total,
+            'chunk_size' => $chunkSize,
+        ]);
 
         $progressBar = ! $this->option('no-progress') && $this->output->getVerbosity() !== OutputInterface::VERBOSITY_QUIET
             ? $this->output->createProgressBar($total)
@@ -88,6 +94,10 @@ final class CleanupArchivedImages extends Command
 
             return self::FAILURE;
         }
+        Log::channel('cleanup')->info('Finished archived images cleanup', [
+            'cleaned_images' => $count,
+            'failed_images' => $failed,
+        ]);
 
         return self::SUCCESS;
     }

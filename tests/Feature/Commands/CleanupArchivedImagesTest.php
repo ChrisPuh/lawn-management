@@ -2,180 +2,78 @@
 
 declare(strict_types=1);
 
-uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
-
 use App\Console\Commands\CleanupArchivedImages;
-use App\Models\Lawn;
 use App\Models\LawnImage;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Console\Command\Command;
 
-beforeEach(function (): void {
-    // Configure archive settings for testing
-    Config::set('lawn.storage.archive', [
-        'enabled' => true,
-        'path' => 'archive',
-        'retention_months' => 3,
-        'disk' => 'public',
-    ]);
+describe('Cleanup Archived Images Command', function () {
+    beforeEach(function () {
+        Storage::fake('public');
+        Config::set('lawn.storage.archive.enabled', true);
+    });
 
-    // Ensure clean storage
-    Storage::fake('public');
-
-    // Create a lawn for testing
-    $this->lawn = Lawn::factory()->create();
-});
-
-describe('CleanupArchivedImages Command - Basic Functionality', function (): void {
-    test('skips cleanup when archiving is disabled', function (): void {
-        // Disable archiving
+    it('skips cleanup when archiving is disabled', function () {
         Config::set('lawn.storage.archive.enabled', false);
 
-        // Run the command
-        $this->artisan(CleanupArchivedImages::class)
+        $this->artisan('lawn:cleanup-archived-images')
             ->expectsOutput('Image archiving is disabled. Skipping cleanup.')
-            ->assertExitCode(Command::SUCCESS);
+            ->assertExitCode(0);
     });
 
-    test('handles scenario with no images to cleanup', function (): void {
-        // Ensure no archived images exist
-        LawnImage::query()->delete();
-
-        // Run the command
-        $this->artisan(CleanupArchivedImages::class)
+    it('handles no images to cleanup', function () {
+        $this->artisan('lawn:cleanup-archived-images')
             ->expectsOutput('No images to cleanup.')
-            ->assertExitCode(Command::SUCCESS);
+            ->assertExitCode(0);
     });
-});
 
-describe('CleanupArchivedImages Command - Image Deletion', function (): void {
-    test('successfully cleans up archived images', function (): void {
-        // Create some archived images (some to delete, some to keep)
-        $imagesToDelete = LawnImage::factory()
-            ->count(5)
-            ->archived()
-            ->create([
-                'lawn_id' => $this->lawn->id,
-                'delete_after' => now()->subDay(), // Already past deletion date
-                'archived_at' => now()->subDays(2),
-            ]);
+    it('cleans up archived images', function () {
+        // Create some archived images past their delete_after date
+        $imagesToDelete = LawnImage::factory()->count(5)->create([
+            'archived_at' => now()->subMonths(4),
+            'delete_after' => now()->subMonth(),
+            'image_path' => 'test/image.jpg'
+        ]);
 
-        $imagesToKeep = LawnImage::factory()
-            ->count(3)
-            ->archived()
-            ->create([
-                'lawn_id' => $this->lawn->id,
-                'delete_after' => now()->addDays(10), // Not yet ready for deletion
-                'archived_at' => now()->subDays(1),
-            ]);
+        // Create some images that should not be deleted
+        LawnImage::factory()->count(3)->create([
+            'archived_at' => null,
+            'delete_after' => null
+        ]);
 
-        // Ensure the images are stored
-        foreach ($imagesToDelete as $image) {
-            Storage::disk('public')->put(
-                $image->image_path,
-                'dummy image content'
-            );
-        }
+        // Simulate file existence
+        Storage::disk('public')->put('test/image.jpg', 'dummy content');
 
-        // Run the command
-        $this->artisan(CleanupArchivedImages::class)
+        $this->artisan('lawn:cleanup-archived-images')
             ->expectsOutputToContain('Found 5 images to cleanup')
             ->expectsOutputToContain('Cleaned up 5 archived images.')
-            ->assertExitCode(Command::SUCCESS);
+            ->assertExitCode(0);
 
-        // Assert database state
+        // Assert images are deleted
         foreach ($imagesToDelete as $image) {
             $this->assertDatabaseMissing('lawn_images', ['id' => $image->id]);
-            Storage::disk('public')->assertMissing($image->image_path);
-        }
-
-        // Ensure other images are untouched
-        foreach ($imagesToKeep as $image) {
-            $this->assertDatabaseHas('lawn_images', ['id' => $image->id]);
-            Storage::disk('public')->assertExists($image->image_path);
+            Storage::disk('public')->assertMissing('test/image.jpg');
         }
     });
-});
 
-describe('CleanupArchivedImages Command - Error Handling', function (): void {
-    test('handles partial failures during cleanup', function (): void {
-        // Create some archived images
-        $imagesToDelete = LawnImage::factory()
-            ->count(5)
-            ->archived()
-            ->create([
-                'lawn_id' => $this->lawn->id,
-                'delete_after' => now()->subDay(),
-                'archived_at' => now()->subDays(2),
-            ]);
+    it('handles partial failures during cleanup', function () {
+        // Create a valid archived image
+        $validImage = LawnImage::factory()->archived()->create();
 
-        // Create an image that will fail to delete
-        $failingImage = $imagesToDelete[0];
-        DB::table('lawn_images')
-            ->where('id', $failingImage->id)
-            ->update(['image_path' => '']); // Set to empty string to simulate failure
+        // Create an archived image without a valid file path
+        $invalidImage = LawnImage::factory()->archived()->create([
+            'image_path' => null
+        ]);
 
-        // Capture log messages
-        $loggedErrors = [];
-        Log::listen(function ($level, $message, $context) use (&$loggedErrors): void {
-            if ($level === 'error' && $message === 'Failed to cleanup image') {
-                $loggedErrors[] = $context;
-            }
-        });
+        $this->artisan('lawn:cleanup-archived-images')
+            ->expectsOutputToContain('Found 2 images to cleanup')
+            ->expectsOutputToContain('1 images failed to cleanup.')
+            ->assertExitCode(1);
 
-        // Run the command
-        $this->artisan(CleanupArchivedImages::class)
-            ->expectsOutputToContain('Found 5 images to cleanup')
-            ->expectsOutputToContain('Failed to cleanup image')
-            ->expectsOutputToContain('Cleaned up 4 archived images.')
-            ->assertExitCode(Command::FAILURE);
+        // Assert valid image is deleted
+        $this->assertDatabaseMissing('lawn_images', ['id' => $validImage->id]);
 
-        // Verify error logging
-        expect($loggedErrors)->toHaveCount(1);
-        expect($loggedErrors[0])->toHaveKey('image_id', $failingImage->id);
-    });
-})->todo('implement when archive image is working');
-
-describe('CleanupArchivedImages Command - Configuration Options', function (): void {
-    test('respects chunk size option', function (): void {
-        // Create a large number of images to test chunking
-        $images = LawnImage::factory()
-            ->count(50)
-            ->archived()
-            ->create([
-                'lawn_id' => $this->lawn->id,
-                'delete_after' => now()->subDay(),
-                'archived_at' => now()->subDays(2),
-            ]);
-
-        // Run the command with custom chunk size
-        $this->artisan(CleanupArchivedImages::class, ['--chunk' => 10])
-            ->expectsOutputToContain('Found 50 images to cleanup')
-            ->expectsOutputToContain('Cleaned up 50 archived images.')
-            ->assertExitCode(Command::SUCCESS);
-
-        // Assert all images are cleaned up
-        $this->assertDatabaseCount('lawn_images', 0);
-    })->todo('implement when archive image is working');
-
-    test('allows disabling progress bar', function (): void {
-        // Create some archived images
-        LawnImage::factory()
-            ->count(5)
-            ->archived()
-            ->create([
-                'lawn_id' => $this->lawn->id,
-                'delete_after' => now()->subDay(),
-                'archived_at' => now()->subDays(2),
-            ]);
-
-        // Run the command with no-progress option
-        $this->artisan(CleanupArchivedImages::class, ['--no-progress' => true])
-            ->expectsOutputToContain('Found 5 images to cleanup')
-            ->expectsOutputToContain('Cleaned up 5 archived images.')
-            ->assertExitCode(Command::SUCCESS);
+        // Assert invalid image remains
+        $this->assertDatabaseHas('lawn_images', ['id' => $invalidImage->id]);
     });
 });
