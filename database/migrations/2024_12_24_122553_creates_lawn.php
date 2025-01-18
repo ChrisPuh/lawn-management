@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
+use App\Enums\LawnCare\LawnCareType;
 use App\Enums\LawnImageType;
 use App\Models\Lawn;
 use App\Models\LawnAerating;
@@ -30,6 +31,33 @@ return new class extends Migration
             $table->enum('type', collect(GrassType::cases())->map->value()->all())->nullable();
             $table->foreignId('user_id')->references('id')->on(User::getTableName())->constrained()->cascadeOnDelete();
             $table->timestamps();
+        });
+
+        Schema::create(App\Models\LawnCare::getTableName(), function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('created_by_id')->constrained('users')->cascadeOnDelete();
+            $table->enum('type', collect(LawnCareType::cases())->map->value->all());
+            $table->json('care_data')->nullable();
+            $table->text('notes')->nullable();
+            $table->datetime('performed_at')->nullable();
+            $table->datetime('scheduled_for')->nullable();
+            $table->datetime('completed_at')->nullable();
+            $table->timestamps();
+
+            $table->index(['lawn_id', 'type']);
+            $table->index(['scheduled_for', 'completed_at']);
+        });
+
+        Schema::create(App\Models\LawnCareLog::getTableName(), function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('lawn_care_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('action');
+            $table->json('data')->nullable();
+            $table->timestamps();
+
+            $table->index(['lawn_care_id', 'action']);
         });
 
         // Mowing history
@@ -94,6 +122,8 @@ return new class extends Migration
         Schema::dropIfExists(LawnScarifying::getTableName());
         Schema::dropIfExists(LawnFertilizing::getTableName());
         Schema::dropIfExists(LawnMowing::getTableName());
+        Schema::dropIfExists(App\Models\LawnCareLog::getTableName());
+        Schema::dropIfExists(App\Models\LawnCare::getTableName());
         Schema::dropIfExists(Lawn::getTableName());
     }
 };
