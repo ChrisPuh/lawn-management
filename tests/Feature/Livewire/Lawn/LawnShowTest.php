@@ -9,7 +9,6 @@ use App\Models\Lawn;
 use App\Models\LawnFertilizing;
 use App\Models\LawnMowing;
 use App\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
