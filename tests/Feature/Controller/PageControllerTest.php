@@ -10,7 +10,7 @@ use Tests\TestCase;
 final class PageControllerTest extends TestCase
 {
     #[Test]
-    public function landing_pages_are_accessible()
+    public function landing_pages_are_accessible(): void
     {
         $routes = ['welcome', 'about', 'features', 'privacy', 'terms', 'contact'];
 
@@ -22,7 +22,7 @@ final class PageControllerTest extends TestCase
     }
 
     #[Test]
-    public function dashboard_link_only_visible_when_authenticated()
+    public function dashboard_link_only_visible_when_authenticated(): void
     {
         $response = $this->get('/');
         $response->assertDontSee('Dashboard');
@@ -33,7 +33,7 @@ final class PageControllerTest extends TestCase
     }
 
     #[Test]
-    public function auth_buttons_switch_correctly()
+    public function auth_buttons_switch_correctly(): void
     {
         $response = $this->get('/');
         $response->assertSee('Login')->assertSee('Register');
@@ -44,7 +44,7 @@ final class PageControllerTest extends TestCase
     }
 
     #[Test]
-    public function cache_headers_are_present()
+    public function cache_headers_are_present(): void
     {
         $response = $this->get(route('privacy'));
 

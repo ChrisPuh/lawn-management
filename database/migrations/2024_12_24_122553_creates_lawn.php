@@ -76,10 +76,13 @@ return new class extends Migration
         Schema::create(LawnImage::getTableName(), function (Blueprint $table) {
             $table->id();
             $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();
-            $table->string('image_path');
-            $table->morphs('imageable'); // Polymorphic relation to link images to different activities
+            $table->string('image_path')->nullable();
+            $table->morphs('imageable'); // Polymorphic relation to link images to ifferent activities
             $table->enum('type', collect(LawnImageType::cases())->map->value->all());
             $table->text('description')->nullable();
+
+            $table->timestamp('archived_at')->nullable();
+            $table->timestamp('delete_after')->nullable();
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ final class LawnFertilizingPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool
+    public function viewAny(): bool
     {
         return true;
     }
@@ -25,7 +25,7 @@ final class LawnFertilizingPolicy
         return $user->id === $lawnFertilizing->lawn->user_id;
     }
 
-    public function create(User $user): bool
+    public function create(): bool
     {
         return true;
     }

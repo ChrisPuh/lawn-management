@@ -13,7 +13,7 @@ final class EmptyState extends Component
         $this->dispatch('createLawn');
     }
 
-    public function render()
+    public function render(): string
     {
         return
             <<<'blade'

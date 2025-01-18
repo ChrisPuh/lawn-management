@@ -10,7 +10,7 @@ final class Breadcrumbs extends Component
 {
     public array $segments = [];
 
-    public function mount()
+    public function mount(): void
     {
         $this->segments = $this->getSegments();
     }
@@ -20,7 +20,7 @@ final class Breadcrumbs extends Component
         return view('livewire.components.navigation.breadcrumbs');
     }
 
-    protected function getSegments(): array
+    private function getSegments(): array
     {
         $routeName = request()->route()?->getName() ?? request()->query('_route', '');
         $allConfig = config('navigation.breadcrumbs.segments');
@@ -29,10 +29,10 @@ final class Breadcrumbs extends Component
         return $this->processSegments($configSegments, request()->route());
     }
 
-    protected function processSegments(array $segments, $route = null): array
+    private function processSegments(array $segments, $route = null): array
     {
-        return collect($segments)->map(function ($segment) use ($route) {
-            if (str_contains($segment['label'], ':')) {
+        return collect($segments)->map(function (array $segment) use ($route): array {
+            if (str_contains((string) $segment['label'], ':')) {
                 $paramName = str_replace(':', '', $segment['label']);
                 $modelName = explode('_', $paramName)[0]; // z.B. 'lawn'
 

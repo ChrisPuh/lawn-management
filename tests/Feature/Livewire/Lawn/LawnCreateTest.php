@@ -71,11 +71,11 @@ describe('lawn create component', function (): void {
 
         // Find the grass_seed select component
         $grassSeedComponent = collect($formSchema)
-            ->first(fn ($component) => $component->getName() === 'grass_seed');
+            ->first(fn ($component): bool => $component->getName() === 'grass_seed');
 
         // Find the type select component
         $typeComponent = collect($formSchema)
-            ->first(fn ($component) => $component->getName() === 'type');
+            ->first(fn ($component): bool => $component->getName() === 'type');
 
         // Test grass_seed options
         expect($grassSeedComponent->getOptions())->toBe(collect([

@@ -12,7 +12,7 @@ final class OverviewStatsCard extends Component
     public int $totalLawns;
 
     /** @var array{lawn: string, type: string, date: string}|null */
-    public ?array $lastCareInfo;
+    public ?array $lastCareInfo = null;
 
     /**
      * @param  array{lawn: string, type: string, date: string}|null  $lastCareInfo

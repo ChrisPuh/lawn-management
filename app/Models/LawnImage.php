@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $imageable_id
  * @property LawnImageType $type
  * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $archived_at
+ * @property \Illuminate\Support\Carbon|null $delete_after
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Lawn $lawn
@@ -40,10 +42,14 @@ final class LawnImage extends Model
         'imageable_type',
         'type',
         'description',
+        'archived_at',
+        'delete_after',
     ];
 
     protected $casts = [
         'type' => LawnImageType::class,
+        'archived_at' => 'datetime',
+        'delete_after' => 'datetime',
     ];
 
     /**

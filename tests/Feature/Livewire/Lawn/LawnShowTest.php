@@ -9,7 +9,6 @@ use App\Models\Lawn;
 use App\Models\LawnFertilizing;
 use App\Models\LawnMowing;
 use App\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
@@ -50,8 +49,8 @@ describe('Lawn show Component', function (): void {
 
         test('displays image upload placeholder message', function (): void {
             Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
-                ->assertSeeHtml('Bildupload in Kürze verfügbar')
-                ->assertSeeHtml('disabled');
+                ->assertSeeHtml('Noch kein Bild vorhanden')
+                ->assertSeeHtml('Klicken Sie unten auf "Bild auswählen');
         });
 
         test('displays maintenance history with no records', function (): void {

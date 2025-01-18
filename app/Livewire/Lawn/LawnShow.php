@@ -9,12 +9,9 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 final class LawnShow extends Component
 {
-    use WithFileUploads;
-
     public Lawn $lawn;
 
     public ?string $lastMowingDate = null;
@@ -37,6 +34,16 @@ final class LawnShow extends Component
         $this->lastFertilizingDate = $this->lawn->getLastFertilizingDate();
         $this->lastScarifyingDate = $this->lawn->getLastScarifyingDate();
         $this->lastAeratingDate = $this->lawn->getLastAeratingDate();
+    }
+
+    /**
+     * Refresh the view when an image is uploaded or deleted
+     */
+    #[On('image-uploaded')]
+    #[On('image-deleted')]
+    public function refreshImages(): void
+    {
+        // The view will be automatically re-rendered
     }
 
     /**

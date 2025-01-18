@@ -60,6 +60,12 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'cleanup' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/lawn-cleanup.log'),
+            'level' => 'info',
+            'days' => 14,
+        ],
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
