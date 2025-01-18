@@ -9,27 +9,30 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "filament/forms": "^3.2.130",
-        "laravel/breeze": "^2.3",
-        "laravel/framework": "^11.36.1",
+        "filament/tables": "^3.2.130",
+        "laravel/breeze": "^2.3.1",
+        "laravel/framework": "^11.38.2",
         "laravel/tinker": "^2.10",
         "livewire/livewire": "^3.5.18"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^3.4",
+        "barryvdh/laravel-ide-helper": "^3.5.4",
         "brianium/paratest": "^7.7",
         "enlightn/security-checker": "^2.0",
         "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.0",
+        "larastan/larastan": "^3.0.2",
         "laravel/pail": "^1.2.1",
-        "laravel/pint": "^1.18.3",
-        "laravel/sail": "^1.39.1",
+        "laravel/pint": "^1.20",
+        "laravel/sail": "^1.40.0",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.5",
         "pestphp/pest": "^3.7.1",
         "pestphp/pest-plugin-laravel": "^3.0",
-        "pestphp/pest-plugin-livewire": "^3.0"
+        "pestphp/pest-plugin-livewire": "^3.0",
+        "pestphp/pest-plugin-type-coverage": "^3.2.3",
+        "rector/rector": "^2.0.6"
     },
     "autoload": {
         "psr-4": {
@@ -67,16 +70,29 @@
         "analyse": [
             "@php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon"
         ],
-        "test": "./vendor/bin/pest",
+        "pest": "./vendor/bin/pest",
+        "lint": "./vendor/bin/pint",
+        "refactor": "./vendor/bin/rector",
+        "test:lint": "./vendor/bin/pint --test",
+        "test:refector": "./vendor/bin/rector --dry-run",
         "test:coverage": [
             "@putenv XDEBUG_MODE=coverage",
-            "./vendor/bin/pest --coverage"
+            "./vendor/bin/pest --parallel --coverage --exactly=86.3"
         ],
         "test:coverage-html": [
             "@putenv XDEBUG_MODE=coverage",
-            "@php -d xdebug.mode=coverage vendor/bin/pest --coverage-html coverage"
+            "@php -d xdebug.mode=coverage vendor/bin/pest --coverage-html coverage --parallel"
         ],
-        "test:parallel": "./vendor/bin/pest --parallel"
+        "test:type-coverage": "./vendor/bin/pest --type-coverage --min=83.45",
+        "test:parallel": "./vendor/bin/pest --parallel",
+        "test:php-stan": "@analyse",
+        "test": [
+            "@test:refector",
+            "@test:lint",
+            "@test:type-coverage",
+            "@test:php-stan",
+            "@test:coverage"
+        ]
     },
     "extra": {
         "laravel": {

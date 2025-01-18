@@ -4,22 +4,44 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Traits\CanGetTableNameStatically;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Lawn> $lawns
+ * @property-read int|null $lawns_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ */
 final class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use CanGetTableNameStatically, HasFactory, Notifiable, Notifiable;
+    use CanGetTableNameStatically;
+    use HasFactory;
+    use Notifiable;
+
+    protected $table = 'users';
 
     /**
-     * The attributes that are mass assignable.
-     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    /**
      * @var list<string>
      */
     protected $fillable = [
@@ -29,8 +51,6 @@ final class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
      * @var list<string>
      */
     protected $hidden = [
@@ -39,31 +59,13 @@ final class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Name of the table
-     *
-     * @var string
-     */
-    protected $table = 'users';
-
-    // relations
-    /**
      * Get the lawns for the user.
-     */
-    public function lawns(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Lawn::class);
-    }
-
-    /**
-     * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @return HasMany<Lawn, User>
      */
-    protected function casts(): array
+    public function lawns(): HasMany
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        /** @var HasMany<Lawn, User> */
+        return $this->hasMany(Lawn::class);
     }
 }

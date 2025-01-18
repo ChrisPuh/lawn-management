@@ -1,4 +1,4 @@
-<x-slot name="actions">
+<div>
     <x-slot name="actions">
         <a href="{{ route('lawn.index') }}" wire:navigate
             class="flex items-center gap-x-1 text-sm font-medium text-gray-600 hover:text-gray-900">
@@ -10,12 +10,10 @@
             Zurück zur Übersicht
         </a>
     </x-slot>
-</x-slot>
-<div>
-    <!-- resources/views/livewire/lawn/lawn-show.blade.php -->
+
     <div class="space-y-8">
-        <!-- Rasenfläche Info Card -->
         <div class="overflow-hidden rounded-lg border border-primary-200 bg-white shadow-sm">
+            <!-- Header -->
             <div class="flex items-center justify-between border-b border-primary-200 px-6 py-4">
                 <div>
                     <h2 class="text-xl font-semibold text-gray-900">{{ $lawn->name }}</h2>
@@ -29,201 +27,97 @@
                 </div>
             </div>
 
-            <div class="grid gap-6 p-6 sm:grid-cols-2">
-                <div>
-                    <h3 class="font-medium text-gray-900">Details</h3>
-                    <dl class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Standort</dt>
-                            <dd class="text-sm text-gray-900">{{ $lawn->location ?? 'Nicht angegeben' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Größe</dt>
-                            <dd class="text-sm text-gray-900">{{ $lawn->size ?? 'Nicht angegeben' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Grassorte</dt>
-                            <dd class="text-sm text-gray-900">{{ $lawn->grass_seed?->label() ?? 'Nicht angegeben' }}
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Letzte Pflege</dt>
-                            <dd class="text-sm text-gray-900">{{ $lastMowingDate ?? 'Keine Pflege' }}</dd>
-                        </div>
-                    </dl>
-                </div>
-
-                <div>
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-medium text-gray-900">Mähverlauf</h3>
-                        <button wire:click="openModal"
-                            class="text-sm font-medium text-primary-600 hover:text-primary-500">
-                            Neuen Eintrag erstellen
-                        </button>
-
-                        <!-- Modal -->
-                        <div x-show="$wire.isModalOpen" x-cloak class="fixed inset-0 z-10 overflow-y-auto"
-                            aria-labelledby="modal-title" x-transition:enter="ease-out duration-300"
-                            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                            x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
-                            x-transition:leave-end="opacity-0">
-                            <div
-                                class="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
-                                <!-- Background overlay -->
-                                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-                                    aria-hidden="true">
-                                </div>
-
-                                <!-- Modal panel -->
-                                <div
-                                    class="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-                                    <div class="absolute right-0 top-0 pr-4 pt-4">
-                                        <button wire:click="closeModal" type="button"
-                                            class="rounded-md bg-white text-gray-400 hover:text-gray-500">
-                                            <span class="sr-only">Schließen</span>
-                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
-
-                                    <div class="sm:flex sm:items-start">
-                                        <div class="mt-3 w-full text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                            <h3 class="text-base font-semibold leading-6 text-gray-900"
-                                                id="modal-title">
-                                                Neuer Mäheintrag
-                                            </h3>
-                                            <div class="mt-4">
-                                                <form wire:submit="create">
-                                                    {{ $this->form }}
-
-                                                    <div class="mt-6 flex justify-end gap-x-3">
-                                                        <button type="button" wire:click="closeModal"
-                                                            class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                                                            Abbrechen
-                                                        </button>
-                                                        <button type="submit"
-                                                            class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600">
-                                                            Eintrag erstellen
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+            <!-- Content Grid -->
+            <div class="grid gap-6 p-6 md:grid-cols-3">
+                <!-- Left Column - Details -->
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-medium text-gray-900">Details</h3>
+                        <dl class="mt-2 grid grid-cols-2 gap-4">
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Standort</dt>
+                                <dd class="text-sm text-gray-900">{{ $lawn->location ?? 'Nicht angegeben' }}</dd>
                             </div>
-                        </div>
-                    </div>
-                    <div class="mt-2 flow-root">
-                        <div class="-my-2 overflow-x-auto">
-                            <div class="inline-block min-w-full align-middle">
-                                <div class="overflow-hidden rounded-lg border border-gray-200">
-                                    <table class="min-w-full divide-y divide-gray-200">
-                                        <thead class="bg-gray-50">
-                                            <tr>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Datum
-                                                </th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                    Schnitthöhe
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-200 bg-white">
-                                            @forelse($mowingRecords as $record)
-                                                <tr>
-                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                                                        {{ $record->mowed_on->format('d.m.Y') }}
-                                                    </td>
-                                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                                        {{ $record->cutting_height ?? 'Nicht angegeben' }}
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="2"
-                                                        class="px-6 py-4 text-center text-sm text-gray-500">
-                                                        Noch keine Mäheinträge vorhanden
-                                                    </td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Größe</dt>
+                                <dd class="text-sm text-gray-900">{{ $lawn->size ?? 'Nicht angegeben' }}</dd>
                             </div>
-                        </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Grassorte</dt>
+                                <dd class="text-sm text-gray-900">{{ $lawn->grass_seed?->label() ?? 'Nicht angegeben' }}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Letzte Pflege</dt>
+                                <dd class="text-sm text-gray-900">{{ $lastMowingDate ?? 'Keine Pflege' }}</dd>
+                            </div>
+                        </dl>
                     </div>
                 </div>
-            </div>
 
-            <div class="border-t border-primary-200 px-6 py-4">
-                <div class="flex justify-between">
-                    <button wire:click="$toggle('showDeleteModal')"
-                        class="rounded-lg px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">
-                        Rasenfläche löschen
-                    </button>
-                    <div class="flex gap-x-3">
-                        <a href="{{ route('lawn.index') }}" wire:navigate
-                            class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                            Zurück zur Übersicht
-                        </a>
-                        <a href="{{ route('lawn.edit', $lawn) }}" wire:navigate
-                            class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600">
-                            Bearbeiten
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Delete Modal -->
-        <div x-show="$wire.showDeleteModal" x-cloak class="fixed inset-0 z-10 overflow-y-auto"
-            aria-labelledby="modal-title">
-            <div class="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
-                <!-- Background overlay -->
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-
-                <!-- Modal panel -->
-                <div
-                    class="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-                    <div class="sm:flex sm:items-start">
-                        <div
-                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                <!-- Center Column - Current Image -->
+                <div class="flex flex-col items-center justify-center space-y-4">
+                    <div class="relative h-64 w-full rounded-lg bg-gray-100">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center space-y-2">
+                            <svg class="h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                            <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">
-                                Rasenfläche löschen
-                            </h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500">
-                                    Möchten Sie die Rasenfläche "{{ $lawn->name }}" wirklich löschen? Diese Aktion
-                                    kann nicht rückgängig gemacht werden.
-                                </p>
-                            </div>
+                            <span class="text-sm text-gray-500">Bildupload in Kürze verfügbar</span>
                         </div>
                     </div>
-                    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                        <button type="button" wire:click="confirmDelete"
-                            class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
-                            Löschen
-                        </button>
-                        <button type="button" wire:click="$toggle('showDeleteModal')"
-                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
-                            Abbrechen
-                        </button>
+                    <button type="button" disabled
+                        class="inline-flex cursor-not-allowed items-center gap-x-2 rounded-md bg-gray-400 px-4 py-2 text-sm font-semibold text-white">
+                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M1 8a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 018.07 3h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0016.07 6H17a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V8zm13.5 3a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM10 14a3 3 0 100-6 3 3 0 000 6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Bild hochladen
+                    </button>
+                </div>
+
+                <!-- Right Column - History -->
+                <div>
+                    <h3 class="font-medium text-gray-900">Pflegehistorie</h3>
+                    <div class="mt-2 space-y-3">
+                        <div class="rounded-md bg-gray-50 px-4 py-3">
+                            <div class="text-sm font-medium text-gray-900">Letzte Mahd</div>
+                            <div class="text-sm text-gray-500">{{ $lastMowingDate ?? 'Noch nie' }}</div>
+                        </div>
+                        <div class="rounded-md bg-gray-50 px-4 py-3">
+                            <div class="text-sm font-medium text-gray-900">Letzte Düngung</div>
+                            <div class="text-sm text-gray-500">{{ $lastFertilizingDate ?? 'Noch nie' }}</div>
+                        </div>
+                        <div class="rounded-md bg-gray-50 px-4 py-3">
+                            <div class="text-sm font-medium text-gray-900">Letztes Vertikutieren</div>
+                            <div class="text-sm text-gray-500">{{ $lastScarifyingDate ?? 'Noch nie' }}</div>
+                        </div>
+                        <div class="rounded-md bg-gray-50 px-4 py-3">
+                            <div class="text-sm font-medium text-gray-900">Letzte Aerifizierung</div>
+                            <div class="text-sm text-gray-500">{{ $lastAeratingDate ?? 'Noch nie' }}</div>
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-between border-t border-primary-200 px-6 py-4">
+                <div>
+                    <livewire:components.delete-modal :title="'Rasenfläche löschen'" :message="'Möchten Sie die Rasenfläche \'' .
+                        $lawn->name .
+                        '\' wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.'" :on-confirm="'delete-confirmed'" />
+                </div>
+                <div class="flex gap-x-3">
+                    <a href="{{ route('lawn.edit', $lawn) }}" wire:navigate
+                        class="rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600">
+                        Bearbeiten
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
