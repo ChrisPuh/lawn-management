@@ -17,7 +17,7 @@ final class LawnConfigServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../../config/lawn.php',
+            base_path('config/lawn.php'),
             'lawn'
         );
     }
