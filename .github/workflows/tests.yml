@@ -44,8 +44,14 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
+      - name: Copy Environment File
+        run: cp .env.testing.example .env
+
       - name: Install PHP dependencies
         run: composer install --no-interaction --no-progress --ansi
+
+      - name: Generate Application Key
+        run: php artisan key:generate
 
       - name: Get NPM cache directory
         id: npm-cache-dir
@@ -68,10 +74,8 @@ jobs:
       - name: Build dependencies
         run: npm run build
 
-      - name: Prepare Laravel
+      - name: Prepare Storage
         run: |
-          cp .env.testing.example .env
-          php artisan key:generate
           mkdir -p storage/app/public/lawns
           mkdir -p storage/app/private/livewire-tmp
           mkdir -p storage/app/public/archive
