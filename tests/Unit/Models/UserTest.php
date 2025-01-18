@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Hash;
 
 uses(RefreshDatabase::class);
 
-describe('User Model', function () {
-    describe('attributes', function () {
-        test('has correct fillable attributes', function () {
+describe('User Model', function (): void {
+    describe('attributes', function (): void {
+        test('has correct fillable attributes', function (): void {
             $user = new User;
 
             expect($user->getFillable())->toBe([
@@ -22,7 +22,7 @@ describe('User Model', function () {
             ]);
         });
 
-        test('has correct hidden attributes', function () {
+        test('has correct hidden attributes', function (): void {
             $user = new User;
 
             expect($user->getHidden())->toBe([
@@ -31,13 +31,13 @@ describe('User Model', function () {
             ]);
         });
 
-        test('uses correct table name', function () {
+        test('uses correct table name', function (): void {
             $user = new User;
 
             expect($user->getTable())->toBe('users');
         });
 
-        test('has correct attribute casts', function () {
+        test('has correct attribute casts', function (): void {
             $user = new User;
             $casts = $user->getCasts();
 
@@ -53,7 +53,7 @@ describe('User Model', function () {
             expect($casts)->toBe($expected);
         });
 
-        test('casts email_verified_at to Carbon instance', function () {
+        test('casts email_verified_at to Carbon instance', function (): void {
             $date = '2024-01-15 10:00:00';
             $user = User::factory()->create([
                 'email_verified_at' => $date,
@@ -63,7 +63,7 @@ describe('User Model', function () {
             expect($user->email_verified_at->format('Y-m-d H:i:s'))->toBe($date);
         });
 
-        test('hashes password attribute', function () {
+        test('hashes password attribute', function (): void {
             $password = 'secret123';
             $user = User::factory()->create([
                 'password' => $password,
@@ -74,8 +74,8 @@ describe('User Model', function () {
         });
     });
 
-    describe('relationships', function () {
-        test('has many lawns', function () {
+    describe('relationships', function (): void {
+        test('has many lawns', function (): void {
             $user = User::factory()->create();
             $lawns = Lawn::factory()->count(3)->create(['user_id' => $user->getKey()]);
 
@@ -83,7 +83,7 @@ describe('User Model', function () {
             expect($user->lawns->first())->toBeInstanceOf(Lawn::class);
         });
 
-        test('cascade deletes related lawns when user is deleted', function () {
+        test('cascade deletes related lawns when user is deleted', function (): void {
             $user = User::factory()->create();
             $lawns = Lawn::factory()->count(3)->create(['user_id' => $user->getKey()]);
 
@@ -95,8 +95,8 @@ describe('User Model', function () {
         });
     });
 
-    describe('factory', function () {
-        test('can create user using factory', function () {
+    describe('factory', function (): void {
+        test('can create user using factory', function (): void {
             $user = User::factory()->create();
 
             expect($user)->toBeInstanceOf(User::class);
@@ -104,13 +104,13 @@ describe('User Model', function () {
             expect($user->email_verified_at)->not->toBeNull();
         });
 
-        test('can create unverified user', function () {
+        test('can create unverified user', function (): void {
             $user = User::factory()->unverified()->create();
 
             expect($user->email_verified_at)->toBeNull();
         });
 
-        test('can override attributes when creating', function () {
+        test('can override attributes when creating', function (): void {
             $name = 'John Doe';
             $email = 'john@example.com';
 
@@ -124,22 +124,22 @@ describe('User Model', function () {
         });
     });
 
-    describe('validation', function () {
-        test('requires name to be present', function () {
+    describe('validation', function (): void {
+        test('requires name to be present', function (): void {
             $user = User::factory()->make(['name' => null]);
 
             expect(fn () => $user->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('requires email to be present', function () {
+        test('requires email to be present', function (): void {
             $user = User::factory()->make(['email' => null]);
 
             expect(fn () => $user->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('requires email to be unique', function () {
+        test('requires email to be unique', function (): void {
             $email = 'test@example.com';
             User::factory()->create(['email' => $email]);
 
@@ -147,34 +147,34 @@ describe('User Model', function () {
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('requires password to be present', function () {
+        test('requires password to be present', function (): void {
             $user = User::factory()->make(['password' => null]);
 
             expect(fn () => $user->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('allows email_verified_at to be null', function () {
+        test('allows email_verified_at to be null', function (): void {
             $user = User::factory()->unverified()->create();
 
             expect($user->email_verified_at)->toBeNull();
         });
 
-        test('allows remember_token to be null', function () {
+        test('allows remember_token to be null', function (): void {
             $user = User::factory()->create(['remember_token' => null]);
 
             expect($user->remember_token)->toBeNull();
         });
     });
 
-    describe('email verification', function () {
-        test('implements MustVerifyEmail interface', function () {
+    describe('email verification', function (): void {
+        test('implements MustVerifyEmail interface', function (): void {
             $user = new User;
 
             expect($user)->toBeInstanceOf(Illuminate\Contracts\Auth\MustVerifyEmail::class);
         });
 
-        test('can mark email as verified', function () {
+        test('can mark email as verified', function (): void {
             $user = User::factory()->unverified()->create();
 
             expect($user->email_verified_at)->toBeNull();
@@ -185,7 +185,7 @@ describe('User Model', function () {
             expect($user->hasVerifiedEmail())->toBeTrue();
         });
 
-        test('can check if email is verified', function () {
+        test('can check if email is verified', function (): void {
             $verifiedUser = User::factory()->create();
             $unverifiedUser = User::factory()->unverified()->create();
 

@@ -17,7 +17,7 @@ use function Pest\Laravel\assertDatabaseMissing;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     /** @var Authenticatable $user */
     $this->user = User::factory()->create();
     $this->lawn = Lawn::factory()->create([
@@ -32,9 +32,9 @@ beforeEach(function () {
     actingAs($this->user);
 });
 
-describe('Lawn show Component', function () {
-    describe('rendering', function () {
-        test('displays lawn details with enums', function () {
+describe('Lawn show Component', function (): void {
+    describe('rendering', function (): void {
+        test('displays lawn details with enums', function (): void {
             Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
                 ->assertSeeHtml($this->lawn->name)
                 ->assertSeeHtml($this->lawn->location)
@@ -43,18 +43,18 @@ describe('Lawn show Component', function () {
                 ->assertSeeHtml($this->lawn->grass_seed->label());
         });
 
-        test('shows creation date in correct format', function () {
+        test('shows creation date in correct format', function (): void {
             Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
                 ->assertSeeHtml($this->lawn->created_at->format('d.m.Y'));
         });
 
-        test('displays image upload placeholder message', function () {
+        test('displays image upload placeholder message', function (): void {
             Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
                 ->assertSeeHtml('Bildupload in Kürze verfügbar')
                 ->assertSeeHtml('disabled');
         });
 
-        test('displays maintenance history with no records', function () {
+        test('displays maintenance history with no records', function (): void {
             Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
                 ->assertSeeHtml('Noch nie') // Sollte mehrmals vorkommen für verschiedene Pflegearten
                 ->assertSeeHtml('Letzte Mahd')
@@ -63,7 +63,7 @@ describe('Lawn show Component', function () {
                 ->assertSeeHtml('Letzte Aerifizierung');
         });
 
-        test('displays maintenance history with records', function () {
+        test('displays maintenance history with records', function (): void {
             $mowingDate = now()->subDays(2);
             $fertilizingDate = now()->subDays(5);
 
@@ -83,8 +83,8 @@ describe('Lawn show Component', function () {
         });
     });
 
-    describe('deletion', function () {
-        test('deletes lawn after confirmation', function () {
+    describe('deletion', function (): void {
+        test('deletes lawn after confirmation', function (): void {
             $component = Livewire::test(LawnShow::class, ['lawn' => $this->lawn]);
 
             $component->dispatch('delete-confirmed'); // Geändert von deleteConfirmed zu delete-confirmed
@@ -92,14 +92,14 @@ describe('Lawn show Component', function () {
             assertDatabaseMissing('lawns', ['id' => $this->lawn->id]);
         });
 
-        test('renders delete modal trigger', function () {
+        test('renders delete modal trigger', function (): void {
             Livewire::test(LawnShow::class, ['lawn' => $this->lawn])
                 ->assertSeeHtml('Rasenfläche löschen');
         });
     });
 
-    describe('authorization', function () {
-        test('unauthorized user cannot view lawn', function () {
+    describe('authorization', function (): void {
+        test('unauthorized user cannot view lawn', function (): void {
             $otherUser = User::factory()->create();
             $lawn = Lawn::factory()->create(['user_id' => $otherUser->id]);
 
@@ -108,7 +108,7 @@ describe('Lawn show Component', function () {
                 ->assertForbidden();
         });
 
-        test('redirects to index after deletion', function () {
+        test('redirects to index after deletion', function (): void {
             $component = Livewire::test(LawnShow::class, ['lawn' => $this->lawn]);
 
             $component->dispatch('delete-confirmed') // Geändert von deleteConfirmed zu delete-confirmed

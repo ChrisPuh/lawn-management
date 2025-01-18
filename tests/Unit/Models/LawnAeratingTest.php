@@ -7,9 +7,9 @@ use App\Models\LawnAerating;
 use App\Models\LawnImage;
 use Illuminate\Support\Carbon;
 
-describe('LawnAerating Model', function () {
-    describe('attributes', function () {
-        test('has correct fillable attributes', function () {
+describe('LawnAerating Model', function (): void {
+    describe('attributes', function (): void {
+        test('has correct fillable attributes', function (): void {
             $aerating = new LawnAerating;
 
             expect($aerating->getFillable())->toBe([
@@ -19,7 +19,7 @@ describe('LawnAerating Model', function () {
             ]);
         });
 
-        test('converts to array with correct keys', function () {
+        test('converts to array with correct keys', function (): void {
             $aerating = LawnAerating::factory()->create();
 
             expect(array_keys($aerating->fresh()->toArray()))->toBe([
@@ -32,13 +32,13 @@ describe('LawnAerating Model', function () {
             ]);
         });
 
-        test('uses correct table name', function () {
+        test('uses correct table name', function (): void {
             $aerating = new LawnAerating;
 
             expect($aerating->getTable())->toBe('lawn_aeratings');
         });
 
-        test('has correct attribute casts', function () {
+        test('has correct attribute casts', function (): void {
             $aerating = new LawnAerating;
             $casts = $aerating->getCasts();
 
@@ -53,7 +53,7 @@ describe('LawnAerating Model', function () {
             expect($casts)->toBe($expected);
         });
 
-        test('casts aerated_on to Carbon instance', function () {
+        test('casts aerated_on to Carbon instance', function (): void {
             $aerating = LawnAerating::factory()->create([
                 'aerated_on' => '2024-01-15',
             ]);
@@ -63,8 +63,8 @@ describe('LawnAerating Model', function () {
         });
     });
 
-    describe('relationships', function () {
-        test('belongs to lawn', function () {
+    describe('relationships', function (): void {
+        test('belongs to lawn', function (): void {
             $lawn = Lawn::factory()->create();
             $aerating = LawnAerating::factory()->create(['lawn_id' => $lawn->id]);
 
@@ -73,8 +73,8 @@ describe('LawnAerating Model', function () {
             expect($aerating->lawn->id)->toBe($lawn->id);
         });
 
-        describe('images', function () {
-            test('has morphMany relationship with LawnImage', function () {
+        describe('images', function (): void {
+            test('has morphMany relationship with LawnImage', function (): void {
                 $aerating = LawnAerating::factory()->create();
                 LawnImage::factory()->count(3)->create([
                     'imageable_id' => $aerating->id,
@@ -87,7 +87,7 @@ describe('LawnAerating Model', function () {
                 expect($firstImage)->toBeInstanceOf(LawnImage::class);
             });
 
-            test('can access related images through relationship', function () {
+            test('can access related images through relationship', function (): void {
                 $aerating = LawnAerating::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -105,8 +105,8 @@ describe('LawnAerating Model', function () {
         });
     });
 
-    describe('factory', function () {
-        test('can create aerating record using factory', function () {
+    describe('factory', function (): void {
+        test('can create aerating record using factory', function (): void {
             $aerating = LawnAerating::factory()->create();
 
             expect($aerating)->toBeInstanceOf(LawnAerating::class);
@@ -114,7 +114,7 @@ describe('LawnAerating Model', function () {
             expect($aerating->lawn)->toBeInstanceOf(Lawn::class);
         });
 
-        test('can override attributes when creating', function () {
+        test('can override attributes when creating', function (): void {
             $lawn = Lawn::factory()->create();
             $customDate = '2024-03-15';
             $customNotes = 'Test notes';
@@ -131,22 +131,22 @@ describe('LawnAerating Model', function () {
         });
     });
 
-    describe('validation', function () {
-        test('requires lawn_id to be present', function () {
+    describe('validation', function (): void {
+        test('requires lawn_id to be present', function (): void {
             $aerating = LawnAerating::factory()->make(['lawn_id' => null]);
 
             expect(fn () => $aerating->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('requires aerated_on to be present', function () {
+        test('requires aerated_on to be present', function (): void {
             $aerating = LawnAerating::factory()->make(['aerated_on' => null]);
 
             expect(fn () => $aerating->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('allows notes to be null', function () {
+        test('allows notes to be null', function (): void {
             $aerating = LawnAerating::factory()->create(['notes' => null]);
 
             expect($aerating->notes)->toBeNull();

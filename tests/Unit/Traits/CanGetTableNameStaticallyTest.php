@@ -78,7 +78,7 @@ final class TestConnection extends Connection
 {
     public function __construct()
     {
-        parent::__construct(function () {}, '');
+        parent::__construct(function (): void {}, '');
     }
 
     public function getTablePrefix(): string

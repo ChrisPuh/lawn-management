@@ -7,9 +7,9 @@ use App\Models\LawnImage;
 use App\Models\LawnScarifying;
 use Illuminate\Support\Carbon;
 
-describe('LawnScarifying Model', function () {
-    describe('attributes', function () {
-        test('has correct fillable attributes', function () {
+describe('LawnScarifying Model', function (): void {
+    describe('attributes', function (): void {
+        test('has correct fillable attributes', function (): void {
             $scarifying = new LawnScarifying;
 
             expect($scarifying->getFillable())->toBe([
@@ -19,7 +19,7 @@ describe('LawnScarifying Model', function () {
             ]);
         });
 
-        test('converts to array with correct keys', function () {
+        test('converts to array with correct keys', function (): void {
             $scarifying = LawnScarifying::factory()->create();
 
             expect(array_keys($scarifying->fresh()->toArray()))->toBe([
@@ -32,13 +32,13 @@ describe('LawnScarifying Model', function () {
             ]);
         });
 
-        test('uses correct table name', function () {
+        test('uses correct table name', function (): void {
             $scarifying = new LawnScarifying;
 
             expect($scarifying->getTable())->toBe('lawn_scarifyings');
         });
 
-        test('has correct attribute casts', function () {
+        test('has correct attribute casts', function (): void {
             $scarifying = new LawnScarifying;
             $casts = $scarifying->getCasts();
 
@@ -53,7 +53,7 @@ describe('LawnScarifying Model', function () {
             expect($casts)->toBe($expected);
         });
 
-        test('casts scarified_on to Carbon instance', function () {
+        test('casts scarified_on to Carbon instance', function (): void {
             $scarifying = LawnScarifying::factory()->create([
                 'scarified_on' => '2024-01-15',
             ]);
@@ -63,8 +63,8 @@ describe('LawnScarifying Model', function () {
         });
     });
 
-    describe('relationships', function () {
-        test('belongs to lawn', function () {
+    describe('relationships', function (): void {
+        test('belongs to lawn', function (): void {
             $lawn = Lawn::factory()->create();
             $scarifying = LawnScarifying::factory()->create(['lawn_id' => $lawn->getKey()]);
 
@@ -72,8 +72,8 @@ describe('LawnScarifying Model', function () {
             expect($scarifying->lawn->getKey())->toBe($lawn->getKey());
         });
 
-        describe('images', function () {
-            test('has morphMany relationship with LawnImage', function () {
+        describe('images', function (): void {
+            test('has morphMany relationship with LawnImage', function (): void {
                 $scarifying = LawnScarifying::factory()->create();
                 LawnImage::factory()->count(3)->create([
                     'imageable_id' => $scarifying->getKey(),
@@ -84,7 +84,7 @@ describe('LawnScarifying Model', function () {
                 expect($scarifying->images->first())->toBeInstanceOf(LawnImage::class);
             });
 
-            test('can access related images through relationship', function () {
+            test('can access related images through relationship', function (): void {
                 $scarifying = LawnScarifying::factory()->create();
                 $image = LawnImage::factory()->create([
                     'imageable_id' => $scarifying->getKey(),
@@ -98,8 +98,8 @@ describe('LawnScarifying Model', function () {
         });
     });
 
-    describe('factory', function () {
-        test('can create scarifying record using factory', function () {
+    describe('factory', function (): void {
+        test('can create scarifying record using factory', function (): void {
             $scarifying = LawnScarifying::factory()->create();
 
             expect($scarifying)->toBeInstanceOf(LawnScarifying::class);
@@ -107,7 +107,7 @@ describe('LawnScarifying Model', function () {
             expect($scarifying->lawn)->toBeInstanceOf(Lawn::class);
         });
 
-        test('can override attributes when creating', function () {
+        test('can override attributes when creating', function (): void {
             $lawn = Lawn::factory()->create();
             $customDate = '2024-03-15';
             $customNotes = 'Test notes';
@@ -124,22 +124,22 @@ describe('LawnScarifying Model', function () {
         });
     });
 
-    describe('validation', function () {
-        test('requires lawn_id to be present', function () {
+    describe('validation', function (): void {
+        test('requires lawn_id to be present', function (): void {
             $scarifying = LawnScarifying::factory()->make(['lawn_id' => null]);
 
             expect(fn () => $scarifying->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('requires scarified_on to be present', function () {
+        test('requires scarified_on to be present', function (): void {
             $scarifying = LawnScarifying::factory()->make(['scarified_on' => null]);
 
             expect(fn () => $scarifying->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('allows notes to be null', function () {
+        test('allows notes to be null', function (): void {
             $scarifying = LawnScarifying::factory()->create(['notes' => null]);
 
             expect($scarifying->notes)->toBeNull();

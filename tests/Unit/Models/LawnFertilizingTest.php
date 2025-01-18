@@ -7,9 +7,9 @@ use App\Models\LawnFertilizing;
 use App\Models\LawnImage;
 use Illuminate\Support\Carbon;
 
-describe('LawnFertilizing Model', function () {
-    describe('attributes', function () {
-        test('has correct fillable attributes', function () {
+describe('LawnFertilizing Model', function (): void {
+    describe('attributes', function (): void {
+        test('has correct fillable attributes', function (): void {
             $fertilizing = new LawnFertilizing;
 
             expect($fertilizing->getFillable())->toBe([
@@ -22,7 +22,7 @@ describe('LawnFertilizing Model', function () {
             ]);
         });
 
-        test('converts to array with correct keys', function () {
+        test('converts to array with correct keys', function (): void {
             $fertilizing = LawnFertilizing::factory()->create();
 
             expect(array_keys($fertilizing->fresh()->toArray()))->toBe([
@@ -38,13 +38,13 @@ describe('LawnFertilizing Model', function () {
             ]);
         });
 
-        test('uses correct table name', function () {
+        test('uses correct table name', function (): void {
             $fertilizing = new LawnFertilizing;
 
             expect($fertilizing->getTable())->toBe('lawn_fertilizings');
         });
 
-        test('has correct attribute casts', function () {
+        test('has correct attribute casts', function (): void {
             $fertilizing = new LawnFertilizing;
             $casts = $fertilizing->getCasts();
 
@@ -60,7 +60,7 @@ describe('LawnFertilizing Model', function () {
             expect($casts)->toBe($expected);
         });
 
-        test('casts fertilized_on to Carbon instance', function () {
+        test('casts fertilized_on to Carbon instance', function (): void {
             $fertilizing = LawnFertilizing::factory()->create([
                 'fertilized_on' => '2024-01-15',
             ]);
@@ -69,7 +69,7 @@ describe('LawnFertilizing Model', function () {
             expect($fertilizing->fertilized_on->format('Y-m-d'))->toBe('2024-01-15');
         });
 
-        test('casts quantity to decimal with 2 decimal places', function () {
+        test('casts quantity to decimal with 2 decimal places', function (): void {
             $fertilizing = LawnFertilizing::factory()->create([
                 'quantity' => 2.5,
             ]);
@@ -78,7 +78,7 @@ describe('LawnFertilizing Model', function () {
             expect(is_string($fertilizing->quantity))->toBeTrue();
         });
 
-        test('stores quantity_unit as string', function () {
+        test('stores quantity_unit as string', function (): void {
             $fertilizing = LawnFertilizing::factory()->create([
                 'quantity_unit' => 'kg',
             ]);
@@ -89,8 +89,8 @@ describe('LawnFertilizing Model', function () {
         });
     });
 
-    describe('relationships', function () {
-        test('belongs to lawn', function () {
+    describe('relationships', function (): void {
+        test('belongs to lawn', function (): void {
             $lawn = Lawn::factory()->create();
             $fertilizing = LawnFertilizing::factory()->create(['lawn_id' => $lawn->id]);
 
@@ -98,8 +98,8 @@ describe('LawnFertilizing Model', function () {
             expect($fertilizing->lawn->id)->toBe($lawn->id);
         });
 
-        describe('images', function () {
-            test('has morphMany relationship with LawnImage', function () {
+        describe('images', function (): void {
+            test('has morphMany relationship with LawnImage', function (): void {
                 $fertilizing = LawnFertilizing::factory()->create();
                 LawnImage::factory()->count(3)->create([
                     'imageable_id' => $fertilizing->id,
@@ -112,7 +112,7 @@ describe('LawnFertilizing Model', function () {
                 expect($firstImage)->toBeInstanceOf(LawnImage::class);
             });
 
-            test('can access related images through relationship', function () {
+            test('can access related images through relationship', function (): void {
                 $fertilizing = LawnFertilizing::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -130,8 +130,8 @@ describe('LawnFertilizing Model', function () {
         });
     });
 
-    describe('factory', function () {
-        test('can create fertilizing record using factory', function () {
+    describe('factory', function (): void {
+        test('can create fertilizing record using factory', function (): void {
             $fertilizing = LawnFertilizing::factory()->create();
 
             expect($fertilizing)->toBeInstanceOf(LawnFertilizing::class);
@@ -139,7 +139,7 @@ describe('LawnFertilizing Model', function () {
             expect($fertilizing->lawn)->toBeInstanceOf(Lawn::class);
         });
 
-        test('can override attributes when creating', function () {
+        test('can override attributes when creating', function (): void {
             $lawn = Lawn::factory()->create();
             $customDate = '2024-03-15';
             $customNotes = 'Test notes';
@@ -165,33 +165,33 @@ describe('LawnFertilizing Model', function () {
         });
     });
 
-    describe('validation', function () {
-        test('requires lawn_id to be present', function () {
+    describe('validation', function (): void {
+        test('requires lawn_id to be present', function (): void {
             $fertilizing = LawnFertilizing::factory()->make(['lawn_id' => null]);
 
             expect(fn () => $fertilizing->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('allows fertilized_on to be null', function () {
+        test('allows fertilized_on to be null', function (): void {
             $fertilizing = LawnFertilizing::factory()->make(['fertilized_on' => null]);
 
             expect($fertilizing->fertilized_on)->toBeNull();
         });
 
-        test('allows fertilizer_name to be null', function () {
+        test('allows fertilizer_name to be null', function (): void {
             $fertilizing = LawnFertilizing::factory()->make(['fertilizer_name' => null]);
 
             expect($fertilizing->fertilizer_name)->toBeNull();
         });
 
-        test('allows quantity to be null', function () {
+        test('allows quantity to be null', function (): void {
             $fertilizing = LawnFertilizing::factory()->make(['quantity' => null]);
 
             expect($fertilizing->quantity)->toBeNull();
         });
 
-        test('allows notes to be null', function () {
+        test('allows notes to be null', function (): void {
             $fertilizing = LawnFertilizing::factory()->create(['notes' => null]);
 
             expect($fertilizing->notes)->toBeNull();

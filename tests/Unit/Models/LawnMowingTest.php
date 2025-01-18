@@ -6,9 +6,9 @@ use App\Models\Lawn;
 use App\Models\LawnMowing;
 use Illuminate\Support\Carbon;
 
-describe('LawnMowing Model', function () {
-    describe('attributes', function () {
-        test('has correct fillable attributes', function () {
+describe('LawnMowing Model', function (): void {
+    describe('attributes', function (): void {
+        test('has correct fillable attributes', function (): void {
             $mowing = new LawnMowing;
 
             expect($mowing->getFillable())->toBe([
@@ -19,7 +19,7 @@ describe('LawnMowing Model', function () {
             ]);
         });
 
-        test('converts to array with correct keys', function () {
+        test('converts to array with correct keys', function (): void {
             $mowing = LawnMowing::factory()->create();
 
             expect(array_keys($mowing->fresh()->toArray()))->toBe([
@@ -33,13 +33,13 @@ describe('LawnMowing Model', function () {
             ]);
         });
 
-        test('uses correct table name', function () {
+        test('uses correct table name', function (): void {
             $mowing = new LawnMowing;
 
             expect($mowing->getTable())->toBe('lawn_mowings');
         });
 
-        test('has correct attribute casts', function () {
+        test('has correct attribute casts', function (): void {
             $mowing = new LawnMowing;
             $casts = $mowing->getCasts();
 
@@ -55,8 +55,8 @@ describe('LawnMowing Model', function () {
             expect($casts)->toBe($expected);
         });
 
-        describe('casting', function () {
-            test('casts mowed_on to Carbon instance', function () {
+        describe('casting', function (): void {
+            test('casts mowed_on to Carbon instance', function (): void {
                 $mowing = LawnMowing::factory()->create([
                     'mowed_on' => '2024-01-15',
                 ]);
@@ -65,7 +65,7 @@ describe('LawnMowing Model', function () {
                 expect($mowing->mowed_on->format('Y-m-d'))->toBe('2024-01-15');
             });
 
-            test('casts cutting_height to string', function () {
+            test('casts cutting_height to string', function (): void {
                 $mowing = LawnMowing::factory()->create([
                     'cutting_height' => '45mm',
                 ]);
@@ -75,7 +75,7 @@ describe('LawnMowing Model', function () {
                     ->toBe('45mm');
             });
 
-            test('allows cutting_height to be null', function () {
+            test('allows cutting_height to be null', function (): void {
                 $mowing = LawnMowing::factory()->create([
                     'cutting_height' => null,
                 ]);
@@ -85,8 +85,8 @@ describe('LawnMowing Model', function () {
         });
     });
 
-    describe('relationships', function () {
-        test('belongs to lawn', function () {
+    describe('relationships', function (): void {
+        test('belongs to lawn', function (): void {
             $lawn = Lawn::factory()->create();
             $mowing = LawnMowing::factory()->create(['lawn_id' => $lawn->getKey()]);
 
@@ -95,8 +95,8 @@ describe('LawnMowing Model', function () {
         });
     });
 
-    describe('factory', function () {
-        test('can create mowing record using factory', function () {
+    describe('factory', function (): void {
+        test('can create mowing record using factory', function (): void {
             $mowing = LawnMowing::factory()->create();
 
             expect($mowing)->toBeInstanceOf(LawnMowing::class);
@@ -104,7 +104,7 @@ describe('LawnMowing Model', function () {
             expect($mowing->lawn)->toBeInstanceOf(Lawn::class);
         });
 
-        test('can override attributes when creating', function () {
+        test('can override attributes when creating', function (): void {
             $lawn = Lawn::factory()->create();
             $customDate = '2024-03-15';
             $customHeight = '35mm';
@@ -124,36 +124,36 @@ describe('LawnMowing Model', function () {
         });
     });
 
-    describe('validation', function () {
-        test('requires lawn_id to be present', function () {
+    describe('validation', function (): void {
+        test('requires lawn_id to be present', function (): void {
             $mowing = LawnMowing::factory()->make(['lawn_id' => null]);
 
             expect(fn () => $mowing->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('requires mowed_on to be present', function () {
+        test('requires mowed_on to be present', function (): void {
             $mowing = LawnMowing::factory()->make(['mowed_on' => null]);
 
             expect(fn () => $mowing->save())
                 ->toThrow(Illuminate\Database\QueryException::class);
         });
 
-        test('allows cutting_height to be null', function () {
+        test('allows cutting_height to be null', function (): void {
             $mowing = LawnMowing::factory()->create(['cutting_height' => null]);
 
             expect($mowing->cutting_height)->toBeNull();
         });
 
-        test('allows notes to be null', function () {
+        test('allows notes to be null', function (): void {
             $mowing = LawnMowing::factory()->create(['notes' => null]);
 
             expect($mowing->notes)->toBeNull();
         });
     });
 
-    describe('edge cases', function () {
-        test('accepts various cutting height formats', function () {
+    describe('edge cases', function (): void {
+        test('accepts various cutting height formats', function (): void {
             $formats = ['35mm', '3.5cm', '1.5"'];
 
             foreach ($formats as $format) {

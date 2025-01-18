@@ -13,9 +13,9 @@ use App\Models\LawnMowing;
 use App\Models\LawnScarifying;
 use Illuminate\Database\QueryException;
 
-describe('LawnImage Model', function () {
-    describe('attributes', function () {
-        test('has correct fillable attributes', function () {
+describe('LawnImage Model', function (): void {
+    describe('attributes', function (): void {
+        test('has correct fillable attributes', function (): void {
             $image = new LawnImage;
 
             expect($image->getFillable())->toBe([
@@ -28,7 +28,7 @@ describe('LawnImage Model', function () {
             ]);
         });
 
-        test('converts to array with correct keys', function () {
+        test('converts to array with correct keys', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create();
 
@@ -45,15 +45,15 @@ describe('LawnImage Model', function () {
             ]);
         });
 
-        test('uses correct table name', function () {
+        test('uses correct table name', function (): void {
             $image = new LawnImage;
 
             expect($image->getTable())->toBe('lawn_images');
         });
     });
 
-    describe('relationships', function () {
-        test('belongs to lawn', function () {
+    describe('relationships', function (): void {
+        test('belongs to lawn', function (): void {
             $lawn = Lawn::factory()->create();
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create(['lawn_id' => $lawn->id]);
@@ -62,8 +62,8 @@ describe('LawnImage Model', function () {
             expect($image->lawn->id)->toBe($lawn->id);
         });
 
-        describe('polymorphic relationships', function () {
-            test('can be associated with lawn mowing', function () {
+        describe('polymorphic relationships', function (): void {
+            test('can be associated with lawn mowing', function (): void {
                 $mowing = LawnMowing::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -75,7 +75,7 @@ describe('LawnImage Model', function () {
                 expect($image->imageable->id)->toBe($mowing->id);
             });
 
-            test('can be associated with lawn fertilizing', function () {
+            test('can be associated with lawn fertilizing', function (): void {
                 $fertilizing = LawnFertilizing::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -87,7 +87,7 @@ describe('LawnImage Model', function () {
                 expect($image->imageable->id)->toBe($fertilizing->id);
             });
 
-            test('can be associated with lawn scarifying', function () {
+            test('can be associated with lawn scarifying', function (): void {
                 $scarifying = LawnScarifying::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -99,7 +99,7 @@ describe('LawnImage Model', function () {
                 expect($image->imageable->id)->toBe($scarifying->id);
             });
 
-            test('can be associated with lawn aerating', function () {
+            test('can be associated with lawn aerating', function (): void {
                 $aerating = LawnAerating::factory()->create();
                 /** @var LawnImage $image */
                 $image = LawnImage::factory()->create([
@@ -113,8 +113,8 @@ describe('LawnImage Model', function () {
         });
     });
 
-    describe('factory', function () {
-        test('can create image record using factory', function () {
+    describe('factory', function (): void {
+        test('can create image record using factory', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create();
 
@@ -123,7 +123,7 @@ describe('LawnImage Model', function () {
             expect($image->lawn)->toBeInstanceOf(Lawn::class);
         });
 
-        test('can override attributes when creating', function () {
+        test('can override attributes when creating', function (): void {
             $lawn = Lawn::factory()->create();
             $mowing = LawnMowing::factory()->create();
             $customPath = 'images/test.jpg';
@@ -149,8 +149,8 @@ describe('LawnImage Model', function () {
         });
     });
 
-    describe('validation', function () {
-        test('requires lawn_id to be present', function () {
+    describe('validation', function (): void {
+        test('requires lawn_id to be present', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['lawn_id' => null]);
 
@@ -158,7 +158,7 @@ describe('LawnImage Model', function () {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires image_path to be present', function () {
+        test('requires image_path to be present', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['image_path' => null]);
 
@@ -166,7 +166,7 @@ describe('LawnImage Model', function () {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires imageable_id to be present', function () {
+        test('requires imageable_id to be present', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['imageable_id' => null]);
 
@@ -174,7 +174,7 @@ describe('LawnImage Model', function () {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires imageable_type to be present', function () {
+        test('requires imageable_type to be present', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['imageable_type' => null]);
 
@@ -182,7 +182,7 @@ describe('LawnImage Model', function () {
                 ->toThrow(QueryException::class);
         });
 
-        test('requires type to be present', function () {
+        test('requires type to be present', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['type' => null]);
 
@@ -190,7 +190,7 @@ describe('LawnImage Model', function () {
                 ->toThrow(QueryException::class);
         });
 
-        test('allows description to be null', function () {
+        test('allows description to be null', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->create(['description' => null]);
 

@@ -12,20 +12,20 @@ use Illuminate\Support\Facades\Auth;
 use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->user = User::factory()->create();
     $this->actingAs($this->user);
 });
 
-describe('lawn index component', function () {
-    describe('rendering', function () {
-        test('renders lawn index component', function () {
+describe('lawn index component', function (): void {
+    describe('rendering', function (): void {
+        test('renders lawn index component', function (): void {
             livewire(LawnIndex::class)
                 ->assertViewIs('livewire.lawn.lawn-index')
                 ->assertSeeText('Rasenflächen Übersicht');
         });
 
-        test('shows empty state when no lawns exist', function () {
+        test('shows empty state when no lawns exist', function (): void {
             livewire(LawnIndex::class)
                 ->assertSee('Keine Rasenflächen')
                 ->assertSee('Erstellen Sie Ihre erste Rasenfläche um zu beginnen.')
@@ -33,8 +33,8 @@ describe('lawn index component', function () {
         });
     });
 
-    describe('lawn listing', function () {
-        test('shows only user specific lawns', function () {
+    describe('lawn listing', function (): void {
+        test('shows only user specific lawns', function (): void {
             $userLawns = Lawn::factory()->count(2)->create([
                 'user_id' => $this->user->id,
             ]);
@@ -54,8 +54,8 @@ describe('lawn index component', function () {
         });
     });
 
-    describe('overview stats card', function () {
-        test('shows correct total number of lawns', function () {
+    describe('overview stats card', function (): void {
+        test('shows correct total number of lawns', function (): void {
             Lawn::factory()->count(3)->create([
                 'user_id' => $this->user->id,
             ]);
@@ -66,7 +66,7 @@ describe('lawn index component', function () {
                 ->assertSee('3');
         });
 
-        test('shows no care information when no activities exist', function () {
+        test('shows no care information when no activities exist', function (): void {
             Lawn::factory()->create([
                 'user_id' => $this->user->id,
                 'name' => 'Vorgarten',
@@ -77,7 +77,7 @@ describe('lawn index component', function () {
                 ->assertSee('Keine Pflege eingetragen');
         });
 
-        test('shows latest care across all lawns', function () {
+        test('shows latest care across all lawns', function (): void {
             $lawn1 = Lawn::factory()->create([
                 'user_id' => $this->user->id,
                 'name' => 'Vorgarten',
@@ -109,7 +109,7 @@ describe('lawn index component', function () {
                 ->assertSee('Hintergarten (gedüngt am 29.12.2024)');
         });
 
-        test('shows latest care when multiple activities exist for same lawn', function () {
+        test('shows latest care when multiple activities exist for same lawn', function (): void {
             $lawn = Lawn::factory()->create([
                 'user_id' => $this->user->id,
                 'name' => 'Vorgarten',
@@ -138,7 +138,7 @@ describe('lawn index component', function () {
                 ->assertSee('Vorgarten (vertikutiert am 29.12.2024)');
         });
 
-        test('only shows care information for authenticated user', function () {
+        test('only shows care information for authenticated user', function (): void {
             // Create lawn and care for current user
             $userLawn = Lawn::factory()->create([
                 'user_id' => $this->user->id,
@@ -170,23 +170,23 @@ describe('lawn index component', function () {
         });
     });
 
-    describe('empty state card', function () {
+    describe('empty state card', function (): void {
 
-        describe('rendering', function () {
-            test('shows empty state component correctly', function () {
+        describe('rendering', function (): void {
+            test('shows empty state component correctly', function (): void {
                 $component = livewire(EmptyState::class)
                     ->assertSee('Keine Rasenflächen')
                     ->assertSee('Erstellen Sie Ihre erste Rasenfläche um zu beginnen.')
                     ->assertSee('Rasenfläche anlegen');
             });
 
-            test('empty state is shown within lawn index when no lawns exist', function () {
+            test('empty state is shown within lawn index when no lawns exist', function (): void {
                 livewire(LawnIndex::class)
                     ->assertSeeLivewire(EmptyState::class)
                     ->assertSee('Keine Rasenflächen');
             });
 
-            test('empty state is not shown when lawns exist', function () {
+            test('empty state is not shown when lawns exist', function (): void {
                 Lawn::factory()->create([
                     'user_id' => $this->user->id,
                 ]);
@@ -196,8 +196,8 @@ describe('lawn index component', function () {
             });
         });
 
-        describe('navigation', function () {
-            test('dispatches create lawn event on button click', function () {
+        describe('navigation', function (): void {
+            test('dispatches create lawn event on button click', function (): void {
                 livewire(EmptyState::class)
                     ->call('createLawn')
                     ->assertDispatched('createLawn');
@@ -205,10 +205,10 @@ describe('lawn index component', function () {
         });
     });
 
-    describe('lawn index card', function () {
+    describe('lawn index card', function (): void {
 
-        describe('rendering', function () {
-            test('renders lawn card data correctly', function () {
+        describe('rendering', function (): void {
+            test('renders lawn card data correctly', function (): void {
                 $lawn = Lawn::factory()->create([
                     'name' => 'Test Lawn',
                     'user_id' => $this->user->id,
@@ -228,7 +228,7 @@ describe('lawn index component', function () {
                     ]);
             });
 
-            test('shows all lawn fields correctly', function () {
+            test('shows all lawn fields correctly', function (): void {
                 $lawn = Lawn::factory()->create([
                     'user_id' => $this->user->id,
                     'name' => 'Test Lawn',
@@ -242,7 +242,7 @@ describe('lawn index component', function () {
                     ->assertSee('100m²');
             });
 
-            test('shows correct default values for empty fields', function () {
+            test('shows correct default values for empty fields', function (): void {
                 $lawn = Lawn::factory()->create([
                     'user_id' => $this->user->id,
                     'name' => 'Test Lawn',
@@ -255,8 +255,8 @@ describe('lawn index component', function () {
             });
         });
 
-        describe('navigation', function () {
-            test('dispatches show lawn event with correct data', function () {
+        describe('navigation', function (): void {
+            test('dispatches show lawn event with correct data', function (): void {
                 $lawn = Lawn::factory()->create(['user_id' => $this->user->id]);
 
                 livewire('lawn.index-card', [
@@ -267,7 +267,7 @@ describe('lawn index component', function () {
                     ->assertDispatched('showLawn', $lawn->id);
             });
 
-            test('dispatches edit lawn event with correct data', function () {
+            test('dispatches edit lawn event with correct data', function (): void {
                 $lawn = Lawn::factory()->create(['user_id' => $this->user->id]);
 
                 livewire('lawn.index-card', [
@@ -278,7 +278,7 @@ describe('lawn index component', function () {
                     ->assertDispatched('editLawn', $lawn->id);
             });
 
-            test('correctly passes care date to view', function () {
+            test('correctly passes care date to view', function (): void {
                 $lawn = Lawn::factory()->create(['user_id' => $this->user->id]);
                 $careDate = [
                     'type' => 'Mähen',
@@ -296,8 +296,8 @@ describe('lawn index component', function () {
         });
     });
 
-    describe('lawn care data', function () {
-        test('displays last mowed date correctly', function () {
+    describe('lawn care data', function (): void {
+        test('displays last mowed date correctly', function (): void {
             $lawn = Lawn::factory()->create([
                 'user_id' => $this->user->id,
                 'name' => 'Test Rasen',
@@ -327,7 +327,7 @@ describe('lawn index component', function () {
                 );
         });
 
-        test('shows latest care date from different activities', function () {
+        test('shows latest care date from different activities', function (): void {
             $lawn = Lawn::factory()
                 ->create([
                     'user_id' => $this->user->id,
@@ -363,7 +363,7 @@ describe('lawn index component', function () {
                 );
         });
 
-        test('shows no care date when no activities exist', function () {
+        test('shows no care date when no activities exist', function (): void {
             $lawn = Lawn::factory()->create([
                 'user_id' => $this->user->id,
             ]);
@@ -378,14 +378,14 @@ describe('lawn index component', function () {
         });
     });
 
-    describe('navigation', function () {
-        test('navigates to create page', function () {
+    describe('navigation', function (): void {
+        test('navigates to create page', function (): void {
             livewire(LawnIndex::class)
                 ->call('createLawn')
                 ->assertRedirect(route('lawn.create'));
         });
 
-        test('navigates to show page', function () {
+        test('navigates to show page', function (): void {
             $lawn = Lawn::factory()->create([
                 'user_id' => $this->user->id,
             ]);
@@ -395,7 +395,7 @@ describe('lawn index component', function () {
                 ->assertRedirect(route('lawn.show', $lawn->id));
         });
 
-        test('navigates to edit page', function () {
+        test('navigates to edit page', function (): void {
             $lawn = Lawn::factory()->create([
                 'user_id' => $this->user->id,
             ]);
@@ -406,8 +406,8 @@ describe('lawn index component', function () {
         });
     });
 
-    describe('authentication', function () {
-        test('requires authentication', function () {
+    describe('authentication', function (): void {
+        test('requires authentication', function (): void {
             Auth::logout();
             get(route('lawn.index'))->assertRedirect(route('login'));
         });
