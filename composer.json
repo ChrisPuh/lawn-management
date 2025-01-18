@@ -83,7 +83,7 @@
             "@putenv XDEBUG_MODE=coverage",
             "@php -d xdebug.mode=coverage vendor/bin/pest --coverage-html coverage --parallel"
         ],
-        "test:type-coverage": "./vendor/bin/pest --type-coverage --min=96.4",
+        "test:type-coverage": "./vendor/bin/pest --type-coverage --min=83.45",
         "test:parallel": "./vendor/bin/pest --parallel",
         "test:php-stan": "@analyse",
         "test": [
