@@ -46,7 +46,7 @@ describe('lawn index component', function (): void {
             livewire(LawnIndex::class)
                 ->assertViewHas(
                     'lawns',
-                    fn ($lawns) => $lawns->count() === 2 &&
+                    fn ($lawns): bool => $lawns->count() === 2 &&
                         $lawns->pluck('id')->diff($userLawns->pluck('id'))->isEmpty()
                 )
                 ->assertSee('Gesamtanzahl Rasenflächen')
@@ -312,7 +312,7 @@ describe('lawn index component', function (): void {
             livewire(LawnIndex::class)
                 ->assertViewHas(
                     'careDates',
-                    fn ($careDates) => $careDates[$lawn->id] === [
+                    fn ($careDates): bool => $careDates[$lawn->id] === [
                         'type' => 'gemäht',
                         'date' => '29.12.2024',
                     ]
@@ -348,7 +348,7 @@ describe('lawn index component', function (): void {
             livewire(LawnIndex::class)
                 ->assertViewHas(
                     'careDates',
-                    fn ($careDates) => $careDates[$lawn->id] === [
+                    fn ($careDates): bool => $careDates[$lawn->id] === [
                         'type' => 'gedüngt',
                         'date' => '29.12.2024',
                     ]
@@ -371,7 +371,7 @@ describe('lawn index component', function (): void {
             livewire(LawnIndex::class)
                 ->assertViewHas(
                     'careDates',
-                    fn ($careDates) => $careDates[$lawn->id] === null
+                    fn ($careDates): bool => $careDates[$lawn->id] === null
                 )
                 ->assertViewHas('lastCareInfo', null)
                 ->assertSee('Keine Pflege');

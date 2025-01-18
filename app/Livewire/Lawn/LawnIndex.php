@@ -61,9 +61,9 @@ final class LawnIndex extends Component
      */
     private function getLastCareAcrossAllLawns(Collection $lawns): ?array
     {
-        $allCares = $lawns->map(function (Lawn $lawn) {
+        $allCares = $lawns->map(function (Lawn $lawn): ?array {
             $latestCare = $this->getLatestCare($lawn);
-            if (! $latestCare) {
+            if ($latestCare === null || $latestCare === []) {
                 return null;
             }
 
@@ -106,7 +106,7 @@ final class LawnIndex extends Component
 
         $latestCare = collect($careDates)
             ->filter()
-            ->map(fn ($date, $type) => [
+            ->map(fn ($date, $type): array => [
                 'type' => $type,
                 'date' => $date,
             ])
@@ -119,7 +119,7 @@ final class LawnIndex extends Component
 
         return [
             'type' => $latestCare['type'],
-            'date' => date('d.m.Y', strtotime($latestCare['date'])),
+            'date' => date('d.m.Y', strtotime((string) $latestCare['date'])),
         ];
     }
 }

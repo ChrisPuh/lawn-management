@@ -30,7 +30,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: json, dom, curl, libxml, mbstring, zip
+          extensions: json, dom, curl, libxml, mbstring, zip, gd
           tools: composer:v2
           coverage: xdebug
 
@@ -44,8 +44,14 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
+      - name: Copy Environment File
+        run: cp .env.testing.example .env
+
       - name: Install PHP dependencies
         run: composer install --no-interaction --no-progress --ansi
+
+      - name: Generate Application Key
+        run: php artisan key:generate
 
       - name: Get NPM cache directory
         id: npm-cache-dir
@@ -68,15 +74,32 @@ jobs:
       - name: Build dependencies
         run: npm run build
 
-      - name: Prepare Laravel
+      - name: Prepare Storage
         run: |
-          cp .env.example .env
-          php artisan key:generate
+          mkdir -p storage/app/public/lawns
+          mkdir -p storage/app/private/livewire-tmp
+          mkdir -p storage/app/public/archive
+          chmod -R 777 storage bootstrap/cache
+          php artisan storage:link
 
       - name: Tests
         run: composer test
+        env:
+          XDEBUG_MODE: coverage
+          APP_ENV: testing
+          LAWN_STORAGE_PATH: lawns
+          LAWN_TEMP_PATH: private/livewire-tmp
+          LAWN_TEMP_RETENTION_HOURS: 24
+          LAWN_TEMP_DISK: local
+          LAWN_ARCHIVE_ENABLED: true
+          LAWN_ARCHIVE_PATH: archive
+          LAWN_ARCHIVE_RETENTION_MONTHS: 3
+          LAWN_ARCHIVE_DISK: public
+          LAWN_IMAGE_MAX_WIDTH: 1200
+          LAWN_IMAGE_QUALITY: 80
+          LAWN_IMAGE_MAX_SIZE: 5120
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

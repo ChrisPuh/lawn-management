@@ -57,27 +57,7 @@
 
                 <!-- Center Column - Current Image -->
                 <div class="flex flex-col items-center justify-center space-y-4">
-                    <div class="relative h-64 w-full rounded-lg bg-gray-100">
-                        <div class="absolute inset-0 flex flex-col items-center justify-center space-y-2">
-                            <svg class="h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span class="text-sm text-gray-500">Bildupload in Kürze verfügbar</span>
-                        </div>
-                    </div>
-                    <button type="button" disabled
-                        class="inline-flex cursor-not-allowed items-center gap-x-2 rounded-md bg-gray-400 px-4 py-2 text-sm font-semibold text-white">
-                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M1 8a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 018.07 3h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0016.07 6H17a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V8zm13.5 3a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM10 14a3 3 0 100-6 3 3 0 000 6z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Bild hochladen
-                    </button>
+                    <livewire:components.lawn-image-upload :lawn="$lawn" />
                 </div>
 
                 <!-- Right Column - History -->
