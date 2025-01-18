@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Config;
 
-describe('Lawn Image Cleanup Configuration', function () {
-    it('debugs cleanup_enabled configuration', function () {
+describe('Lawn Image Cleanup Configuration', function (): void {
+    it('debugs cleanup_enabled configuration', function (): void {
         // Dump the entire configuration for lawn.storage.temp
         $tempConfig = Config::get('lawn.storage.temp');
 
@@ -19,7 +19,7 @@ describe('Lawn Image Cleanup Configuration', function () {
         expect(is_bool($cleanupEnabled))->toBeTrue();
     });
 
-    it('has valid default configuration', function () {
+    it('has valid default configuration', function (): void {
         // Storage configuration
         expect(Config::get('lawn.storage.base_path'))->toBe(config('lawn.storage.base_path'));
 
@@ -43,7 +43,7 @@ describe('Lawn Image Cleanup Configuration', function () {
         expect(Config::get('lawn.images.max_file_size'))->toBeInt();
     });
 
-    it('has reasonable default values', function () {
+    it('has reasonable default values', function (): void {
         // Storage base path
         expect(Config::get('lawn.storage.base_path'))->toBe('lawns');
 

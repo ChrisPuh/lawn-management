@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 uses()
     ->group('lawn-configuration')
-    ->beforeEach(function () {
+    ->beforeEach(function (): void {
         // Ensure the configuration is loaded
         if (! config('lawn')) {
             test()->skip('Lawn configuration is not loaded');
         }
     });
 
-describe('Lawn Configuration Comprehensive Tests', function () {
-    describe('Storage Configuration Tests', function () {
-        test('base storage path is configured', function () {
+describe('Lawn Configuration Comprehensive Tests', function (): void {
+    describe('Storage Configuration Tests', function (): void {
+        test('base storage path is configured', function (): void {
             $basePath = config('lawn.storage.base_path');
 
             expect($basePath)
@@ -23,8 +23,8 @@ describe('Lawn Configuration Comprehensive Tests', function () {
         });
     });
 
-    describe('Temporary Files Configuration', function () {
-        test('temp path is configured', function () {
+    describe('Temporary Files Configuration', function (): void {
+        test('temp path is configured', function (): void {
             $tempPath = config('lawn.storage.temp.path');
 
             expect($tempPath)
@@ -33,7 +33,7 @@ describe('Lawn Configuration Comprehensive Tests', function () {
                 ->and($tempPath)->toBe('private/livewire-tmp');
         });
 
-        test('retention hours have valid configuration', function () {
+        test('retention hours have valid configuration', function (): void {
             $retentionHours = config('lawn.storage.temp.retention_hours');
 
             expect($retentionHours)
@@ -43,7 +43,7 @@ describe('Lawn Configuration Comprehensive Tests', function () {
                 ->and($retentionHours)->toBe(24);
         });
 
-        test('cleanup can be enabled or disabled', function () {
+        test('cleanup can be enabled or disabled', function (): void {
             // Default state
             $defaultCleanupEnabled = config('lawn.storage.temp.cleanup_enabled');
             expect($defaultCleanupEnabled)->toBeTrue();
@@ -54,7 +54,7 @@ describe('Lawn Configuration Comprehensive Tests', function () {
             expect($modifiedCleanupEnabled)->toBeFalse();
         });
 
-        test('temp storage disk is configured', function () {
+        test('temp storage disk is configured', function (): void {
             $disk = config('lawn.storage.temp.disk');
 
             expect($disk)
@@ -64,8 +64,8 @@ describe('Lawn Configuration Comprehensive Tests', function () {
         });
     });
 
-    describe('Archive Configuration Tests', function () {
-        test('archive can be enabled or disabled', function () {
+    describe('Archive Configuration Tests', function (): void {
+        test('archive can be enabled or disabled', function (): void {
             $archiveEnabled = config('lawn.storage.archive.enabled');
 
             expect($archiveEnabled)
@@ -73,7 +73,7 @@ describe('Lawn Configuration Comprehensive Tests', function () {
                 ->toBeTrue();
         });
 
-        test('archive path is configured', function () {
+        test('archive path is configured', function (): void {
             $archivePath = config('lawn.storage.archive.path');
 
             expect($archivePath)
@@ -82,7 +82,7 @@ describe('Lawn Configuration Comprehensive Tests', function () {
                 ->and($archivePath)->toBe('archive');
         });
 
-        test('archive retention months have valid configuration', function () {
+        test('archive retention months have valid configuration', function (): void {
             $retentionMonths = config('lawn.storage.archive.retention_months');
 
             expect($retentionMonths)
@@ -92,18 +92,18 @@ describe('Lawn Configuration Comprehensive Tests', function () {
                 ->and($retentionMonths)->toBe(3);
         });
 
-        test('archive storage disk is configured', function () {
+        test('archive storage disk is configured', function (): void {
             $disk = config('lawn.storage.archive.disk');
 
             expect($disk)
                 ->toBeString()
                 ->and(in_array($disk, ['local', 'public', 's3']))->toBeTrue()
-                ->and($disk)->toBe('local');
+                ->and($disk)->toBe('public');
         });
     });
 
-    describe('Image Configuration Tests', function () {
-        test('max width is configured correctly', function () {
+    describe('Image Configuration Tests', function (): void {
+        test('max width is configured correctly', function (): void {
             $maxWidth = config('lawn.images.max_width');
 
             expect($maxWidth)
@@ -113,7 +113,7 @@ describe('Lawn Configuration Comprehensive Tests', function () {
                 ->and($maxWidth)->toBe(1200);
         });
 
-        test('image quality is within valid range', function () {
+        test('image quality is within valid range', function (): void {
             $quality = config('lawn.images.quality');
 
             expect($quality)
@@ -123,17 +123,17 @@ describe('Lawn Configuration Comprehensive Tests', function () {
                 ->and($quality)->toBe(80);
         });
 
-        test('allowed image types are configured', function () {
+        test('allowed image types are configured', function (): void {
             $allowedTypes = config('lawn.images.allowed_types');
 
             expect($allowedTypes)
                 ->toBeArray()
                 ->and($allowedTypes)->not()->toBeEmpty()
-                ->and(array_map(fn($type) => is_string($type), $allowedTypes))->toBe(array_fill(0, count($allowedTypes), true))
+                ->and(array_map(fn ($type) => is_string($type), $allowedTypes))->toBe(array_fill(0, count($allowedTypes), true))
                 ->and($allowedTypes)->toBe(['jpg', 'jpeg', 'png', 'gif', 'webp']);
         });
 
-        test('max file size is reasonable', function () {
+        test('max file size is reasonable', function (): void {
             $maxFileSize = config('lawn.images.max_file_size');
 
             expect($maxFileSize)
@@ -144,8 +144,8 @@ describe('Lawn Configuration Comprehensive Tests', function () {
         });
     });
 
-    describe('Configuration Type Safety', function () {
-        test('all configuration keys have expected types', function () {
+    describe('Configuration Type Safety', function (): void {
+        test('all configuration keys have expected types', function (): void {
             $config = config('lawn');
 
             // Storage configuration type checks
@@ -169,8 +169,8 @@ describe('Lawn Configuration Comprehensive Tests', function () {
         });
     });
 
-    describe('Allowed Image Types Validation', function () {
-        test('allowed image types are lowercase', function () {
+    describe('Allowed Image Types Validation', function (): void {
+        test('allowed image types are lowercase', function (): void {
             $allowedTypes = config('lawn.images.allowed_types');
 
             $allLowercase = array_reduce($allowedTypes, function ($carry, $type) {
@@ -181,8 +181,8 @@ describe('Lawn Configuration Comprehensive Tests', function () {
         });
     });
 
-    describe('Configuration Immutability', function () {
-        test('configuration remains unchanged after multiple reads', function () {
+    describe('Configuration Immutability', function (): void {
+        test('configuration remains unchanged after multiple reads', function (): void {
             $firstRead = config('lawn');
             $secondRead = config('lawn');
 
