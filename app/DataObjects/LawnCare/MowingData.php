@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\DataObjects\LawnCare;
 
-use App\Contracts\Lawn\LawnCare\LawnCareData;
+use App\Contracts\LawnCare\CareData;
 use App\DataObjects\PositiveInteger;
 use App\Enums\LawnCare\BladeCondition;
 use App\Enums\LawnCare\MowingPattern;
 use InvalidArgumentException;
 
-final readonly class MowingData implements LawnCareData
+final readonly class MowingData implements CareData
 {
     /**
      * @param float $height_mm

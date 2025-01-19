@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\DataObjects\LawnCare;
 
-use App\Contracts\Lawn\LawnCare\LawnCareData;
+use App\Contracts\LawnCare\CareData;
 use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
 use InvalidArgumentException;
 
 // app/DataObjects/WateringData.php
-final readonly class WateringData implements LawnCareData
+final readonly class WateringData implements CareData
 {
     public function __construct(
         public float $amount_liters,

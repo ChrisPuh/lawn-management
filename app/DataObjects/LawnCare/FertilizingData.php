@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\DataObjects\LawnCare;
 
-use App\Contracts\Lawn\LawnCare\LawnCareData;
+use App\Contracts\LawnCare\CareData;
 use App\Enums\LawnCare\WeatherCondition;
 
-final class FertilizingData implements LawnCareData
+final class FertilizingData implements CareData
 {
     /**
      * @param array{

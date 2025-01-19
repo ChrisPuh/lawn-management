@@ -7,15 +7,17 @@ namespace App\DataObjects\LawnCare;
 use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
+use App\Http\Requests\BaseLawnCareRequest;
 use App\Http\Requests\CreateWateringRequest;
 use DateMalformedStringException;
 use DateTime;
+use InvalidArgumentException;
 
-final class CreateWateringData
+final readonly class CreateWateringData extends BaseLawnCareData
 {
     public function __construct(
-        public int $lawn_id,
-        public int $user_id,
+        int $lawn_id,
+        int $user_id,
 
         public float $amount_liters,
         public int $duration_minutes,
@@ -24,16 +26,29 @@ final class CreateWateringData
         public ?WeatherCondition $weather_condition = null,
         public ?TimeOfDay $time_of_day = null,
 
-        public ?string $notes = null,
-        public ?DateTime $performed_at = null,
-        public ?DateTime $scheduled_for = null,
-    ) {}
+        ?string $notes = null,
+        ?DateTime $performed_at = null,
+        ?DateTime $scheduled_for = null,
+    ) {
+
+        if ($amount_liters <= 0) {
+            throw new InvalidArgumentException('Amount must be positive');
+        }
+
+        if ($duration_minutes <= 0) {
+            throw new InvalidArgumentException('Duration must be positive');
+        }
+        parent::__construct($lawn_id, $user_id, $notes, $performed_at, $scheduled_for);
+
+    }
 
     /**
      * @throws DateMalformedStringException
      */
-    public static function fromRequest(CreateWateringRequest $request, int $userId): self
+    public static function fromRequest(BaseLawnCareRequest $request, int $userId): self
     {
+        assert($request instanceof CreateWateringRequest);
+
         return new self(
             lawn_id: $request->validated('lawn_id'),
             user_id: $userId,

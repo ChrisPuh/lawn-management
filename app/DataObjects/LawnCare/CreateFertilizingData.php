@@ -5,32 +5,38 @@ declare(strict_types=1);
 namespace App\DataObjects\LawnCare;
 
 use App\Enums\LawnCare\WeatherCondition;
+use App\Http\Requests\BaseLawnCareRequest;
 use App\Http\Requests\CreateFertilizingRequest;
 use DateMalformedStringException;
 use DateTime;
 
-final readonly class CreateFertilizingData
+final readonly class CreateFertilizingData extends BaseLawnCareData
 {
     public function __construct(
+        int $lawn_id,
+        int $user_id,
 
-        public int $lawn_id,
-        public int $user_id,
         public string $product_name,
         public float $amount_per_sqm,
         public array $nutrients,
         public bool $watered = false,
         public ?float $temperature_celsius = null,
         public ?WeatherCondition $weather_condition = null,
-        public ?string $notes = null,
-        public ?DateTime $performed_at = null,
-        public ?DateTime $scheduled_for = null,
-    ) {}
+
+        ?string $notes = null,
+        ?DateTime $performed_at = null,
+        ?DateTime $scheduled_for = null,
+    ) {
+        parent::__construct($lawn_id, $user_id, $notes, $performed_at, $scheduled_for);
+    }
 
     /**
      * @throws DateMalformedStringException
      */
-    public static function fromRequest(CreateFertilizingRequest $request, int $userId): self
+    public static function fromRequest(BaseLawnCareRequest $request, int $userId): self
     {
+        assert($request instanceof CreateFertilizingRequest);
+
         return new self(
             lawn_id: $request->validated('lawn_id'),
             user_id: $userId,

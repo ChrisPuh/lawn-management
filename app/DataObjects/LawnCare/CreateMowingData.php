@@ -1,29 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataObjects\LawnCare;
 
 use App\Enums\LawnCare\BladeCondition;
 use App\Enums\LawnCare\MowingPattern;
+use App\Http\Requests\BaseLawnCareRequest;
 use App\Http\Requests\CreateMowingRequest;
+use DateMalformedStringException;
 use DateTime;
 
-final readonly class CreateMowingData
+final readonly class CreateMowingData extends BaseLawnCareData
 {
     public function __construct(
-        public int $lawn_id,
-        public int $user_id,
+        int $lawn_id,
+        int $user_id,
         public float $height_mm,
         public ?MowingPattern $pattern = null,
         public bool $collected = true,
         public ?BladeCondition $blade_condition = null,
         public ?int $duration_minutes = null,
-        public ?string $notes = null,
-        public ?DateTime $performed_at = null,
-        public ?DateTime $scheduled_for = null,
-    ) {}
+        ?string $notes = null,
+        ?DateTime $performed_at = null,
+        ?DateTime $scheduled_for = null,
+    ) {
+        parent::__construct($lawn_id, $user_id, $notes, $performed_at, $scheduled_for);
+    }
 
-    public static function fromRequest(CreateMowingRequest $request, int $userId): self
+    /**
+     * @throws DateMalformedStringException
+     */
+    public static function fromRequest(BaseLawnCareRequest $request, int $userId): self
     {
+        assert($request instanceof CreateMowingRequest);
+
         return new self(
             lawn_id: $request->validated('lawn_id'),
             user_id: $userId,
