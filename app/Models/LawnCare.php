@@ -15,6 +15,42 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $lawn_id
+ * @property int $created_by_id
+ * @property LawnCareType $type
+ * @property array<array-key, mixed>|null $care_data
+ * @property string|null $notes
+ * @property \Illuminate\Support\Carbon|null $performed_at
+ * @property \Illuminate\Support\Carbon|null $scheduled_for
+ * @property \Illuminate\Support\Carbon|null $completed_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\Lawn $lawn
+ * @method static Builder<static>|LawnCare completed()
+ * @method static \Database\Factories\LawnCareFactory factory($count = null, $state = [])
+ * @method static Builder<static>|LawnCare forLawn(\App\Models\Lawn|int $lawn)
+ * @method static Builder<static>|LawnCare newModelQuery()
+ * @method static Builder<static>|LawnCare newQuery()
+ * @method static Builder<static>|LawnCare query()
+ * @method static Builder<static>|LawnCare scheduled()
+ * @method static Builder<static>|LawnCare whereCareData($value)
+ * @method static Builder<static>|LawnCare whereCompletedAt($value)
+ * @method static Builder<static>|LawnCare whereCreatedAt($value)
+ * @method static Builder<static>|LawnCare whereCreatedById($value)
+ * @method static Builder<static>|LawnCare whereId($value)
+ * @method static Builder<static>|LawnCare whereLawnId($value)
+ * @method static Builder<static>|LawnCare whereNotes($value)
+ * @method static Builder<static>|LawnCare wherePerformedAt($value)
+ * @method static Builder<static>|LawnCare whereScheduledFor($value)
+ * @method static Builder<static>|LawnCare whereType($value)
+ * @method static Builder<static>|LawnCare whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 final class LawnCare extends Model
 {
     use CanGetTableNameStatically;

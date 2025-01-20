@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
+ * 
+ *
+ * @template TModel of LawnAerating|LawnMowing|LawnScarifying|LawnFertilizing
  * @property int $id
  * @property int $lawn_id
- * @property string $image_path
+ * @property string|null $image_path
  * @property string $imageable_type
  * @property int $imageable_id
  * @property LawnImageType $type
@@ -23,10 +26,24 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Illuminate\Support\Carbon|null $delete_after
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Lawn $lawn
- * @property-read LawnAerating|LawnMowing|LawnScarifying|LawnFertilizing $imageable
- *
- * @template TModel of LawnAerating|LawnMowing|LawnScarifying|LawnFertilizing
+ * @property-read TModel $imageable
+ * @property-read \App\Models\Lawn $lawn
+ * @method static \Database\Factories\LawnImageFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereArchivedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereDeleteAfter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereImagePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereImageableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereImageableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereLawnId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 final class LawnImage extends Model
 {

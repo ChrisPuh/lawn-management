@@ -11,16 +11,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
+ * 
+ *
  * @property int $id
  * @property int $lawn_id
- * @property \Carbon\Carbon $scarified_on
+ * @property \Illuminate\Support\Carbon $scarified_on
  * @property string|null $notes
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property-read Lawn $lawn
- * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnImage> $images
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnImage> $images
  * @property-read int|null $images_count
- *
+ * @property-read \App\Models\Lawn $lawn
  * @method static \Database\Factories\LawnScarifyingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnScarifying newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnScarifying newQuery()
@@ -31,7 +32,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnScarifying whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnScarifying whereScarifiedOn($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnScarifying whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 final class LawnScarifying extends Model

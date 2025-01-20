@@ -12,6 +12,35 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $lawn_care_id
+ * @property int $user_id
+ * @property string $action
+ * @property array<array-key, mixed>|null $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\LawnCare $lawnCare
+ * @property-read \App\Models\User $user
+ * @method static Builder<static>|LawnCareLog createdBetween(\DateTime $start, \DateTime $end)
+ * @method static \Database\Factories\LawnCareLogFactory factory($count = null, $state = [])
+ * @method static Builder<static>|LawnCareLog forAction(string $action)
+ * @method static Builder<static>|LawnCareLog forLawnCare(\App\Models\LawnCare|int $lawnCare)
+ * @method static Builder<static>|LawnCareLog forUser(\App\Models\User|int $user)
+ * @method static Builder<static>|LawnCareLog newModelQuery()
+ * @method static Builder<static>|LawnCareLog newQuery()
+ * @method static Builder<static>|LawnCareLog query()
+ * @method static Builder<static>|LawnCareLog whereAction($value)
+ * @method static Builder<static>|LawnCareLog whereCreatedAt($value)
+ * @method static Builder<static>|LawnCareLog whereData($value)
+ * @method static Builder<static>|LawnCareLog whereId($value)
+ * @method static Builder<static>|LawnCareLog whereLawnCareId($value)
+ * @method static Builder<static>|LawnCareLog whereUpdatedAt($value)
+ * @method static Builder<static>|LawnCareLog whereUserId($value)
+ * @mixin \Eloquent
+ */
 final class LawnCareLog extends Model
 {
     use CanGetTableNameStatically;

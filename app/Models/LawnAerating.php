@@ -11,14 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
- * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnImage> $images
- * @property-read int|null $images_count
- * @property-read Lawn $lawn
- *
- * @method static \Database\Factories\LawnAeratingFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating query()
+ * 
  *
  * @property int $id
  * @property int $lawn_id
@@ -26,13 +19,20 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnImage> $images
+ * @property-read int|null $images_count
+ * @property-read \App\Models\Lawn $lawn
+ * @method static \Database\Factories\LawnAeratingFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereAeratedOn($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereLawnId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnAerating whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 final class LawnAerating extends Model
 {

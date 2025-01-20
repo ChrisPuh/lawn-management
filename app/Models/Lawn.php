@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * 
+ *
  * @property int $id
  * @property string $name
  * @property string|null $location
@@ -22,42 +24,33 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property GrassSeed|null $grass_seed
  * @property GrassType|null $type
  * @property int $user_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder|static query()
- * @method static static make(array $attributes = [])
- * @method static static create(array $attributes = [])
- * @method static static forceCreate(array $attributes)
- * @method HasMany hasMany(string $related, string|null $foreignKey = null, string|null $localKey = null)
- *
- * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnMowing> $mowingRecords
- * @property-read int|null $mowing_records_count
- * @property-read User $user
- *
- * @method static \Database\Factories\LawnFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn forUser()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereGrassSeed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lawn whereUserId($value)
- *
- * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnAerating> $aeratingRecords
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnAerating> $aeratingRecords
  * @property-read int|null $aerating_records_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnFertilizing> $fertilizingRecords
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnFertilizing> $fertilizingRecords
  * @property-read int|null $fertilizing_records_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnImage> $images
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnImage> $images
  * @property-read int|null $images_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnScarifying> $scarifyingRecords
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnMowing> $mowingRecords
+ * @property-read int|null $mowing_records_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnScarifying> $scarifyingRecords
  * @property-read int|null $scarifying_records_count
- *
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\LawnFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Lawn forUser()
+ * @method static Builder<static>|Lawn newModelQuery()
+ * @method static Builder<static>|Lawn newQuery()
+ * @method static Builder<static>|Lawn query()
+ * @method static Builder<static>|Lawn whereCreatedAt($value)
+ * @method static Builder<static>|Lawn whereGrassSeed($value)
+ * @method static Builder<static>|Lawn whereId($value)
+ * @method static Builder<static>|Lawn whereLocation($value)
+ * @method static Builder<static>|Lawn whereName($value)
+ * @method static Builder<static>|Lawn whereSize($value)
+ * @method static Builder<static>|Lawn whereType($value)
+ * @method static Builder<static>|Lawn whereUpdatedAt($value)
+ * @method static Builder<static>|Lawn whereUserId($value)
  * @mixin \Eloquent
  */
 final class Lawn extends Model
