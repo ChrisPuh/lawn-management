@@ -6,8 +6,6 @@ namespace App\DataObjects\LawnCare;
 
 use App\Enums\LawnCare\BladeCondition;
 use App\Enums\LawnCare\MowingPattern;
-use App\Http\Requests\BaseLawnCareRequest;
-use App\Http\Requests\CreateMowingRequest;
 use DateMalformedStringException;
 use DateTime;
 
@@ -31,29 +29,23 @@ final readonly class CreateMowingData extends BaseLawnCareData
     /**
      * @throws DateMalformedStringException
      */
-    public static function fromRequest(BaseLawnCareRequest $request, int $userId): self
+    public static function fromArray(array $validatedData, int $userId): self
     {
-        assert($request instanceof CreateMowingRequest);
-
         return new self(
-            lawn_id: $request->validated('lawn_id'),
+            lawn_id: $validatedData['lawn_id'],
             user_id: $userId,
-            height_mm: (float) $request->validated('height_mm'),
-            pattern: $request->validated('pattern')
-                ? MowingPattern::from($request->validated('pattern'))
+            height_mm: (float) $validatedData['height_mm'],
+            pattern: isset($validatedData['pattern']) ? MowingPattern::tryFrom($validatedData['pattern']) : null,
+            collected: (bool) ($validatedData['collected'] ?? true),
+            blade_condition: isset($validatedData['blade_condition'])
+                ? BladeCondition::tryFrom($validatedData['blade_condition'])
                 : null,
-            collected: $request->validated('collected', true),
-            blade_condition: $request->validated('blade_condition')
-                ? BladeCondition::from($request->validated('blade_condition'))
+            duration_minutes: isset($validatedData['duration_minutes'])
+                ? (int) $validatedData['duration_minutes']
                 : null,
-            duration_minutes: $request->validated('duration_minutes'),
-            notes: $request->validated('notes'),
-            performed_at: $request->validated('performed_at')
-                ? new DateTime($request->validated('performed_at'))
-                : null,
-            scheduled_for: $request->validated('scheduled_for')
-                ? new DateTime($request->validated('scheduled_for'))
-                : null,
+            notes: $validatedData['notes'] ?? null,
+            performed_at: isset($validatedData['performed_at']) ? new DateTime($validatedData['performed_at']) : null,
+            scheduled_for: isset($validatedData['scheduled_for']) ? new DateTime($validatedData['scheduled_for']) : null,
         );
     }
 }

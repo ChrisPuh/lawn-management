@@ -12,14 +12,6 @@ use Illuminate\Validation\Rules\Enum;
 final class CreateWateringRequest extends BaseLawnCareRequest
 {
     /**
-     * Determine if the user is authorizedto make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, mixed>

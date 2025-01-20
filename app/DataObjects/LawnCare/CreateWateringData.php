@@ -7,8 +7,6 @@ namespace App\DataObjects\LawnCare;
 use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
-use App\Http\Requests\BaseLawnCareRequest;
-use App\Http\Requests\CreateWateringRequest;
 use DateMalformedStringException;
 use DateTime;
 use InvalidArgumentException;
@@ -44,27 +42,29 @@ final readonly class CreateWateringData extends BaseLawnCareData
 
     /**
      * @throws DateMalformedStringException
+     *
+     * //
+     *
      */
-    public static function fromRequest(BaseLawnCareRequest $request, int $userId): self
+    public static function fromArray(array $validatedData, int $userId): self
     {
-        assert($request instanceof CreateWateringRequest);
-
         return new self(
-            lawn_id: $request->validated('lawn_id'),
+            lawn_id: $validatedData['lawn_id'],
             user_id: $userId,
-            amount_liters: (float) $request->validated('amount_liters'),
-            duration_minutes: (int) $request->validated('duration_minutes'),
-            method: WateringMethod::from($request->validated('method')),
-            temperature_celsius: $request->validated('temperature_celsius'),
-            weather_condition: $request->validated('weather_condition'),
-            time_of_day: $request->validated('time_of_day'),
-            notes: $request->validated('notes'),
-            performed_at: $request->validated('performed_at')
-                ? new DateTime($request->validated('performed_at'))
+            amount_liters: (float) $validatedData['amount_liters'],
+            duration_minutes: (int) $validatedData['duration_minutes'],
+            method: WateringMethod::from($validatedData['method']),
+            temperature_celsius: $validatedData['temperature_celsius'],
+            weather_condition: $validatedData['weather_condition'],
+            time_of_day: $validatedData['time_of_day'],
+            notes: $validatedData['notes'],
+            performed_at: isset($validatedData['performed_at'])
+                ? new DateTime($validatedData['performed_at'])
                 : null,
-            scheduled_for: $request->validated('scheduled_for')
-                ? new DateTime($request->validated('scheduled_for'))
-                : null,
+            scheduled_for: isset($validatedData['scheduled_for'])
+                ? new DateTime($validatedData['scheduled_for'])
+                : null
         );
+
     }
 }

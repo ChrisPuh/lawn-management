@@ -4,19 +4,22 @@ declare(strict_types=1);
 
 namespace App\Actions\LawnCare;
 
+use App\Contracts\LawnCare\LawnCareActionContract;
+use App\Contracts\LawnCare\LogLawnCareActionContract;
 use App\DataObjects\LawnCare\CreateWateringData;
 use App\DataObjects\LawnCare\WateringData;
 use App\Enums\LawnCare\LawnCareType;
 use App\Models\LawnCare;
 
-final readonly class CreateWateringAction
+final readonly class CreateWateringAction implements LawnCareActionContract
 {
     public function __construct(
-        private LogLawnCareAction $logLawnCare,
+        private LogLawnCareActionContract $logLawnCare,
     ) {}
 
-    public function execute(CreateWateringData $data): LawnCare
+    public function execute(CreateWateringData|\App\DataObjects\LawnCare\BaseLawnCareData $data): LawnCare
     {
+        assert($data instanceof CreateWateringData);
         $lawnCare = LawnCare::query()->create([
             'lawn_id' => $data->lawn_id,
             'created_by_id' => $data->user_id,

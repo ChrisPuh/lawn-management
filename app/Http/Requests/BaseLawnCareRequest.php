@@ -8,8 +8,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 abstract class BaseLawnCareRequest extends FormRequest
 {
-
-
     /**
      * Get the validation rules that apply to the request.
      *

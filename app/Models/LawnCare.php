@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Contracts\Lawn\LawnCare\LawnCareData;
+use App\Contracts\LawnCare\CareData;
 use App\DataObjects\LawnCare\FertilizingData;
 use App\DataObjects\LawnCare\MowingData;
 use App\DataObjects\LawnCare\WateringData;
@@ -67,7 +67,7 @@ final class LawnCare extends Model
         return $this->belongsTo(User::class, 'created_by_id');
     }
 
-    public function getCareData(): ?LawnCareData
+    public function getCareData(): ?CareData
     {
         if (! $this->care_data) {
             return null;
@@ -81,7 +81,7 @@ final class LawnCare extends Model
         };
     }
 
-    public function setCareData(LawnCareData $data): void
+    public function setCareData(CareData $data): void
     {
         $this->care_data = $data->toArray();
     }

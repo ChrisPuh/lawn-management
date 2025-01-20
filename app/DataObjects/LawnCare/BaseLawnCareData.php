@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\DataObjects\LawnCare;
 
-use App\Http\Requests\BaseLawnCareRequest;
 use DateTime;
 
 abstract readonly class BaseLawnCareData
@@ -17,5 +16,5 @@ abstract readonly class BaseLawnCareData
         public ?DateTime $scheduled_for = null,
     ) {}
 
-    abstract public static function fromRequest(BaseLawnCareRequest $request, int $userId): self;
+    abstract public static function fromArray(array $validatedData, int $userId): self;
 }

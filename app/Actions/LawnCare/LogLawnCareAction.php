@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Actions\LawnCare;
 
+use App\Contracts\LawnCare\LogLawnCareActionContract;
 use App\Models\LawnCare;
 use App\Models\LawnCareLog;
 
-final readonly class LogLawnCareAction
+final readonly class LogLawnCareAction implements LogLawnCareActionContract
 {
     /**
      * @param  array<string, mixed>  $additional_data
