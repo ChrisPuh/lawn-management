@@ -7,13 +7,13 @@ use App\Models\LawnCare;
 use App\Models\LawnCareLog;
 use App\Models\User;
 
-describe('LawnCareLog Model', function () {
-    beforeEach(function () {
+describe('LawnCareLog Model', function (): void {
+    beforeEach(function (): void {
         // Setup for each test
     });
 
-    describe('attributes', function () {
-        it('has fillable fields', function () {
+    describe('attributes', function (): void {
+        it('has fillable fields', function (): void {
             $log = new LawnCareLog;
 
             expect($log->getFillable())->toContain(
@@ -24,14 +24,14 @@ describe('LawnCareLog Model', function () {
             );
         });
 
-        it('casts attributes correctly', function () {
+        it('casts attributes correctly', function (): void {
             $log = new LawnCareLog;
 
             expect($log->getCasts())
                 ->toHaveKey('data', 'array');
         });
 
-        it('uses timestamps', function () {
+        it('uses timestamps', function (): void {
             $log = LawnCareLog::factory()->create();
 
             expect($log->created_at)
@@ -41,8 +41,8 @@ describe('LawnCareLog Model', function () {
         });
     });
 
-    describe('relationships', function () {
-        it('belongs to lawn care', function () {
+    describe('relationships', function (): void {
+        it('belongs to lawn care', function (): void {
             $lawnCare = LawnCare::factory()->create();
             $log = LawnCareLog::factory()
                 ->for($lawnCare)
@@ -54,7 +54,7 @@ describe('LawnCareLog Model', function () {
                 ->toBe($lawnCare->id);
         });
 
-        it('belongs to user', function () {
+        it('belongs to user', function (): void {
             $user = User::factory()->create();
             $log = LawnCareLog::factory()
                 ->for($user)
@@ -67,8 +67,8 @@ describe('LawnCareLog Model', function () {
         });
     });
 
-    describe('scopes', function () {
-        it('can scope to specific action', function () {
+    describe('scopes', function (): void {
+        it('can scope to specific action', function (): void {
             $createdLog = LawnCareLog::factory()->created()->create();
             $updatedLog = LawnCareLog::factory()->updated()->create();
 
@@ -79,7 +79,7 @@ describe('LawnCareLog Model', function () {
                 ->first()->id->toBe($createdLog->id);
         });
 
-        it('can scope to lawn care', function () {
+        it('can scope to lawn care', function (): void {
             $lawnCare = LawnCare::factory()->create();
             $log = LawnCareLog::factory()
                 ->forLawnCare($lawnCare)
@@ -93,7 +93,7 @@ describe('LawnCareLog Model', function () {
                 ->first()->id->toBe($log->id);
         });
 
-        it('can scope to user', function () {
+        it('can scope to user', function (): void {
             $user = User::factory()->create();
             $log = LawnCareLog::factory()
                 ->for($user)
@@ -107,7 +107,7 @@ describe('LawnCareLog Model', function () {
                 ->first()->id->toBe($log->id);
         });
 
-        it('can scope to date range', function () {
+        it('can scope to date range', function (): void {
             $log = LawnCareLog::factory()->create([
                 'created_at' => now()->subDays(5),
             ]);
@@ -127,8 +127,8 @@ describe('LawnCareLog Model', function () {
         });
     });
 
-    describe('data access', function () {
-        it('can get care type', function () {
+    describe('data access', function (): void {
+        it('can get care type', function (): void {
             $log = LawnCareLog::factory()->create([
                 'data' => [
                     'type' => LawnCareType::MOW->value, // MOW statt Mow
@@ -141,7 +141,7 @@ describe('LawnCareLog Model', function () {
                 ->toBe(LawnCareType::MOW);
         });
 
-        it('can get care data', function () {
+        it('can get care data', function (): void {
             $careData = ['height_mm' => 45.5];
             $log = LawnCareLog::factory()->create([
                 'data' => [
@@ -154,7 +154,7 @@ describe('LawnCareLog Model', function () {
                 ->toBe($careData);
         });
 
-        it('can get changes', function () {
+        it('can get changes', function (): void {
             $changes = ['notes' => ['old' => 'test', 'new' => 'updated']];
             $log = LawnCareLog::factory()->updated($changes)->create();
 
@@ -162,7 +162,7 @@ describe('LawnCareLog Model', function () {
                 ->toBe($changes);
         });
 
-        it('can get additional data', function () {
+        it('can get additional data', function (): void {
             $log = LawnCareLog::factory()->create([
                 'data' => [
                     'custom_field' => 'test_value',
@@ -176,14 +176,14 @@ describe('LawnCareLog Model', function () {
         });
     });
 
-    describe('factory states', function () {
-        it('can create log with created state', function () {
+    describe('factory states', function (): void {
+        it('can create log with created state', function (): void {
             $log = LawnCareLog::factory()->created()->create();
 
             expect($log->action)->toBe('created');
         });
 
-        it('can create log with updated state', function () {
+        it('can create log with updated state', function (): void {
             $changes = ['field' => ['old' => 'test', 'new' => 'updated']];
             $log = LawnCareLog::factory()->updated($changes)->create();
 
@@ -191,7 +191,7 @@ describe('LawnCareLog Model', function () {
                 ->and($log->getChanges())->toBe($changes);
         });
 
-        it('can create log with completed state', function () {
+        it('can create log with completed state', function (): void {
             $log = LawnCareLog::factory()->completed()->create();
 
             expect($log->action)->toBe('completed')
@@ -199,7 +199,7 @@ describe('LawnCareLog Model', function () {
                 ->not->toBeNull();
         });
 
-        it('can create log for specific lawn care', function () {
+        it('can create log for specific lawn care', function (): void {
             $lawnCare = LawnCare::factory()->mowing()->create();
             $log = LawnCareLog::factory()
                 ->forLawnCare($lawnCare)

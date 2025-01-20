@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use App\DataObjects\PositiveInteger;
 
-describe('PositiveInteger', function () {
-    describe('from method', function () {
-        test('creates instance with positive integer', function () {
+describe('PositiveInteger', function (): void {
+    describe('from method', function (): void {
+        test('creates instance with positive integer', function (): void {
             $positiveInt = PositiveInteger::from(5);
             expect($positiveInt->value())->toBe(5);
 
@@ -14,12 +14,12 @@ describe('PositiveInteger', function () {
             expect($positiveInt->value())->toBe(10);
         });
 
-        test('throws exception for zero', function () {
+        test('throws exception for zero', function (): void {
             expect(fn () => PositiveInteger::from(0))
                 ->toThrow(InvalidArgumentException::class, 'Value must be positive');
         });
 
-        test('throws exception for negative number', function () {
+        test('throws exception for negative number', function (): void {
             expect(fn () => PositiveInteger::from(-5))
                 ->toThrow(InvalidArgumentException::class, 'Value must be positive')
                 ->and(fn () => PositiveInteger::from('-10'))
@@ -28,8 +28,8 @@ describe('PositiveInteger', function () {
         });
     });
 
-    describe('tryFrom method', function () {
-        test('returns PositiveInteger for valid positive integer', function () {
+    describe('tryFrom method', function (): void {
+        test('returns PositiveInteger for valid positive integer', function (): void {
             $positiveInt = PositiveInteger::tryFrom(5);
             expect($positiveInt)->toBeInstanceOf(PositiveInteger::class)
                 ->and($positiveInt?->value())->toBe(5);
@@ -39,12 +39,12 @@ describe('PositiveInteger', function () {
                 ->and($positiveInt?->value())->toBe(10);
         });
 
-        test('returns null for zero', function () {
+        test('returns null for zero', function (): void {
             $result = PositiveInteger::tryFrom(0);
             expect($result)->toBeNull();
         });
 
-        test('returns null for negative number', function () {
+        test('returns null for negative number', function (): void {
             $result = PositiveInteger::tryFrom(-5);
             expect($result)->toBeNull();
 
@@ -52,14 +52,14 @@ describe('PositiveInteger', function () {
             expect($result)->toBeNull();
         });
 
-        test('returns null for null input', function () {
+        test('returns null for null input', function (): void {
             $result = PositiveInteger::tryFrom(null);
             expect($result)->toBeNull();
         });
     });
 
-    describe('value method', function () {
-        test('returns the correct integer value', function () {
+    describe('value method', function (): void {
+        test('returns the correct integer value', function (): void {
             $positiveInt = PositiveInteger::from(42);
             expect($positiveInt->value())->toBe(42);
 

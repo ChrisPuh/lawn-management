@@ -16,13 +16,13 @@ use App\Models\Lawn;
 use App\Models\LawnCare;
 use App\Models\User;
 
-describe('LawnCare Model', function () {
-    beforeEach(function () {
+describe('LawnCare Model', function (): void {
+    beforeEach(function (): void {
         // Setup for each test
     });
 
-    describe('attributes', function () {
-        it('has fillable fields', function () {
+    describe('attributes', function (): void {
+        it('has fillable fields', function (): void {
             $lawnCare = new LawnCare;
 
             expect($lawnCare->getFillable())->toContain(
@@ -37,7 +37,7 @@ describe('LawnCare Model', function () {
             );
         });
 
-        it('casts attributes correctly', function () {
+        it('casts attributes correctly', function (): void {
             $lawnCare = new LawnCare;
 
             expect($lawnCare->getCasts())
@@ -49,8 +49,8 @@ describe('LawnCare Model', function () {
         });
     });
 
-    describe('relationships', function () {
-        it('belongs to a lawn', function () {
+    describe('relationships', function (): void {
+        it('belongs to a lawn', function (): void {
             $lawnCare = LawnCare::factory()->create();
 
             expect($lawnCare->lawn)
@@ -59,7 +59,7 @@ describe('LawnCare Model', function () {
                 ->toBe($lawnCare->lawn->id);
         });
 
-        it('belongs to a creator', function () {
+        it('belongs to a creator', function (): void {
             $lawnCare = LawnCare::factory()->create();
 
             expect($lawnCare->createdBy)
@@ -69,8 +69,8 @@ describe('LawnCare Model', function () {
         });
     });
 
-    describe('scopes', function () {
-        it('can scope to scheduled tasks', function () {
+    describe('scopes', function (): void {
+        it('can scope to scheduled tasks', function (): void {
             $scheduled = LawnCare::factory()->scheduled()->create();
             $completed = LawnCare::factory()->completed()->create();
             $regular = LawnCare::factory()->create();
@@ -82,7 +82,7 @@ describe('LawnCare Model', function () {
                 ->first()->id->toBe($scheduled->id);
         });
 
-        it('can scope to completed tasks', function () {
+        it('can scope to completed tasks', function (): void {
             $completed = LawnCare::factory()->completed()->create();
             $scheduled = LawnCare::factory()->scheduled()->create();
 
@@ -93,7 +93,7 @@ describe('LawnCare Model', function () {
                 ->first()->id->toBe($completed->id);
         });
 
-        it('can scope to specific lawn', function () {
+        it('can scope to specific lawn', function (): void {
             $lawn = Lawn::factory()->create();
             $lawnCare = LawnCare::factory()->for($lawn)->create();
             $otherCare = LawnCare::factory()->create();
@@ -106,8 +106,8 @@ describe('LawnCare Model', function () {
         });
     });
 
-    describe('care data handling', function () {
-        it('handles mowing data correctly', function () {
+    describe('care data handling', function (): void {
+        it('handles mowing data correctly', function (): void {
             $lawnCare = LawnCare::factory()
                 ->mowing(45.5)
                 ->create();
@@ -127,7 +127,7 @@ describe('LawnCare Model', function () {
                 ->toHaveKey('collected');
         });
 
-        it('handles watering data correctly', function () {
+        it('handles watering data correctly', function (): void {
             $lawnCare = LawnCare::factory()
                 ->watering()
                 ->create();
@@ -150,7 +150,7 @@ describe('LawnCare Model', function () {
             }
         });
 
-        it('handles fertilizing data correctly', function () {
+        it('handles fertilizing data correctly', function (): void {
             $lawnCare = LawnCare::factory()
                 ->fertilizing()
                 ->create();
@@ -164,7 +164,7 @@ describe('LawnCare Model', function () {
                 ->and($careData->nutrients)->toBeArray();
         });
 
-        it('can update care data', function () {
+        it('can update care data', function (): void {
             $lawnCare = LawnCare::factory()
                 ->mowing(40.0)
                 ->create();
@@ -185,8 +185,8 @@ describe('LawnCare Model', function () {
         });
     });
 
-    describe('task management', function () {
-        it('can complete a task', function () {
+    describe('task management', function (): void {
+        it('can complete a task', function (): void {
             $lawnCare = LawnCare::factory()->scheduled()->create();
 
             expect($lawnCare->completed_at)->toBeNull();
@@ -197,7 +197,7 @@ describe('LawnCare Model', function () {
                 ->not->toBeNull();
         });
 
-        it('can determine if task is scheduled', function () {
+        it('can determine if task is scheduled', function (): void {
             $scheduled = LawnCare::factory()->scheduled()->create();
             $regular = LawnCare::factory()->create();
 
@@ -205,7 +205,7 @@ describe('LawnCare Model', function () {
                 ->and($regular->isScheduled())->toBeFalse();
         });
 
-        it('can determine if task is completed', function () {
+        it('can determine if task is completed', function (): void {
             $completed = LawnCare::factory()->completed()->create();
             $regular = LawnCare::factory()->create();
 

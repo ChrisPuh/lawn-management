@@ -12,8 +12,8 @@ use App\Http\Requests\CreateWateringRequest;
 use App\Models\Lawn;
 use Illuminate\Support\Facades\Validator;
 
-describe('CreateWateringRequest Validation', function () {
-    it('fails with empty data', function () {
+describe('CreateWateringRequest Validation', function (): void {
+    it('fails with empty data', function (): void {
         $request = new CreateWateringRequest;
         $validator = Validator::make([], $request->rules());
 
@@ -26,7 +26,7 @@ describe('CreateWateringRequest Validation', function () {
             );
     });
 
-    it('fails with invalid types', function () {
+    it('fails with invalid types', function (): void {
         $request = new CreateWateringRequest;
         $validator = Validator::make([
             'lawn_id' => 'not-a-number',
@@ -46,7 +46,7 @@ describe('CreateWateringRequest Validation', function () {
             );
     });
 
-    it('validates with minimal data', function () {
+    it('validates with minimal data', function (): void {
         $request = new CreateWateringRequest;
         $validator = Validator::make([
             'lawn_id' => Lawn::factory()->create()->id,
@@ -58,7 +58,7 @@ describe('CreateWateringRequest Validation', function () {
         expect($validator->fails())->toBeFalse();
     });
 
-    it('validates with complete data', function () {
+    it('validates with complete data', function (): void {
         $request = new CreateWateringRequest;
         $validator = Validator::make([
             'lawn_id' => Lawn::factory()->create()->id,
@@ -76,7 +76,7 @@ describe('CreateWateringRequest Validation', function () {
         expect($validator->fails())->toBeFalse();
     });
 
-    it('prevents negative values', function () {
+    it('prevents negative values', function (): void {
         $request = new CreateWateringRequest;
         $validator = Validator::make([
             'lawn_id' => Lawn::factory()->create()->id,
@@ -92,7 +92,7 @@ describe('CreateWateringRequest Validation', function () {
             );
     });
 
-    it('validates date formats', function () {
+    it('validates date formats', function (): void {
         $request = new CreateWateringRequest;
         $validator = Validator::make([
             'lawn_id' => Lawn::factory()->create()->id,

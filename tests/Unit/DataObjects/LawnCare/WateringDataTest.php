@@ -7,8 +7,8 @@ use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
 
-describe('WateringData', function () {
-    test('can be constructed with required data', function () {
+describe('WateringData', function (): void {
+    test('can be constructed with required data', function (): void {
         $data = new WateringData(
             amount_liters: 10.5,
             duration_minutes: 30,
@@ -24,7 +24,7 @@ describe('WateringData', function () {
             ->time_of_day->toBeNull();
     });
 
-    test('can be constructed with all optional data', function () {
+    test('can be constructed with all optional data', function (): void {
         $data = new WateringData(
             amount_liters: 15.0,
             duration_minutes: 45,
@@ -43,7 +43,7 @@ describe('WateringData', function () {
             ->time_of_day->toBe(TimeOfDay::MORNING);
     });
 
-    test('throws exception for non-positive duration minutes', function () {
+    test('throws exception for non-positive duration minutes', function (): void {
         expect(fn () => new WateringData(
             amount_liters: 10.5,
             duration_minutes: 0,
@@ -57,8 +57,8 @@ describe('WateringData', function () {
 
     });
 
-    describe('from method', function () {
-        test('creates instance from array with minimal data', function () {
+    describe('from method', function (): void {
+        test('creates instance from array with minimal data', function (): void {
             $input = [
                 'amount_liters' => '10.5',
                 'duration_minutes' => '30',
@@ -76,7 +76,7 @@ describe('WateringData', function () {
                 ->time_of_day->toBeNull();
         });
 
-        test('creates instance from array with all data', function () {
+        test('creates instance from array with all data', function (): void {
             $input = [
                 'amount_liters' => '15.0',
                 'duration_minutes' => '45',
@@ -97,7 +97,7 @@ describe('WateringData', function () {
                 ->time_of_day->toBe(TimeOfDay::MORNING);
         });
 
-        test('handles optional fields with different input types', function () {
+        test('handles optional fields with different input types', function (): void {
             $input = [
                 'amount_liters' => 10.5,
                 'duration_minutes' => '30',
@@ -118,8 +118,8 @@ describe('WateringData', function () {
         });
     });
 
-    describe('toArray method', function () {
-        test('converts to array correctly with all fields', function () {
+    describe('toArray method', function (): void {
+        test('converts to array correctly with all fields', function (): void {
             $data = new WateringData(
                 amount_liters: 15.0,
                 duration_minutes: 45,
@@ -141,7 +141,7 @@ describe('WateringData', function () {
             ]);
         });
 
-        test('handles null enum values in toArray', function () {
+        test('handles null enum values in toArray', function (): void {
             $data = new WateringData(
                 amount_liters: 10.5,
                 duration_minutes: 30,

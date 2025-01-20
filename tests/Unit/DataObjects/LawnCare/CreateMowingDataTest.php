@@ -7,8 +7,8 @@ use App\DataObjects\LawnCare\CreateMowingData;
 use App\Enums\LawnCare\BladeCondition;
 use App\Enums\LawnCare\MowingPattern;
 
-describe('CreateMowingData', function () {
-    it('can be instantiated with minimal data', function () {
+describe('CreateMowingData', function (): void {
+    it('can be instantiated with minimal data', function (): void {
         $data = new CreateMowingData(
             lawn_id: 1,
             user_id: 1,
@@ -29,7 +29,7 @@ describe('CreateMowingData', function () {
             ->scheduled_for->toBeNull();
     });
 
-    it('can be instantiated with all data', function () {
+    it('can be instantiated with all data', function (): void {
         $performedAt = new DateTime();
         $scheduledFor = new DateTime('+1 day');
 
@@ -59,7 +59,7 @@ describe('CreateMowingData', function () {
             ->scheduled_for->toBe($scheduledFor);
     });
 
-    it('inherits base lawn care data properties', function () {
+    it('inherits base lawn care data properties', function (): void {
         $data = new CreateMowingData(
             lawn_id: 1,
             user_id: 1,
@@ -73,7 +73,7 @@ describe('CreateMowingData', function () {
             ->notes->toBe('Test notes');
     });
 
-    it('creates from array', function () {
+    it('creates from array', function (): void {
         $validatedData = [
             'lawn_id' => 1,
             'height_mm' => '45.5',
@@ -102,7 +102,7 @@ describe('CreateMowingData', function () {
             ->scheduled_for->toBeInstanceOf(DateTime::class);
     });
 
-    it('handles optional fields from array', function () {
+    it('handles optional fields from array', function (): void {
         $validatedData = [
             'lawn_id' => 1,
             'height_mm' => '45.5',

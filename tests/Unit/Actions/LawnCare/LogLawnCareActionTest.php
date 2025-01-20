@@ -9,13 +9,13 @@ use App\Models\LawnCare;
 use App\Models\LawnCareLog;
 use App\Models\User;
 
-describe('LogLawnCare Action', function () {
-    beforeEach(function () {
+describe('LogLawnCare Action', function (): void {
+    beforeEach(function (): void {
         // Setup for each test
     });
 
-    describe('logging', function () {
-        it('creates a basic log entry', function () {
+    describe('logging', function (): void {
+        it('creates a basic log entry', function (): void {
             $lawnCare = LawnCare::factory()->mowing()->create();
             $user = User::factory()->create();
 
@@ -37,7 +37,7 @@ describe('LogLawnCare Action', function () {
                 ->toHaveKey('care_data');
         });
 
-        it('includes additional data in log', function () {
+        it('includes additional data in log', function (): void {
             $lawnCare = LawnCare::factory()->mowing()->create();
             $user = User::factory()->create();
 
@@ -62,8 +62,8 @@ describe('LogLawnCare Action', function () {
         });
     });
 
-    describe('relationships', function () {
-        it('belongs to lawn care', function () {
+    describe('relationships', function (): void {
+        it('belongs to lawn care', function (): void {
             $lawnCare = LawnCare::factory()->create();
             $user = User::factory()->create();
 
@@ -79,7 +79,7 @@ describe('LogLawnCare Action', function () {
                 ->and($log->lawnCare->id)->toBe($lawnCare->id);
         });
 
-        it('belongs to user', function () {
+        it('belongs to user', function (): void {
             $lawnCare = LawnCare::factory()->create();
             $user = User::factory()->create();
 
@@ -96,8 +96,8 @@ describe('LogLawnCare Action', function () {
         });
     });
 
-    describe('querying', function () {
-        it('can retrieve logs by lawn care', function () {
+    describe('querying', function (): void {
+        it('can retrieve logs by lawn care', function (): void {
             $lawnCare = LawnCare::factory()->create();
             $user = User::factory()->create();
 
@@ -121,7 +121,7 @@ describe('LogLawnCare Action', function () {
                 ->toBe(2);
         });
 
-        it('can retrieve logs by action type', function () {
+        it('can retrieve logs by action type', function (): void {
             $lawnCare = LawnCare::factory()->create();
             $user = User::factory()->create();
 
@@ -144,8 +144,8 @@ describe('LogLawnCare Action', function () {
         });
     });
 
-    describe('validations', function () {
-        it('requires valid lawn care instance', function () {
+    describe('validations', function (): void {
+        it('requires valid lawn care instance', function (): void {
             $invalidLawnCare = new LawnCare;
             $user = User::factory()->create();
 
@@ -158,7 +158,7 @@ describe('LogLawnCare Action', function () {
             ))->toThrow(Exception::class);
         });
 
-        it('handles invalid action types', function () {
+        it('handles invalid action types', function (): void {
             $lawnCare = LawnCare::factory()->create();
             $user = User::factory()->create();
 

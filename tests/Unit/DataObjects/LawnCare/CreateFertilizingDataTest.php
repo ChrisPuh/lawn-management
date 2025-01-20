@@ -6,8 +6,8 @@ declare(strict_types=1);
 use App\DataObjects\LawnCare\CreateFertilizingData;
 use App\Enums\LawnCare\WeatherCondition;
 
-describe('CreateFertilizingData', function () {
-    it('can be instantiated with minimal data', function () {
+describe('CreateFertilizingData', function (): void {
+    it('can be instantiated with minimal data', function (): void {
         $data = new CreateFertilizingData(
             lawn_id: 1,
             user_id: 1,
@@ -31,7 +31,7 @@ describe('CreateFertilizingData', function () {
             ->scheduled_for->toBeNull();
     });
 
-    it('can be instantiated with all data', function () {
+    it('can be instantiated with all data', function (): void {
         $performedAt = new DateTime();
         $scheduledFor = new DateTime('+1 day');
 
@@ -63,7 +63,7 @@ describe('CreateFertilizingData', function () {
             ->scheduled_for->toBe($scheduledFor);
     });
 
-    it('creates from array with all fields', function () {
+    it('creates from array with all fields', function (): void {
         $validatedData = [
             'lawn_id' => 1,
             'product_name' => 'Complete Lawn Fertilizer',
@@ -94,7 +94,7 @@ describe('CreateFertilizingData', function () {
             ->scheduled_for->toBeInstanceOf(DateTime::class);
     });
 
-    it('handles optional fields from array', function () {
+    it('handles optional fields from array', function (): void {
         $validatedData = [
             'lawn_id' => 1,
             'product_name' => 'Basic Lawn Food',

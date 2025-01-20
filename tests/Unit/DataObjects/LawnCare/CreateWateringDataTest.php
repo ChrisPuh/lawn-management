@@ -10,8 +10,8 @@ use App\Enums\LawnCare\WeatherCondition;
 use App\Http\Requests\BaseLawnCareRequest;
 use App\Http\Requests\CreateWateringRequest;
 
-describe('CreateWateringData', function () {
-    it('can be instantiated with minimal data', function () {
+describe('CreateWateringData', function (): void {
+    it('can be instantiated with minimal data', function (): void {
         $data = new CreateWateringData(
             lawn_id: 1,
             user_id: 1,
@@ -34,7 +34,7 @@ describe('CreateWateringData', function () {
             ->scheduled_for->toBeNull();
     });
 
-    it('can be instantiated with all data', function () {
+    it('can be instantiated with all data', function (): void {
         $performedAt = new DateTime;
         $scheduledFor = new DateTime('+1 day');
 
@@ -66,7 +66,7 @@ describe('CreateWateringData', function () {
             ->scheduled_for->toBe($scheduledFor);
     });
 
-    it('inherits base lawn care data properties', function () {
+    it('inherits base lawn care data properties', function (): void {
         $data = new CreateWateringData(
             lawn_id: 1,
             user_id: 1,
@@ -84,7 +84,7 @@ describe('CreateWateringData', function () {
     });
 
     // Nur wenn wir Validierung im Constructor haben
-    it('validates positive values', function () {
+    it('validates positive values', function (): void {
         expect(fn () => new CreateWateringData(
             lawn_id: 1,
             user_id: 1,
@@ -104,7 +104,7 @@ describe('CreateWateringData', function () {
 
     // tests/Unit/DataObjects/LawnCare/CreateWateringDataTest.php
 
-    it('creates from request', function () {
+    it('creates from request', function (): void {
 
         $validatedData = [
             'lawn_id' => 1,

@@ -21,7 +21,7 @@ uses(RefreshDatabase::class);
 const DEFAULT_AMOUNT_LITERS = 10.5;
 const DEFAULT_DURATION_MINUTES = 30;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->action = new CreateWateringAction(
         app(LogLawnCareActionContract::class)
     );
@@ -62,9 +62,9 @@ function generateCreateWateringData(
     );
 }
 
-describe('CreateWateringAction', function () {
-    describe('creation', function () {
-        test('with minimal data', function () {
+describe('CreateWateringAction', function (): void {
+    describe('creation', function (): void {
+        test('with minimal data', function (): void {
             //            $lawnCareAction = app(CreateLawnCareActionContract::class);
             //            $lawnCare = $lawnCareAction->execute(type: LawnCareType::WATER, data: CreateWateringData::fromArray(
             //                validatedData: [
@@ -111,7 +111,7 @@ describe('CreateWateringAction', function () {
                 ->time_of_day->toBeNull();
         });
 
-        test('with full data', function () {
+        test('with full data', function (): void {
             // Arrange
             $performedAt = new DateTime;
             $scheduledFor = new DateTime('+1 day');
@@ -141,8 +141,8 @@ describe('CreateWateringAction', function () {
         });
     });
 
-    describe('timing handling', function () {
-        test('uses current time if performed_at is not provided', function () {
+    describe('timing handling', function (): void {
+        test('uses current time if performed_at is not provided', function (): void {
             // Arrange
             $wateringData = generateCreateWateringData(
                 lawnId: $this->lawn->id,
@@ -165,8 +165,8 @@ describe('CreateWateringAction', function () {
         });
     });
 
-    describe('logging', function () {
-        test('creates log entry', function () {
+    describe('logging', function (): void {
+        test('creates log entry', function (): void {
             // Arrange
             $wateringData = generateCreateWateringData(
                 lawnId: $this->lawn->id,

@@ -19,7 +19,7 @@ uses(RefreshDatabase::class);
 const DEFAULT_HEIGHT_MM = 45.5;
 const DEFAULT_COLLECTED = true;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->action = new CreateMowingAction(
         app(LogLawnCareActionContract::class)
     );
@@ -58,9 +58,9 @@ function generateCreateMowingData(
     );
 }
 
-describe('CreateMowingAction', function () {
-    describe('creation', function () {
-        test('with minimal data', function () {
+describe('CreateMowingAction', function (): void {
+    describe('creation', function (): void {
+        test('with minimal data', function (): void {
             // Arrange
             $mowingData = generateCreateMowingData(
                 lawnId: $this->lawn->id,
@@ -88,7 +88,7 @@ describe('CreateMowingAction', function () {
                 ->duration_minutes->toBeNull();
         });
 
-        test('with full data', function () {
+        test('with full data', function (): void {
             // Arrange
             $performedAt = new DateTime();
             $scheduledFor = new DateTime('+1 day');
@@ -128,8 +128,8 @@ describe('CreateMowingAction', function () {
         });
     });
 
-    describe('timing handling', function () {
-        test('uses current time if performed_at is not provided', function () {
+    describe('timing handling', function (): void {
+        test('uses current time if performed_at is not provided', function (): void {
             // Arrange
             $mowingData = generateCreateMowingData(
                 lawnId: $this->lawn->id,
@@ -152,8 +152,8 @@ describe('CreateMowingAction', function () {
         });
     });
 
-    describe('logging', function () {
-        test('creates log entry', function () {
+    describe('logging', function (): void {
+        test('creates log entry', function (): void {
             // Arrange
             $mowingData = generateCreateMowingData(
                 lawnId: $this->lawn->id,

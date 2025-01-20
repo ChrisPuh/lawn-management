@@ -6,8 +6,8 @@ use App\DataObjects\LawnCare\MowingData;
 use App\Enums\LawnCare\BladeCondition;
 use App\Enums\LawnCare\MowingPattern;
 
-describe('MowingData', function () {
-    test('can be constructed with minimal required data', function () {
+describe('MowingData', function (): void {
+    test('can be constructed with minimal required data', function (): void {
         $data = new MowingData(
             height_mm: 45.5
         );
@@ -20,7 +20,7 @@ describe('MowingData', function () {
             ->duration_minutes->toBeNull();
     });
 
-    test('can be constructed with all optional data', function () {
+    test('can be constructed with all optional data', function (): void {
         $data = new MowingData(
             height_mm: 50.0,
             pattern: MowingPattern::DIAGONAL,
@@ -37,7 +37,7 @@ describe('MowingData', function () {
             ->duration_minutes->toBe(30);
     });
 
-    test('throws exception for non-positive duration minutes', function () {
+    test('throws exception for non-positive duration minutes', function (): void {
         expect(fn () => new MowingData(
             height_mm: 45.5,
             duration_minutes: 0
@@ -49,8 +49,8 @@ describe('MowingData', function () {
 
     });
 
-    describe('from method', function () {
-        test('creates instance from array with minimal data', function () {
+    describe('from method', function (): void {
+        test('creates instance from array with minimal data', function (): void {
             $input = [
                 'height_mm' => '45.5',
             ];
@@ -65,7 +65,7 @@ describe('MowingData', function () {
                 ->duration_minutes->toBeNull();
         });
 
-        test('creates instance from array with all data', function () {
+        test('creates instance from array with all data', function (): void {
             $input = [
                 'height_mm' => '50.0',
                 'pattern' => MowingPattern::DIAGONAL->value,
@@ -84,7 +84,7 @@ describe('MowingData', function () {
                 ->duration_minutes->toBe(30);
         });
 
-        test('handles optional fields with different input types', function () {
+        test('handles optional fields with different input types', function (): void {
             $input = [
                 'height_mm' => 45.5,
                 'collected' => 1,
@@ -100,8 +100,8 @@ describe('MowingData', function () {
         });
     });
 
-    describe('toArray method', function () {
-        test('converts to array correctly with all fields', function () {
+    describe('toArray method', function (): void {
+        test('converts to array correctly with all fields', function (): void {
             $data = new MowingData(
                 height_mm: 50.0,
                 pattern: MowingPattern::DIAGONAL,
@@ -121,7 +121,7 @@ describe('MowingData', function () {
             ]);
         });
 
-        test('handles null enum values in toArray', function () {
+        test('handles null enum values in toArray', function (): void {
             $data = new MowingData(
                 height_mm: 45.5
             );

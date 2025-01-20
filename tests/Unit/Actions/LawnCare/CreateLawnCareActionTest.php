@@ -16,8 +16,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-describe('CreateLawnCareAction', function () {
-    beforeEach(function () {
+describe('CreateLawnCareAction', function (): void {
+    beforeEach(function (): void {
         $this->user = User::factory()->create();
         $this->lawn = Lawn::factory()->create([
             'user_id' => $this->user->id,
@@ -27,8 +27,8 @@ describe('CreateLawnCareAction', function () {
         $this->createLawnCareAction = app(CreateLawnCareActionContract::class);
     });
 
-    describe('successful execution', function () {
-        test('executes mowing action', function () {
+    describe('successful execution', function (): void {
+        test('executes mowing action', function (): void {
             // Arrange
             $mowingData = new CreateMowingData(
                 lawn_id: $this->lawn->id,
@@ -52,7 +52,7 @@ describe('CreateLawnCareAction', function () {
                 ->type->toBe(LawnCareType::MOW);
         });
 
-        test('executes fertilizing action', function () {
+        test('executes fertilizing action', function (): void {
             // Arrange
             $fertilizingData = new CreateFertilizingData(
                 lawn_id: $this->lawn->id,
@@ -77,7 +77,7 @@ describe('CreateLawnCareAction', function () {
                 ->type->toBe(LawnCareType::FERTILIZE);
         });
 
-        test('executes watering action', function () {
+        test('executes watering action', function (): void {
             // Arrange
             $wateringData = new CreateWateringData(
                 lawn_id: $this->lawn->id,
@@ -102,8 +102,8 @@ describe('CreateLawnCareAction', function () {
         });
     });
 
-    describe('error handling', function () {
-        test('throws ValueError when attempting to create enum with invalid value', function () {
+    describe('error handling', function (): void {
+        test('throws ValueError when attempting to create enum with invalid value', function (): void {
             // Act & Assert
             $this->expectException(ValueError::class);
             $this->expectExceptionMessageMatches('/"LIME" is not a valid backing value for enum/');
@@ -113,7 +113,7 @@ describe('CreateLawnCareAction', function () {
 
         });
 
-        test('throws InvalidArgumentException for unsupported lawn care type', function () {
+        test('throws InvalidArgumentException for unsupported lawn care type', function (): void {
             $action = app(CreateLawnCareActionContract::class);
 
             $this->expectException(InvalidArgumentException::class);
@@ -128,8 +128,8 @@ describe('CreateLawnCareAction', function () {
         });
     });
 
-    describe('dependency injection', function () {
-        test('implements CreateLawnCareActionContract', function () {
+    describe('dependency injection', function (): void {
+        test('implements CreateLawnCareActionContract', function (): void {
             expect($this->createLawnCareAction)
                 ->toBeInstanceOf(CreateLawnCareActionContract::class);
         });

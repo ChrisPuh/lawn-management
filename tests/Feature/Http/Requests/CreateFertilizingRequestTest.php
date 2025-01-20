@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Validator;
 
 uses(RefreshDatabase::class);
 
-describe('CreateFertilizingRequest', function () {
-    describe('validation rules', function () {
-        beforeEach(function () {
+describe('CreateFertilizingRequest', function (): void {
+    describe('validation rules', function (): void {
+        beforeEach(function (): void {
             $this->lawn = Lawn::factory()->create();
         });
 
-        test('accepts valid data', function () {
+        test('accepts valid data', function (): void {
             $validator = Validator::make([
                 'lawn_id' => $this->lawn->id,
                 'height_mm' => 45,
@@ -37,7 +37,7 @@ describe('CreateFertilizingRequest', function () {
             expect($validator->fails())->toBeFalse();
         });
 
-        test('accepts minimal data', function () {
+        test('accepts minimal data', function (): void {
             $validator = Validator::make([
                 'lawn_id' => $this->lawn->id,
                 'height_mm' => 45,
@@ -49,7 +49,7 @@ describe('CreateFertilizingRequest', function () {
             expect($validator->fails())->toBeFalse();
         });
 
-        test('validates required fields', function () {
+        test('validates required fields', function (): void {
             $validator = Validator::make([], (new CreateFertilizingRequest)->rules());
 
             expect($validator->fails())->toBeTrue()
@@ -62,8 +62,8 @@ describe('CreateFertilizingRequest', function () {
                 );
         });
 
-        describe('height_mm', function () {
-            test('must be at least 20mm', function () {
+        describe('height_mm', function (): void {
+            test('must be at least 20mm', function (): void {
                 $validator = Validator::make([
                     'height_mm' => 19,
                 ], (new CreateFertilizingRequest)->rules());
@@ -71,7 +71,7 @@ describe('CreateFertilizingRequest', function () {
                 expect($validator->errors()->has('height_mm'))->toBeTrue();
             });
 
-            test('cannot exceed 100mm', function () {
+            test('cannot exceed 100mm', function (): void {
                 $validator = Validator::make([
                     'height_mm' => 101,
                 ], (new CreateFertilizingRequest)->rules());
@@ -80,8 +80,8 @@ describe('CreateFertilizingRequest', function () {
             });
         });
 
-        describe('product_name', function () {
-            test('must not exceed 255 characters', function () {
+        describe('product_name', function (): void {
+            test('must not exceed 255 characters', function (): void {
                 $validator = Validator::make([
                     'product_name' => str_repeat('a', 256),
                 ], (new CreateFertilizingRequest)->rules());
@@ -90,8 +90,8 @@ describe('CreateFertilizingRequest', function () {
             });
         });
 
-        describe('amount_per_sqm', function () {
-            test('must be positive', function () {
+        describe('amount_per_sqm', function (): void {
+            test('must be positive', function (): void {
                 $validator = Validator::make([
                     'amount_per_sqm' => 0,
                 ], (new CreateFertilizingRequest)->rules());
@@ -99,7 +99,7 @@ describe('CreateFertilizingRequest', function () {
                 expect($validator->errors()->has('amount_per_sqm'))->toBeTrue();
             });
 
-            test('cannot exceed 1000', function () {
+            test('cannot exceed 1000', function (): void {
                 $validator = Validator::make([
                     'amount_per_sqm' => 1001,
                 ], (new CreateFertilizingRequest)->rules());
@@ -108,8 +108,8 @@ describe('CreateFertilizingRequest', function () {
             });
         });
 
-        describe('nutrients', function () {
-            test('must not exceed 255 characters', function () {
+        describe('nutrients', function (): void {
+            test('must not exceed 255 characters', function (): void {
                 $validator = Validator::make([
                     'nutrients' => str_repeat('a', 256),
                 ], (new CreateFertilizingRequest)->rules());
@@ -118,8 +118,8 @@ describe('CreateFertilizingRequest', function () {
             });
         });
 
-        describe('watered', function () {
-            test('must be boolean', function () {
+        describe('watered', function (): void {
+            test('must be boolean', function (): void {
                 $validator = Validator::make([
                     'watered' => 'not-a-boolean',
                 ], (new CreateFertilizingRequest)->rules());
@@ -134,8 +134,8 @@ describe('CreateFertilizingRequest', function () {
             });
         });
 
-        describe('temperature_celsius', function () {
-            test('validates range', function () {
+        describe('temperature_celsius', function (): void {
+            test('validates range', function (): void {
                 $validator = Validator::make([
                     'temperature_celsius' => -21,
                 ], (new CreateFertilizingRequest)->rules());
@@ -149,7 +149,7 @@ describe('CreateFertilizingRequest', function () {
                 expect($validator->errors()->has('temperature_celsius'))->toBeTrue();
             });
 
-            test('is optional', function () {
+            test('is optional', function (): void {
                 $validator = Validator::make([
                     'lawn_id' => $this->lawn->id,
                     'height_mm' => 45,
@@ -162,8 +162,8 @@ describe('CreateFertilizingRequest', function () {
             });
         });
 
-        describe('weather_condition', function () {
-            test('must not exceed 255 characters', function () {
+        describe('weather_condition', function (): void {
+            test('must not exceed 255 characters', function (): void {
                 $validator = Validator::make([
                     'weather_condition' => str_repeat('a', 256),
                 ], (new CreateFertilizingRequest)->rules());
@@ -171,7 +171,7 @@ describe('CreateFertilizingRequest', function () {
                 expect($validator->errors()->has('weather_condition'))->toBeTrue();
             });
 
-            test('is optional', function () {
+            test('is optional', function (): void {
                 $validator = Validator::make([
                     'lawn_id' => $this->lawn->id,
                     'height_mm' => 45,

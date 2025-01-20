@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\Validator;
 
 uses(RefreshDatabase::class);
 
-describe('CreateMowingRequest', function () {
-    describe('validation rules', function () {
-        beforeEach(function () {
+describe('CreateMowingRequest', function (): void {
+    describe('validation rules', function (): void {
+        beforeEach(function (): void {
             $this->lawn = Lawn::factory()->create();
         });
 
-        test('accepts valid data', function () {
+        test('accepts valid data', function (): void {
             $validator = Validator::make([
                 'lawn_id' => $this->lawn->id,  // muss existieren
                 'height_mm' => 45,
@@ -37,7 +37,7 @@ describe('CreateMowingRequest', function () {
             expect($validator->fails())->toBeFalse();
         });
 
-        test('accepts minimal data', function () {
+        test('accepts minimal data', function (): void {
             $validator = Validator::make([
                 'lawn_id' => $this->lawn->id,  // muss existieren
                 'height_mm' => 45,
@@ -47,7 +47,7 @@ describe('CreateMowingRequest', function () {
             expect($validator->fails())->toBeFalse();
         });
 
-        test('validates required fields', function () {
+        test('validates required fields', function (): void {
             $validator = Validator::make([], (new CreateMowingRequest)->rules());
 
             expect($validator->fails())->toBeTrue()
@@ -57,8 +57,8 @@ describe('CreateMowingRequest', function () {
                 );
         });
 
-        describe('height_mm', function () {
-            test('must be at least 20mm', function () {
+        describe('height_mm', function (): void {
+            test('must be at least 20mm', function (): void {
                 $validator = Validator::make([
                     'height_mm' => 19,
                 ], (new CreateMowingRequest)->rules());
@@ -66,7 +66,7 @@ describe('CreateMowingRequest', function () {
                 expect($validator->errors()->has('height_mm'))->toBeTrue();
             });
 
-            test('cannot exceed 100mm', function () {
+            test('cannot exceed 100mm', function (): void {
                 $validator = Validator::make([
                     'height_mm' => 101,
                 ], (new CreateMowingRequest)->rules());
@@ -75,8 +75,8 @@ describe('CreateMowingRequest', function () {
             });
         });
 
-        describe('duration_minutes', function () {
-            test('must be positive when provided', function () {
+        describe('duration_minutes', function (): void {
+            test('must be positive when provided', function (): void {
                 $validator = Validator::make([
                     'duration_minutes' => 0,
                 ], (new CreateMowingRequest)->rules());
@@ -84,7 +84,7 @@ describe('CreateMowingRequest', function () {
                 expect($validator->errors()->has('duration_minutes'))->toBeTrue();
             });
 
-            test('must be integer', function () {
+            test('must be integer', function (): void {
                 $validator = Validator::make([
                     'duration_minutes' => 1.5,
                 ], (new CreateMowingRequest)->rules());
@@ -93,8 +93,8 @@ describe('CreateMowingRequest', function () {
             });
         });
 
-        describe('collected', function () {
-            test('must be boolean', function () {
+        describe('collected', function (): void {
+            test('must be boolean', function (): void {
                 $validator = Validator::make([
                     'collected' => 'not-a-boolean',
                 ], (new CreateMowingRequest)->rules());
@@ -109,8 +109,8 @@ describe('CreateMowingRequest', function () {
             });
         });
 
-        describe('enums', function () {
-            test('validates pattern enum', function () {
+        describe('enums', function (): void {
+            test('validates pattern enum', function (): void {
                 $validator = Validator::make([
                     'pattern' => 'invalid-pattern',
                 ], (new CreateMowingRequest)->rules());

@@ -18,7 +18,7 @@ uses(RefreshDatabase::class);
 const DEFAULT_AMOUNT_PER_SQM = 0.5;
 const DEFAULT_NUTRIENTS = ['N', 'P', 'K'];
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->action = new CreateFertilizingAction(
         app(LogLawnCareActionContract::class)
     );
@@ -59,9 +59,9 @@ function generateCreateFertilizingData(
     );
 }
 
-describe('CreateFertilizingAction', function () {
-    describe('creation', function () {
-        test('with minimal data', function () {
+describe('CreateFertilizingAction', function (): void {
+    describe('creation', function (): void {
+        test('with minimal data', function (): void {
             // Arrange
             $fertilizingData = generateCreateFertilizingData(
                 lawnId: $this->lawn->id,
@@ -90,7 +90,7 @@ describe('CreateFertilizingAction', function () {
                 ->weather_condition->toBeNull();
         });
 
-        test('with full data', function () {
+        test('with full data', function (): void {
             // Arrange
             $performedAt = new DateTime;
             $scheduledFor = new DateTime('+1 day');
@@ -132,8 +132,8 @@ describe('CreateFertilizingAction', function () {
         });
     });
 
-    describe('timing handling', function () {
-        test('uses current time if performed_at is not provided', function () {
+    describe('timing handling', function (): void {
+        test('uses current time if performed_at is not provided', function (): void {
             // Arrange
             $fertilizingData = generateCreateFertilizingData(
                 lawnId: $this->lawn->id,
@@ -156,8 +156,8 @@ describe('CreateFertilizingAction', function () {
         });
     });
 
-    describe('logging', function () {
-        test('creates log entry', function () {
+    describe('logging', function (): void {
+        test('creates log entry', function (): void {
             // Arrange
             $fertilizingData = generateCreateFertilizingData(
                 lawnId: $this->lawn->id,

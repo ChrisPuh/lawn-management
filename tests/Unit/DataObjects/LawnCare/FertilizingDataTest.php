@@ -5,14 +5,14 @@ declare(strict_types=1);
 use App\DataObjects\LawnCare\FertilizingData;
 use App\Enums\LawnCare\WeatherCondition;
 
-describe('FertilizingData', function () {
+describe('FertilizingData', function (): void {
     $baseNutrients = [
         'nutrient_n' => 10.5,
         'nutrient_p' => 5.2,
         'nutrient_k' => 7.8,
     ];
 
-    test('can be constructed with minimal required data', function () use ($baseNutrients) {
+    test('can be constructed with minimal required data', function () use ($baseNutrients): void {
         $data = new FertilizingData(
             product_name: 'Test Fertilizer',
             amount_per_sqm: 0.5,
@@ -28,7 +28,7 @@ describe('FertilizingData', function () {
             ->weather_condition->toBeNull();
     });
 
-    test('can be constructed with all optional data', function () use ($baseNutrients) {
+    test('can be constructed with all optional data', function () use ($baseNutrients): void {
         $data = new FertilizingData(
             product_name: 'Advanced Fertilizer',
             amount_per_sqm: 0.75,
@@ -47,8 +47,8 @@ describe('FertilizingData', function () {
             ->weather_condition->toBe(WeatherCondition::SUNNY);
     });
 
-    describe('from method', function () use ($baseNutrients) {
-        test('creates instance from array with minimal data', function () use ($baseNutrients) {
+    describe('from method', function () use ($baseNutrients): void {
+        test('creates instance from array with minimal data', function () use ($baseNutrients): void {
             $input = [
                 'product_name' => 'Basic Fertilizer',
                 'amount_per_sqm' => '0.5',
@@ -66,7 +66,7 @@ describe('FertilizingData', function () {
                 ->weather_condition->toBeNull();
         });
 
-        test('creates instance from array with all data', function () use ($baseNutrients) {
+        test('creates instance from array with all data', function () use ($baseNutrients): void {
             $input = [
                 'product_name' => 'Complete Fertilizer',
                 'amount_per_sqm' => '0.75',
@@ -87,7 +87,7 @@ describe('FertilizingData', function () {
                 ->weather_condition->toBe(WeatherCondition::SUNNY);
         });
 
-        test('handles optional fields with different input types', function () use ($baseNutrients) {
+        test('handles optional fields with different input types', function () use ($baseNutrients): void {
             $input = [
                 'product_name' => 'Flexible Fertilizer',
                 'amount_per_sqm' => 0.6,
@@ -106,8 +106,8 @@ describe('FertilizingData', function () {
         });
     });
 
-    describe('toArray method', function () use ($baseNutrients) {
-        test('converts to array correctly', function () use ($baseNutrients) {
+    describe('toArray method', function () use ($baseNutrients): void {
+        test('converts to array correctly', function () use ($baseNutrients): void {
             $data = new FertilizingData(
                 product_name: 'Export Fertilizer',
                 amount_per_sqm: 0.5,
@@ -129,7 +129,7 @@ describe('FertilizingData', function () {
             ]);
         });
 
-        test('handles null weather condition in toArray', function () use ($baseNutrients) {
+        test('handles null weather condition in toArray', function () use ($baseNutrients): void {
             $data = new FertilizingData(
                 product_name: 'Null Weather Fertilizer',
                 amount_per_sqm: 0.5,
