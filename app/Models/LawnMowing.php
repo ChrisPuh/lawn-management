@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
- * 
- *
  * @property int $id
  * @property int $lawn_id
  * @property \Illuminate\Support\Carbon $mowed_on
@@ -20,9 +18,10 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnImage> $images
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, LawnImage> $images
  * @property-read int|null $images_count
- * @property-read \App\Models\Lawn $lawn
+ * @property-read Lawn $lawn
+ *
  * @method static \Database\Factories\LawnMowingFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing newQuery()
@@ -34,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereMowedOn($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnMowing whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 final class LawnMowing extends Model

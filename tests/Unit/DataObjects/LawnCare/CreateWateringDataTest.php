@@ -7,8 +7,6 @@ use App\DataObjects\LawnCare\CreateWateringData;
 use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
-use App\Http\Requests\BaseLawnCareRequest;
-use App\Http\Requests\CreateWateringRequest;
 
 describe('CreateWateringData', function (): void {
     it('can be instantiated with minimal data', function (): void {
@@ -120,8 +118,6 @@ describe('CreateWateringData', function (): void {
         ];
 
         $data = CreateWateringData::fromArray($validatedData, 1);
-
-
 
         expect($data)
             ->toBeInstanceOf(CreateWateringData::class)

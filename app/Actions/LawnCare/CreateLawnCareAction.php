@@ -14,7 +14,7 @@ use InvalidArgumentException;
 final class CreateLawnCareAction implements CreateLawnCareActionContract
 {
     /**
-     * @var array<string, LawnCareActionContract>
+     * @var array<string, LawnCareActionContract|CreateMowingAction|CreateFertilizingAction|CreateWateringAction>
      */
     private array $actions;
 
@@ -40,6 +40,4 @@ final class CreateLawnCareAction implements CreateLawnCareActionContract
 
         return $action->execute($data);
     }
-
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums\LawnCare;
 
 enum MowingPattern: string
@@ -16,5 +18,4 @@ enum MowingPattern: string
             self::CHECKERBOARD => 'Schachbrett',
         };
     }
-
 }

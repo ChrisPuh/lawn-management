@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\LawnCare;
 
 use App\DataObjects\LawnCare\CreateMowingData;
@@ -12,6 +14,7 @@ final readonly class CreateMowingAction
     public function __construct(
         private LogLawnCareAction $logLawnCare,
     ) {}
+
     public function execute(CreateMowingData $data): LawnCare
     {
         $lawnCare = LawnCare::query()->create([

@@ -8,15 +8,16 @@ use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Traits\CanGetTableNameStatically;
 use Auth;
+use Database\Factories\LawnFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
- * 
- *
  * @property int $id
  * @property string $name
  * @property string|null $location
@@ -24,20 +25,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property GrassSeed|null $grass_seed
  * @property GrassType|null $type
  * @property int $user_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnAerating> $aeratingRecords
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, LawnAerating> $aeratingRecords
  * @property-read int|null $aerating_records_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnFertilizing> $fertilizingRecords
+ * @property-read Collection<int, LawnFertilizing> $fertilizingRecords
  * @property-read int|null $fertilizing_records_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnImage> $images
+ * @property-read Collection<int, LawnImage> $images
  * @property-read int|null $images_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnMowing> $mowingRecords
+ * @property-read Collection<int, LawnMowing> $mowingRecords
  * @property-read int|null $mowing_records_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LawnScarifying> $scarifyingRecords
+ * @property-read Collection<int, LawnScarifying> $scarifyingRecords
  * @property-read int|null $scarifying_records_count
- * @property-read \App\Models\User $user
- * @method static \Database\Factories\LawnFactory factory($count = null, $state = [])
+ * @property-read User $user
+ *
+ * @method static LawnFactory factory($count = null, $state = [])
  * @method static Builder<static>|Lawn forUser()
  * @method static Builder<static>|Lawn newModelQuery()
  * @method static Builder<static>|Lawn newQuery()
@@ -51,13 +53,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder<static>|Lawn whereType($value)
  * @method static Builder<static>|Lawn whereUpdatedAt($value)
  * @method static Builder<static>|Lawn whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 final class Lawn extends Model
 {
     use CanGetTableNameStatically;
 
-    /** @use HasFactory<\Database\Factories\LawnFactory> */
+    /** @use HasFactory<LawnFactory> */
     use HasFactory;
 
     protected $table = 'lawns';
@@ -86,7 +89,7 @@ final class Lawn extends Model
     }
 
     /**
-     * @return HasMany<LawnMowing, Lawn>
+     * @return HasMany<LawnMowing, $this>
      */
     public function mowingRecords(): HasMany
     {
@@ -94,7 +97,7 @@ final class Lawn extends Model
     }
 
     /**
-     * @return HasMany<LawnFertilizing, Lawn>
+     * @return HasMany<LawnFertilizing, $this>
      */
     public function fertilizingRecords(): HasMany
     {
@@ -102,7 +105,7 @@ final class Lawn extends Model
     }
 
     /**
-     * @return HasMany<LawnScarifying, Lawn>
+     * @return HasMany<LawnScarifying, $this>
      */
     public function scarifyingRecords(): HasMany
     {
@@ -110,7 +113,7 @@ final class Lawn extends Model
     }
 
     /**
-     * @return HasMany<LawnAerating, Lawn>
+     * @return HasMany<LawnAerating, $this>
      */
     public function aeratingRecords(): HasMany
     {
@@ -118,7 +121,7 @@ final class Lawn extends Model
     }
 
     /**
-     * @return HasMany<LawnImage, Lawn>
+     * @return HasMany<LawnImage, $this>
      */
     public function images(): HasMany
     {

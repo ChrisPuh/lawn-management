@@ -13,8 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
- *
  * @property int $id
  * @property int $lawn_care_id
  * @property int $user_id
@@ -22,8 +20,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<array-key, mixed>|null $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\LawnCare $lawnCare
- * @property-read \App\Models\User $user
+ * @property-read LawnCare $lawnCare
+ * @property-read User $user
+ *
  * @method static Builder<static>|LawnCareLog createdBetween(\DateTime $start, \DateTime $end)
  * @method static \Database\Factories\LawnCareLogFactory factory($count = null, $state = [])
  * @method static Builder<static>|LawnCareLog forAction(string $action)
@@ -39,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder<static>|LawnCareLog whereLawnCareId($value)
  * @method static Builder<static>|LawnCareLog whereUpdatedAt($value)
  * @method static Builder<static>|LawnCareLog whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 final class LawnCareLog extends Model

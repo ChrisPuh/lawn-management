@@ -5,20 +5,12 @@ declare(strict_types=1);
 namespace App\DataObjects\LawnCare;
 
 use App\Contracts\LawnCare\CareData;
-use App\DataObjects\PositiveInteger;
 use App\Enums\LawnCare\BladeCondition;
 use App\Enums\LawnCare\MowingPattern;
 use InvalidArgumentException;
 
 final readonly class MowingData implements CareData
 {
-    /**
-     * @param float $height_mm
-     * @param MowingPattern|null $pattern
-     * @param bool $collected
-     * @param BladeCondition|null $blade_condition
-     * @param int|null $duration_minutes
-     */
     public function __construct(
         public float $height_mm,
         public ?MowingPattern $pattern = null,

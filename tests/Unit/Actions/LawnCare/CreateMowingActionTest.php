@@ -90,7 +90,7 @@ describe('CreateMowingAction', function (): void {
 
         test('with full data', function (): void {
             // Arrange
-            $performedAt = new DateTime();
+            $performedAt = new DateTime;
             $scheduledFor = new DateTime('+1 day');
             $mowingData = generateCreateMowingData(
                 lawnId: $this->lawn->id,

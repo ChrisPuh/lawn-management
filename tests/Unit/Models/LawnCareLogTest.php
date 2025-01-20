@@ -70,13 +70,12 @@ describe('LawnCareLog Model', function (): void {
     describe('scopes', function (): void {
         it('can scope to specific action', function (): void {
             $createdLog = LawnCareLog::factory()->created()->create();
-            $updatedLog = LawnCareLog::factory()->updated()->create();
+            LawnCareLog::factory()->updated()->create();
 
             $createdLogs = LawnCareLog::forAction('created')->get();
 
-            expect($createdLogs)
-                ->toHaveCount(1)
-                ->first()->id->toBe($createdLog->id);
+            expect($createdLogs->count())->toBe(1)
+                ->and($createdLogs->first()->id)->toBe($createdLog->id);
         });
 
         it('can scope to lawn care', function (): void {
@@ -84,13 +83,12 @@ describe('LawnCareLog Model', function (): void {
             $log = LawnCareLog::factory()
                 ->forLawnCare($lawnCare)
                 ->create();
-            $otherLog = LawnCareLog::factory()->create();
+            LawnCareLog::factory()->create();
 
             $lawnCareLogs = LawnCareLog::forLawnCare($lawnCare)->get();
 
-            expect($lawnCareLogs)
-                ->toHaveCount(1)
-                ->first()->id->toBe($log->id);
+            expect($lawnCareLogs->count())->toBe(1)
+                ->and($lawnCareLogs->first()->id)->toBe($log->id);
         });
 
         it('can scope to user', function (): void {
@@ -98,13 +96,12 @@ describe('LawnCareLog Model', function (): void {
             $log = LawnCareLog::factory()
                 ->for($user)
                 ->create();
-            $otherLog = LawnCareLog::factory()->create();
+            LawnCareLog::factory()->create();
 
             $userLogs = LawnCareLog::forUser($user)->get();
 
-            expect($userLogs)
-                ->toHaveCount(1)
-                ->first()->id->toBe($log->id);
+            expect($userLogs->count())->toBe(1)
+                ->and($userLogs->first()->id)->toBe($log->id);
         });
 
         it('can scope to date range', function (): void {
@@ -112,7 +109,7 @@ describe('LawnCareLog Model', function (): void {
                 'created_at' => now()->subDays(5),
             ]);
 
-            $otherLog = LawnCareLog::factory()->create([
+            LawnCareLog::factory()->create([
                 'created_at' => now()->subDays(15),
             ]);
 
@@ -121,9 +118,8 @@ describe('LawnCareLog Model', function (): void {
                 now()
             )->get();
 
-            expect($recentLogs)
-                ->toHaveCount(1)
-                ->first()->id->toBe($log->id);
+            expect($recentLogs->count())->toBe(1)
+                ->and($recentLogs->first()->id)->toBe($log->id);
         });
     });
 

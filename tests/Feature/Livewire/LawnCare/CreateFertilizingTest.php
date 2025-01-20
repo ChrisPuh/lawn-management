@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Livewire\LawnCare\CreateFertilizing;
 use Livewire\Livewire;
 

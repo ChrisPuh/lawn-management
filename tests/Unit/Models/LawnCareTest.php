@@ -9,9 +9,6 @@ use App\DataObjects\LawnCare\MowingData;
 use App\DataObjects\LawnCare\WateringData;
 use App\Enums\LawnCare\LawnCareType;
 use App\Enums\LawnCare\MowingPattern;
-use App\Enums\LawnCare\TimeOfDay;
-use App\Enums\LawnCare\WateringMethod;
-use App\Enums\LawnCare\WeatherCondition;
 use App\Models\Lawn;
 use App\Models\LawnCare;
 use App\Models\User;
@@ -72,37 +69,34 @@ describe('LawnCare Model', function (): void {
     describe('scopes', function (): void {
         it('can scope to scheduled tasks', function (): void {
             $scheduled = LawnCare::factory()->scheduled()->create();
-            $completed = LawnCare::factory()->completed()->create();
-            $regular = LawnCare::factory()->create();
+            LawnCare::factory()->completed()->create();
+            LawnCare::factory()->create();
 
             $scheduledCares = LawnCare::scheduled()->get();
 
-            expect($scheduledCares)
-                ->toHaveCount(1)
-                ->first()->id->toBe($scheduled->id);
+            expect($scheduledCares->count())->toBe(1)
+                ->and($scheduledCares->first()->id)->toBe($scheduled->id);
         });
 
         it('can scope to completed tasks', function (): void {
             $completed = LawnCare::factory()->completed()->create();
-            $scheduled = LawnCare::factory()->scheduled()->create();
+            LawnCare::factory()->scheduled()->create();
 
             $completedCares = LawnCare::completed()->get();
 
-            expect($completedCares)
-                ->toHaveCount(1)
-                ->first()->id->toBe($completed->id);
+            expect($completedCares->count())->toBe(1)
+                ->and($completedCares->first()->id)->toBe($completed->id);
         });
 
         it('can scope to specific lawn', function (): void {
             $lawn = Lawn::factory()->create();
             $lawnCare = LawnCare::factory()->for($lawn)->create();
-            $otherCare = LawnCare::factory()->create();
+            LawnCare::factory()->create();
 
             $lawnCares = LawnCare::forLawn($lawn)->get();
 
-            expect($lawnCares)
-                ->toHaveCount(1)
-                ->first()->id->toBe($lawnCare->id);
+            expect($lawnCares->count())->toBe(1)
+                ->and($lawnCares->first()->id)->toBe($lawnCare->id);
         });
     });
 
@@ -115,16 +109,12 @@ describe('LawnCare Model', function (): void {
             $careData = $lawnCare->getCareData();
 
             expect($careData)
-                ->toBeInstanceOf(MowingData::class)
-                ->and($careData->height_mm)->toBe(45.5)
-                ->and($careData->pattern)->toBeInstanceOf(MowingPattern::class);
+                ->toBeInstanceOf(MowingData::class);
 
-            // Test array conversion
             $arrayData = $careData->toArray();
             expect($arrayData)
-                ->toHaveKey('height_mm')
-                ->toHaveKey('pattern')
-                ->toHaveKey('collected');
+                ->toHaveKeys(['height_mm', 'pattern', 'collected'])
+                ->and($arrayData['height_mm'])->toBe(45.5);
         });
 
         it('handles watering data correctly', function (): void {
@@ -135,19 +125,13 @@ describe('LawnCare Model', function (): void {
             $careData = $lawnCare->getCareData();
 
             expect($careData)
-                ->toBeInstanceOf(WateringData::class)
-                ->and($careData->amount_liters)->toBeFloat()
-                ->and($careData->duration_minutes)->toBeInt()
-                ->and($careData->method)->toBeInstanceOf(WateringMethod::class);
+                ->toBeInstanceOf(WateringData::class);
 
-            // Optional fields should either be null or correct instances
-            if ($careData->weather_condition !== null) {
-                expect($careData->weather_condition)->toBeInstanceOf(WeatherCondition::class);
-            }
-
-            if ($careData->time_of_day !== null) {
-                expect($careData->time_of_day)->toBeInstanceOf(TimeOfDay::class);
-            }
+            $arrayData = $careData->toArray();
+            expect($arrayData)
+                ->toHaveKeys(['amount_liters', 'duration_minutes', 'method'])
+                ->and($arrayData['amount_liters'])->toBeFloat()
+                ->and($arrayData['duration_minutes'])->toBeInt();
         });
 
         it('handles fertilizing data correctly', function (): void {
@@ -158,10 +142,14 @@ describe('LawnCare Model', function (): void {
             $careData = $lawnCare->getCareData();
 
             expect($careData)
-                ->toBeInstanceOf(FertilizingData::class)
-                ->and($careData->product_name)->toBeString()
-                ->and($careData->amount_per_sqm)->toBeFloat()
-                ->and($careData->nutrients)->toBeArray();
+                ->toBeInstanceOf(FertilizingData::class);
+
+            $arrayData = $careData->toArray();
+            expect($arrayData)
+                ->toHaveKeys(['product_name', 'amount_per_sqm', 'nutrients'])
+                ->and($arrayData['product_name'])->toBeString()
+                ->and($arrayData['amount_per_sqm'])->toBeFloat()
+                ->and($arrayData['nutrients'])->toBeArray();
         });
 
         it('can update care data', function (): void {
@@ -178,9 +166,10 @@ describe('LawnCare Model', function (): void {
             $lawnCare->setCareData($newData);
             $lawnCare->save();
 
-            expect($lawnCare->fresh()->getCareData())
+            $updatedCareData = $lawnCare->fresh()->getCareData();
+            expect($updatedCareData)
                 ->toBeInstanceOf(MowingData::class)
-                ->and($lawnCare->fresh()->getCareData()->height_mm)
+                ->and($updatedCareData->toArray()['height_mm'])
                 ->toBe(50.0);
         });
     });

@@ -44,7 +44,6 @@ final readonly class CreateWateringData extends BaseLawnCareData
      * @throws DateMalformedStringException
      *
      * //
-     *
      */
     public static function fromArray(array $validatedData, int $userId): self
     {

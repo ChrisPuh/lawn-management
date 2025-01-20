@@ -41,7 +41,6 @@ final class LawnConfigServiceProvider extends ServiceProvider
             );
         });
 
-
         $this->app->bind(ImageArchiveInterface::class, ArchiveLawnImage::class);
         $this->app->bind(SaveLawnImageInterface::class, SaveLawnImage::class);
         $this->app->bind(DeleteLawnImageInterface::class, DeleteLawnImage::class);

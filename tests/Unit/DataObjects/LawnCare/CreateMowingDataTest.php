@@ -1,4 +1,5 @@
 <?php
+
 // tests/Unit/DataObjects/LawnCare/CreateMowingDataTest.php
 
 declare(strict_types=1);
@@ -30,7 +31,7 @@ describe('CreateMowingData', function (): void {
     });
 
     it('can be instantiated with all data', function (): void {
-        $performedAt = new DateTime();
+        $performedAt = new DateTime;
         $scheduledFor = new DateTime('+1 day');
 
         $data = new CreateMowingData(

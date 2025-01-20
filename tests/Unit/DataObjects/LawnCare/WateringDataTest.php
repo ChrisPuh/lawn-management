@@ -6,6 +6,7 @@ use App\DataObjects\LawnCare\WateringData;
 use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
+use InvalidArgumentException;
 
 describe('WateringData', function (): void {
     test('can be constructed with required data', function (): void {
@@ -15,13 +16,14 @@ describe('WateringData', function (): void {
             method: WateringMethod::MANUAL
         );
 
-        expect($data)
-            ->amount_liters->toBe(10.5)
-            ->duration_minutes->toBe(30)
-            ->method->toBe(WateringMethod::MANUAL)
-            ->temperature_celsius->toBeNull()
-            ->weather_condition->toBeNull()
-            ->time_of_day->toBeNull();
+        $dataArray = $data->toArray();
+        expect($dataArray)
+            ->toHaveKey('amount_liters', 10.5)
+            ->toHaveKey('duration_minutes', 30)
+            ->toHaveKey('method', WateringMethod::MANUAL->value)
+            ->toHaveKey('temperature_celsius', null)
+            ->toHaveKey('weather_condition', null)
+            ->toHaveKey('time_of_day', null);
     });
 
     test('can be constructed with all optional data', function (): void {
@@ -34,13 +36,14 @@ describe('WateringData', function (): void {
             time_of_day: TimeOfDay::MORNING
         );
 
-        expect($data)
-            ->amount_liters->toBe(15.0)
-            ->duration_minutes->toBe(45)
-            ->method->toBe(WateringMethod::SPRINKLER)
-            ->temperature_celsius->toBe(22.5)
-            ->weather_condition->toBe(WeatherCondition::SUNNY)
-            ->time_of_day->toBe(TimeOfDay::MORNING);
+        $dataArray = $data->toArray();
+        expect($dataArray)
+            ->toHaveKey('amount_liters', 15.0)
+            ->toHaveKey('duration_minutes', 45)
+            ->toHaveKey('method', WateringMethod::SPRINKLER->value)
+            ->toHaveKey('temperature_celsius', 22.5)
+            ->toHaveKey('weather_condition', WeatherCondition::SUNNY->value)
+            ->toHaveKey('time_of_day', TimeOfDay::MORNING->value);
     });
 
     test('throws exception for non-positive duration minutes', function (): void {
@@ -54,7 +57,6 @@ describe('WateringData', function (): void {
                 duration_minutes: -5,
                 method: WateringMethod::MANUAL
             ))->toThrow(InvalidArgumentException::class, 'Duration must be positive');
-
     });
 
     describe('from method', function (): void {
@@ -66,14 +68,15 @@ describe('WateringData', function (): void {
             ];
 
             $data = WateringData::from($input);
+            $dataArray = $data->toArray();
 
-            expect($data)
-                ->amount_liters->toBe(10.5)
-                ->duration_minutes->toBe(30)
-                ->method->toBe(WateringMethod::MANUAL)
-                ->temperature_celsius->toBeNull()
-                ->weather_condition->toBeNull()
-                ->time_of_day->toBeNull();
+            expect($dataArray)
+                ->toHaveKey('amount_liters', 10.5)
+                ->toHaveKey('duration_minutes', 30)
+                ->toHaveKey('method', WateringMethod::MANUAL->value)
+                ->toHaveKey('temperature_celsius', null)
+                ->toHaveKey('weather_condition', null)
+                ->toHaveKey('time_of_day', null);
         });
 
         test('creates instance from array with all data', function (): void {
@@ -87,14 +90,15 @@ describe('WateringData', function (): void {
             ];
 
             $data = WateringData::from($input);
+            $dataArray = $data->toArray();
 
-            expect($data)
-                ->amount_liters->toBe(15.0)
-                ->duration_minutes->toBe(45)
-                ->method->toBe(WateringMethod::SPRINKLER)
-                ->temperature_celsius->toBe(22.5)
-                ->weather_condition->toBe(WeatherCondition::SUNNY)
-                ->time_of_day->toBe(TimeOfDay::MORNING);
+            expect($dataArray)
+                ->toHaveKey('amount_liters', 15.0)
+                ->toHaveKey('duration_minutes', 45)
+                ->toHaveKey('method', WateringMethod::SPRINKLER->value)
+                ->toHaveKey('temperature_celsius', 22.5)
+                ->toHaveKey('weather_condition', WeatherCondition::SUNNY->value)
+                ->toHaveKey('time_of_day', TimeOfDay::MORNING->value);
         });
 
         test('handles optional fields with different input types', function (): void {
@@ -107,14 +111,15 @@ describe('WateringData', function (): void {
             ];
 
             $data = WateringData::from($input);
+            $dataArray = $data->toArray();
 
-            expect($data)
-                ->amount_liters->toBe(10.5)
-                ->duration_minutes->toBe(30)
-                ->method->toBe(WateringMethod::MANUAL)
-                ->temperature_celsius->toBe(22.0)
-                ->weather_condition->toBe(WeatherCondition::CLOUDY)
-                ->time_of_day->toBeNull();
+            expect($dataArray)
+                ->toHaveKey('amount_liters', 10.5)
+                ->toHaveKey('duration_minutes', 30)
+                ->toHaveKey('method', WateringMethod::MANUAL->value)
+                ->toHaveKey('temperature_celsius', 22.0)
+                ->toHaveKey('weather_condition', WeatherCondition::CLOUDY->value)
+                ->toHaveKey('time_of_day', null);
         });
     });
 

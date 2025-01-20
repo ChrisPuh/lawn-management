@@ -12,9 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * 
- *
  * @template TModel of LawnAerating|LawnMowing|LawnScarifying|LawnFertilizing
+ *
  * @property int $id
  * @property int $lawn_id
  * @property string|null $image_path
@@ -27,7 +26,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read TModel $imageable
- * @property-read \App\Models\Lawn $lawn
+ * @property-read Lawn $lawn
+ *
  * @method static \Database\Factories\LawnImageFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage newQuery()
@@ -43,6 +43,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereLawnId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LawnImage whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 final class LawnImage extends Model

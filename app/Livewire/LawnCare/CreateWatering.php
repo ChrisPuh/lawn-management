@@ -11,6 +11,7 @@ use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
 use App\Http\Requests\CreateWateringRequest;
 use App\Models\Lawn;
+use DateMalformedStringException;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
@@ -46,24 +47,28 @@ final class CreateWatering extends Component
         $this->performed_at = now()->format('Y-m-d H:i');
     }
 
+    /**
+     * @throws DateMalformedStringException
+     */
     public function save(CreateWateringAction $action): void
     {
         $this->validate((new CreateWateringRequest)->rules());
 
-        $action->execute(new CreateWateringData(
-            lawn_id: $this->lawn_id,
-            user_id: $this->user_id,
+        $action->execute(CreateWateringData::fromArray(
+            [
+                'lawn_id' => $this->lawn_id,
 
-            amount_liters: $this->amount_liters,
-            duration_minutes: $this->duration_minutes,
-            method: $this->method,
-            temperature_celsius: $this->temperature_celsius,
-            weather_condition: $this->weather_condition,
-            time_of_day: $this->time_of_day,
+                'amount_liters' => $this->amount_liters,
+                'duration_minutes' => $this->duration_minutes,
+                'method' => $this->method,
+                'temperature_celsius' => $this->temperature_celsius,
+                'weather_condition' => $this->weather_condition,
+                'time_of_day' => $this->time_of_day,
 
-            notes: $this->notes,
-            performed_at: $this->performed_at,
-            scheduled_for: $this->scheduled_for,
+                'notes' => $this->notes,
+                'performed_at' => $this->performed_at,
+                'scheduled_for' => $this->scheduled_for,
+            ], $this->user_id
         ));
 
         $this->dispatch('lawn-care-created');

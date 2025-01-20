@@ -14,23 +14,23 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
- * 
- *
  * @property int $id
  * @property int $lawn_id
  * @property int $created_by_id
  * @property LawnCareType $type
  * @property array<array-key, mixed>|null $care_data
  * @property string|null $notes
- * @property \Illuminate\Support\Carbon|null $performed_at
- * @property \Illuminate\Support\Carbon|null $scheduled_for
- * @property \Illuminate\Support\Carbon|null $completed_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\Lawn $lawn
+ * @property Carbon|null $performed_at
+ * @property Carbon|null $scheduled_for
+ * @property Carbon|null $completed_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $createdBy
+ * @property-read Lawn $lawn
+ *
  * @method static Builder<static>|LawnCare completed()
  * @method static \Database\Factories\LawnCareFactory factory($count = null, $state = [])
  * @method static Builder<static>|LawnCare forLawn(\App\Models\Lawn|int $lawn)
@@ -49,6 +49,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder<static>|LawnCare whereScheduledFor($value)
  * @method static Builder<static>|LawnCare whereType($value)
  * @method static Builder<static>|LawnCare whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 final class LawnCare extends Model
@@ -63,7 +64,7 @@ final class LawnCare extends Model
     protected $table = 'lawn_cares';
 
     /**
-     * @var string[]
+     * @var list<string>
      */
     protected $fillable = [
         'lawn_id',
@@ -77,7 +78,7 @@ final class LawnCare extends Model
     ];
 
     /**
-     * @var string[]
+     * @var array<string, string|class-string>
      */
     protected $casts = [
         'type' => LawnCareType::class,

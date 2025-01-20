@@ -22,6 +22,8 @@ beforeEach(function (): void {
     $this->action = new CreateFertilizingAction(
         app(LogLawnCareActionContract::class)
     );
+
+    /** @var User $this->user */
     $this->user = User::factory()->create();
     $this->lawn = Lawn::factory()->create([
         'user_id' => $this->user->id,

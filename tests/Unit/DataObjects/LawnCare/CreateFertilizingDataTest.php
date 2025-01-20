@@ -1,4 +1,5 @@
 <?php
+
 // tests/Unit/DataObjects/LawnCare/CreateFertilizingDataTest.php
 
 declare(strict_types=1);
@@ -32,7 +33,7 @@ describe('CreateFertilizingData', function (): void {
     });
 
     it('can be instantiated with all data', function (): void {
-        $performedAt = new DateTime();
+        $performedAt = new DateTime;
         $scheduledFor = new DateTime('+1 day');
 
         $data = new CreateFertilizingData(
