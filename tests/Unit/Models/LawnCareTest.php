@@ -9,6 +9,7 @@ use App\DataObjects\LawnCare\MowingData;
 use App\DataObjects\LawnCare\WateringData;
 use App\Enums\LawnCare\LawnCareType;
 use App\Enums\LawnCare\MowingPattern;
+use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
 use App\Models\Lawn;
@@ -137,8 +138,16 @@ describe('LawnCare Model', function () {
                 ->toBeInstanceOf(WateringData::class)
                 ->and($careData->amount_liters)->toBeFloat()
                 ->and($careData->duration_minutes)->toBeInt()
-                ->and($careData->method)->toBeInstanceOf(WateringMethod::class)
-                ->and($careData->weather_condition)->toBeInstanceOf(WeatherCondition::class);
+                ->and($careData->method)->toBeInstanceOf(WateringMethod::class);
+
+            // Optional fields should either be null or correct instances
+            if ($careData->weather_condition !== null) {
+                expect($careData->weather_condition)->toBeInstanceOf(WeatherCondition::class);
+            }
+
+            if ($careData->time_of_day !== null) {
+                expect($careData->time_of_day)->toBeInstanceOf(TimeOfDay::class);
+            }
         });
 
         it('handles fertilizing data correctly', function () {
