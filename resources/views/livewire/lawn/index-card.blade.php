@@ -3,8 +3,7 @@
     <div class="flex-1 p-6">
         <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-gray-900">{{ $lawn->name }}</h3>
-            <span
-                class="inline-flex items-center rounded-full bg-nature-grass-healthy px-2.5 py-0.5 text-xs font-medium text-white">
+            <span class="inline-flex items-center rounded-full bg-nature-grass-healthy px-2.5 py-0.5 text-xs font-medium text-white">
                 {{ $lawn->type?->label() ?? 'Nicht spezifiziert' }}
             </span>
         </div>
@@ -34,12 +33,16 @@
         </dl>
     </div>
     <div class="flex divide-x divide-primary-200 border-t border-primary-200">
-        <button wire:click="showLawn"
-            class="flex flex-1 items-center justify-center py-3 text-sm font-medium text-primary-600 hover:bg-primary-50">
+        <button
+            wire:click="showLawn"
+            class="flex flex-1 items-center justify-center py-3 text-sm font-medium text-primary-600 hover:bg-primary-50"
+        >
             Details
         </button>
-        <button wire:click="editLawn"
-            class="flex flex-1 items-center justify-center py-3 text-sm font-medium text-primary-600 hover:bg-primary-50">
+        <button
+            wire:click="editLawn"
+            class="flex flex-1 items-center justify-center py-3 text-sm font-medium text-primary-600 hover:bg-primary-50"
+        >
             Bearbeiten
         </button>
     </div>

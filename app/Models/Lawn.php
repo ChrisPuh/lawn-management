@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Traits\CanGetTableNameStatically;
+use App\Traits\LawnCare\HasLawnCare;
 use Auth;
 use Database\Factories\LawnFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -59,9 +60,10 @@ use Illuminate\Support\Carbon;
 final class Lawn extends Model
 {
     use CanGetTableNameStatically;
-
     /** @use HasFactory<LawnFactory> */
     use HasFactory;
+
+    use HasLawnCare;
 
     protected $table = 'lawns';
 
@@ -126,6 +128,14 @@ final class Lawn extends Model
     public function images(): HasMany
     {
         return $this->hasMany(LawnImage::class);
+    }
+
+    /**
+     * @return HasMany<LawnCare>
+     */
+    public function lawnCares(): HasMany
+    {
+        return $this->hasMany(LawnCare::class);
     }
 
     /**

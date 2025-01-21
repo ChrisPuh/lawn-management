@@ -118,4 +118,38 @@ enum LawnCareType: string
             default => [],
         };
     }
+
+    public function pastTense(): string
+    {
+        return match ($this) {
+            self::MOW => 'gemäht',
+            self::FERTILIZE => 'gedüngt',
+            self::WATER => 'bewässert',
+            self::AERATE => 'gelüftet',
+            self::SCARIFY => 'vertikutiert',
+            self::OVERSEED => 'nachgesät',
+            self::WEED => 'Unkraut entfernt',
+            self::PEST_CONTROL => 'Schädlinge bekämpft',
+            self::SOIL_TEST => 'Boden analysiert',
+            self::LIME => 'gekalkt',
+            self::LEAF_REMOVAL => 'Laub entfernt',
+        };
+    }
+
+    public function actionLabel(): string
+    {
+        return match ($this) {
+            self::MOW => 'Ich war mähen',
+            self::FERTILIZE => 'Ich habe gedüngt',
+            self::WATER => 'Ich habe bewässert',
+            self::AERATE => 'Ich habe gelüftet',
+            self::SCARIFY => 'Ich habe vertikutiert',
+            self::OVERSEED => 'Ich habe nachgesät',
+            self::WEED => 'Ich habe Unkraut entfernt',
+            self::PEST_CONTROL => 'Ich habe Schädlinge bekämpft',
+            self::SOIL_TEST => 'Ich habe den Boden analysiert',
+            self::LIME => 'Ich habe gekalkt',
+            self::LEAF_REMOVAL => 'Ich habe Laub entfernt',
+        };
+    }
 }

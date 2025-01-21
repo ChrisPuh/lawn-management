@@ -13,7 +13,13 @@ final class IndexCard extends Component
     public Lawn $lawn;
 
     /** @var array{type: string, date: string}|null */
-    public ?array $careDate = null;
+    public ?array $careDate;
+
+    public function mount(Lawn $lawn, ?array $careDate): void
+    {
+        $this->lawn = $lawn;
+        $this->careDate = $careDate;
+    }
 
     public function showLawn(): void
     {
