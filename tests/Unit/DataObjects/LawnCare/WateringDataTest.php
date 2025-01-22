@@ -6,7 +6,6 @@ use App\DataObjects\LawnCare\WateringData;
 use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
-use InvalidArgumentException;
 
 describe('WateringData', function (): void {
     test('can be constructed with required data', function (): void {

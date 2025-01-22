@@ -21,7 +21,7 @@ final class LawnIndex extends Component
         /** @var Collection<int, Lawn> $lawns */
         $lawns = Lawn::query()
             ->forUser()
-            ->with(['lawnCares' => function ($query) {
+            ->with(['lawnCares' => function ($query): void {
                 $query->whereNotNull('performed_at')
                     ->orderByDesc('performed_at');
             }])
@@ -85,51 +85,9 @@ final class LawnIndex extends Component
         ];
     }
 
-    /**
-     * @return array{
-     *     type: string,
-     *     date: string
-     * }|null
-     */
-    private function getLatestCare(Lawn $lawn): ?array
-    {
-        /** @var LawnCare|null $latestCare */
-        $latestCare = $lawn->lawnCares->first();
-
-        if (! $latestCare || ! $latestCare->performed_at) {
-            return null;
-        }
-
-        return [
-            'type' => $this->formatCareType($latestCare->type),
-            'date' => $latestCare->performed_at->format('d.m.Y'),
-        ];
-    }
-
     private function formatCareType(LawnCareType $type): string
     {
         return $type->pastTense();
 
-    }
-
-    /**
-     * @param  Collection<int, Lawn>  $lawns
-     * @return array<int, array{type: string, date: string}|null>
-     */
-    private function getCareDates(Collection $lawns): array
-    {
-        return $lawns->mapWithKeys(function (Lawn $lawn): array {
-            /** @var LawnCare|null $latestCare */
-            $latestCare = $lawn->lawnCares->first();
-
-            if (! $latestCare || ! $latestCare->performed_at) {
-                return [$lawn->id => null];
-            }
-
-            return [$lawn->id => [
-                'type' => $this->formatCareType($latestCare->type),
-                'date' => $latestCare->performed_at->format('d.m.Y'),
-            ]];
-        })->all();
     }
 }

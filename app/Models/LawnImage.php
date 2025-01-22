@@ -10,9 +10,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
- * @template TModel of LawnAerating|LawnMowing|LawnScarifying|LawnFertilizing
+ * @template TModel of Lawn
  *
  * @property int $id
  * @property int $lawn_id
@@ -21,10 +22,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $imageable_id
  * @property LawnImageType $type
  * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $archived_at
- * @property \Illuminate\Support\Carbon|null $delete_after
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $archived_at
+ * @property Carbon|null $delete_after
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read TModel $imageable
  * @property-read Lawn $lawn
  *

@@ -87,7 +87,7 @@ final class DatabaseSeeder extends Seeder
 
             Log::info('DatabaseSeeder: All lawn images cleared from database and storage');
         } catch (Exception $e) {
-            Log::error('DatabaseSeeder: Error clearing lawn images: ' . $e->getMessage());
+            Log::error('DatabaseSeeder: Error clearing lawn images: '.$e->getMessage());
         }
     }
 
@@ -103,7 +103,7 @@ final class DatabaseSeeder extends Seeder
     /**
      * Add images to specific maintenance records
      *
-     * @param Collection $records
+     * @param  Collection  $records
      */
     private function addImagesToMaintenanceRecords($records, string $modelClass): void
     {

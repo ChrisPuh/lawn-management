@@ -24,17 +24,17 @@ final class CareHistory extends Component
         $this->loadRecentActivities();
     }
 
-    public function planNextCare(): void
-    {
-        $this->dispatch('plan-next-care', lawnId: $this->lawn->id);
-    }
-
     public function recordCare(LawnCareType $type): void
     {
         $this->dispatch('record-care', [
             'lawnId' => $this->lawn->id,
             'careType' => $type->value,
         ]);
+    }
+
+    public function planNextCare(): void
+    {
+        $this->dispatch('plan-next-care', lawnId: $this->lawn->id);
     }
 
     public function render(): View

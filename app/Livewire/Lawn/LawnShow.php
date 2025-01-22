@@ -34,6 +34,18 @@ final class LawnShow extends Component
         $this->redirect(route('lawn.index'), navigate: true);
     }
 
+    #[On('record-care')]
+    public function recordCare(string $careType): void
+    {
+        // Wird später implementiert
+    }
+
+    #[On('plan-next-care')]
+    public function planNextCare(int $lawnId): void
+    {
+        // Wird später implementiert
+    }
+
     #[Layout('components.layouts.authenticated.index', ['title' => 'Rasenfläche Details'])]
     public function render(): View
     {
