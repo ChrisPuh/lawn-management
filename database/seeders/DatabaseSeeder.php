@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Lawn;
 use App\Models\LawnAerating;
+use App\Models\LawnCare;
 use App\Models\LawnFertilizing;
 use App\Models\LawnImage;
 use App\Models\LawnMowing;
@@ -13,6 +14,7 @@ use App\Models\LawnScarifying;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Log;
 
@@ -34,6 +36,9 @@ final class DatabaseSeeder extends Seeder
                     ->has(LawnFertilizing::factory(3), 'fertilizingRecords')
                     ->has(LawnScarifying::factory(2), 'scarifyingRecords')
                     ->has(LawnAerating::factory(2), 'aeratingRecords')
+                    ->has(LawnCare::factory()->mowing())
+                    ->has(LawnCare::factory()->fertilizing())
+                    ->has(LawnCare::factory()->watering())
             )
             ->create([
                 'name' => 'Chris Ganzert',
@@ -98,7 +103,7 @@ final class DatabaseSeeder extends Seeder
     /**
      * Add images to specific maintenance records
      *
-     * @param  \Illuminate\Support\Collection  $records
+     * @param  Collection  $records
      */
     private function addImagesToMaintenanceRecords($records, string $modelClass): void
     {

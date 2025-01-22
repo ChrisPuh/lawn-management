@@ -6,10 +6,6 @@ namespace Database\Factories;
 
 use App\Enums\LawnImageType;
 use App\Models\Lawn;
-use App\Models\LawnAerating;
-use App\Models\LawnFertilizing;
-use App\Models\LawnMowing;
-use App\Models\LawnScarifying;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -19,10 +15,7 @@ final class LawnImageFactory extends Factory
     public function definition(): array
     {
         $imageableTypes = [
-            LawnMowing::class,
-            LawnFertilizing::class,
-            LawnScarifying::class,
-            LawnAerating::class,
+            Lawn::class,
         ];
         $imageableType = fake()->randomElement($imageableTypes);
 
@@ -57,14 +50,14 @@ final class LawnImageFactory extends Factory
         ];
     }
 
-    public function before(): static
+    public function before(): LawnImageFactory
     {
         return $this->state(fn (array $attributes) => [
             'type' => LawnImageType::BEFORE,
         ]);
     }
 
-    public function after(): static
+    public function after(): LawnImageFactory
     {
         return $this->state(fn (array $attributes) => [
             'type' => LawnImageType::AFTER,
@@ -74,7 +67,7 @@ final class LawnImageFactory extends Factory
     /**
      * Create a factory state for archived images
      */
-    public function archived(): static
+    public function archived(): LawnImageFactory
     {
         return $this->state(fn (array $attributes) => [
             'archived_at' => now()->subMonths(4),
@@ -85,7 +78,7 @@ final class LawnImageFactory extends Factory
     /**
      * Indicate that the image has no path
      */
-    public function withoutPath(): static
+    public function withoutPath(): LawnImageFactory
     {
         return $this->state(fn (array $attributes) => [
             'image_path' => null,

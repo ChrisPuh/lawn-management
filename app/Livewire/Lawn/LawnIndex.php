@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\Lawn;
 
+use App\Enums\LawnCare\LawnCareType;
 use App\Models\Lawn;
+use App\Models\LawnCare;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
@@ -19,11 +21,14 @@ final class LawnIndex extends Component
         /** @var Collection<int, Lawn> $lawns */
         $lawns = Lawn::query()
             ->forUser()
-            ->with(['mowingRecords', 'fertilizingRecords', 'scarifyingRecords', 'aeratingRecords'])
+            ->with(['lawnCares' => function ($query): void {
+                $query->whereNotNull('performed_at')
+                    ->orderByDesc('performed_at');
+            }])
             ->get();
 
         $careDates = $lawns->mapWithKeys(fn (Lawn $lawn) => [
-            $lawn->id => $this->getLatestCare($lawn),
+            $lawn->id => $lawn->getLatestCare(),
         ]);
 
         $lastCareInfo = $this->getLastCareAcrossAllLawns($lawns);
@@ -61,65 +66,28 @@ final class LawnIndex extends Component
      */
     private function getLastCareAcrossAllLawns(Collection $lawns): ?array
     {
-        $allCares = $lawns->map(function (Lawn $lawn): ?array {
-            $latestCare = $this->getLatestCare($lawn);
-            if ($latestCare === null || $latestCare === []) {
-                return null;
-            }
+        /** @var LawnCare|null $latestCare */
+        $latestCare = LawnCare::query()
+            ->whereIn('lawn_id', $lawns->pluck('id'))
+            ->whereNotNull('performed_at')
+            ->latest('performed_at')
+            ->with('lawn:id,name')
+            ->first();
 
-            return [
-                'lawn' => $lawn->name,
-                'type' => $latestCare['type'],
-                'date' => $latestCare['date'],
-                'timestamp' => strtotime($latestCare['date']),
-            ];
-        })
-            ->filter();
-
-        if ($allCares->isEmpty()) {
+        if (! $latestCare || ! $latestCare->performed_at) {
             return null;
         }
 
-        $latest = $allCares->sortByDesc('timestamp')->first();
-
         return [
-            'lawn' => $latest['lawn'],
-            'type' => $latest['type'],
-            'date' => $latest['date'],
+            'lawn' => $latestCare->lawn->name,
+            'type' => $this->formatCareType($latestCare->type),
+            'date' => $latestCare->performed_at->format('d.m.Y'),
         ];
     }
 
-    /**
-     * @return array{
-     *     type: string,
-     *     date: string
-     * }|null
-     */
-    private function getLatestCare(Lawn $lawn): ?array
+    private function formatCareType(LawnCareType $type): string
     {
-        $careDates = [
-            'gemäht' => $lawn->getLastMowingDate('Y-m-d'),
-            'gedüngt' => $lawn->getLastFertilizingDate('Y-m-d'),
-            'vertikutiert' => $lawn->getLastScarifyingDate('Y-m-d'),
-            'aerifiziert' => $lawn->getLastAeratingDate('Y-m-d'),
-        ];
+        return $type->pastTense();
 
-        $latestCare = collect($careDates)
-            ->filter()
-            ->map(fn ($date, $type): array => [
-                'type' => $type,
-                'date' => $date,
-            ])
-            ->sortByDesc('date')
-            ->first();
-
-        if (! $latestCare) {
-            return null;
-        }
-
-        return [
-            'type' => $latestCare['type'],
-            'date' => date('d.m.Y', strtotime((string) $latestCare['date'])),
-        ];
     }
 }

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
+use App\Enums\LawnCare\LawnCareType;
 use App\Enums\LawnImageType;
 use App\Models\Lawn;
-use App\Models\LawnAerating;
-use App\Models\LawnFertilizing;
+use App\Models\LawnCare;
+use App\Models\LawnCareLog;
 use App\Models\LawnImage;
-use App\Models\LawnMowing;
-use App\Models\LawnScarifying;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -32,44 +31,31 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Mowing history
-        Schema::create(LawnMowing::getTableName(), function (Blueprint $table) {
+        Schema::create(LawnCare::getTableName(), function (Blueprint $table) {
             $table->id();
             $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();
-            $table->date('mowed_on');
-            $table->string('cutting_height')->nullable();
+            $table->foreignId('created_by_id')->constrained('users')->cascadeOnDelete();
+            $table->enum('type', collect(LawnCareType::cases())->map->value->all());
+            $table->json('care_data')->nullable();
             $table->text('notes')->nullable();
+            $table->datetime('performed_at')->nullable();
+            $table->datetime('scheduled_for')->nullable();
+            $table->datetime('completed_at')->nullable();
             $table->timestamps();
+
+            $table->index(['lawn_id', 'type']);
+            $table->index(['scheduled_for', 'completed_at']);
         });
 
-        // Fertilizing history
-        Schema::create(LawnFertilizing::getTableName(), function (Blueprint $table) {
+        Schema::create(LawnCareLog::getTableName(), function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();
-            $table->date('fertilized_on');
-            $table->string('fertilizer_name')->nullable();
-            $table->decimal('quantity', 8, 2)->nullable();
-            $table->string('quantity_unit')->default('kg');
-            $table->text('notes')->nullable();
+            $table->foreignId('lawn_care_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('action');
+            $table->json('data')->nullable();
             $table->timestamps();
-        });
 
-        // Scarifying history
-        Schema::create(LawnScarifying::getTableName(), function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();
-            $table->date('scarified_on');
-            $table->text('notes')->nullable();
-            $table->timestamps();
-        });
-
-        // Aerating history
-        Schema::create(LawnAerating::getTableName(), function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('lawn_id')->constrained()->cascadeOnDelete();
-            $table->date('aerated_on');
-            $table->text('notes')->nullable();
-            $table->timestamps();
+            $table->index(['lawn_care_id', 'action']);
         });
 
         // Images for before/after comparisons
@@ -90,10 +76,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists(LawnImage::getTableName());
-        Schema::dropIfExists(LawnAerating::getTableName());
-        Schema::dropIfExists(LawnScarifying::getTableName());
-        Schema::dropIfExists(LawnFertilizing::getTableName());
-        Schema::dropIfExists(LawnMowing::getTableName());
+        Schema::dropIfExists(LawnCareLog::getTableName());
+        Schema::dropIfExists(LawnCare::getTableName());
         Schema::dropIfExists(Lawn::getTableName());
     }
 };
