@@ -51,7 +51,7 @@ final class User extends Authenticatable implements MustVerifyEmail
 {
     use CanGetTableNameStatically;
 
-    /** @use HasFactory<UserFactory> */
+    /** @uses  HasFactory<UserFactory> */
     use HasFactory;
 
     use Notifiable;
