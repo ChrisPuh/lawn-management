@@ -7,6 +7,7 @@ namespace App\Livewire\LawnCare;
 use App\Contracts\Services\LawnCare\LawnCareQueryServiceContract;
 use App\Enums\LawnCare\LawnCareType;
 use App\Models\Lawn;
+use App\Models\LawnCare;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
@@ -21,6 +22,8 @@ final class LawnCareList extends Component
     public Lawn $lawn;
 
     public ?string $selectedType = null;
+
+    public bool $isModalOpen = false;
 
     private LawnCareQueryServiceContract $lawnCareQueryService;
 
@@ -38,10 +41,10 @@ final class LawnCareList extends Component
     public function types(): array
     {
         return collect(LawnCareType::cases())
-            ->map(fn(LawnCareType $type) => [
+            ->map(fn (LawnCareType $type) => [
                 'value' => $type->value,
                 'label' => $type->label(),
-                'icon' => $type->icon(),
+                'icon' => $type->iconPath(),
             ])
             ->all();
     }
@@ -53,6 +56,17 @@ final class LawnCareList extends Component
             lawn: $this->lawn,
             type: $this->selectedType,
         );
+    }
+
+    public function showCareDetails(LawnCare $care): void
+    {
+        $this->dispatch('show-care-details', care: $care);
+    }
+
+    #[On('care-details-closed')]
+    public function handleCareDetailsClosed(): void
+    {
+        $this->isModalOpen = false;
     }
 
     #[On('care-recorded')]

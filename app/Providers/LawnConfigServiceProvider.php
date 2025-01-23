@@ -18,8 +18,10 @@ use App\Contracts\Lawn\SaveLawnImageInterface;
 use App\Contracts\LawnCare\CreateLawnCareActionContract;
 use App\Contracts\LawnCare\LogLawnCareActionContract;
 use App\Contracts\Services\LawnCare\LawnCareQueryServiceContract;
+use App\Livewire\LawnCare\CareDetailsModal;
 use App\Services\LawnCare\LawnCareQueryService;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 final class LawnConfigServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,9 @@ final class LawnConfigServiceProvider extends ServiceProvider
             base_path('config/Lawn.php'),
             'lawn'
         );
+
+        Livewire::component('lawn-care.care-details-modal', CareDetailsModal::class);
+
     }
 
     public function register(): void

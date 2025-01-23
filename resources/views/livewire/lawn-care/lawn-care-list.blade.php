@@ -20,7 +20,7 @@
                     wire:click="$dispatch('open-modal', 'record-lawn-care')"
                     class="inline-flex items-center gap-x-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                 </svg>
                 Neuer Eintrag
             </button>
@@ -32,10 +32,9 @@
         @forelse($this->lawnCares as $care)
             <div class="flex items-center gap-x-4 p-4 hover:bg-gray-50">
                 <!-- Icon -->
-                <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary-100 text-primary-600">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="{{ $care->type->icon() }}" />
-                    </svg>
+                <div
+                    class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary-100 text-primary-600">
+                    <x-lawn-care-icon :path="$care->type->iconPath()"/>
                 </div>
 
                 <!-- Content -->
@@ -45,30 +44,36 @@
                             {{ $care->type->label() }}
                         </p>
                         <div class="ml-4 flex flex-shrink-0">
-                            <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {{ $care->isCompleted() ? 'bg-success-100 text-success-700' : 'bg-warning-100 text-warning-700' }}">
+                            <span
+                                class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {{ $care->isCompleted() ? 'bg-success-100 text-success-700' : 'bg-warning-100 text-warning-700' }}">
                                 {{ $care->getStatus() }}
                             </span>
                         </div>
                     </div>
                     <div class="mt-1">
                         <p class="text-sm text-gray-500">
-                            Durchgeführt von {{ $care->createdBy->name }} am {{ $care->performed_at?->format('d.m.Y H:i') ?? 'Nicht angegeben' }}
+                            Durchgeführt von {{ $care->createdBy->name }}
+                            am {{ $care->performed_at?->format('d.m.Y H:i') ?? 'Nicht angegeben' }}
                         </p>
                     </div>
                     @if($care->notes)
                         <p class="mt-2 text-sm text-gray-500">{{ $care->notes }}</p>
                     @endif
                 </div>
-
                 <!-- Actions -->
                 <div class="flex flex-shrink-0 items-center gap-x-2">
                     <button type="button"
-                            wire:click="$dispatch('show-care-details', { careId: {{ $care->id }} })"
+                            wire:click="showCareDetails({{ $care }})"
                             class="rounded p-1 text-gray-400 hover:text-gray-500">
                         <span class="sr-only">Details anzeigen</span>
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                        </svg>
+                        <div
+                            class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-info-100 text-info-600">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                            </svg>
+                        </div>
                     </button>
                 </div>
             </div>
@@ -85,4 +90,6 @@
             </div>
         @endforelse
     </div>
+    <livewire:lawn-care.care-details-modal wire:model="isModalOpen"/>
+
 </div>

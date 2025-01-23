@@ -35,20 +35,14 @@ enum LawnCareType: string
         };
     }
 
-    public function icon(): string
+
+    public function iconPath(): string
     {
         return match ($this) {
-            self::MOW => 'mower',
-            self::FERTILIZE => 'seed',
-            self::WATER => 'droplet',
-            self::AERATE => 'air-vent',
-            self::SCARIFY => 'scissors',
-            self::OVERSEED => 'seed',
-            self::WEED => 'weed',
-            self::PEST_CONTROL => 'bug',
-            self::SOIL_TEST => 'microscope',
-            self::LIME => 'spray',
-            self::LEAF_REMOVAL => 'leaf',
+            self::MOW => 'M4 14v-4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM8 8V6m8 2V6m-4 2V6M7 16v2m10-2v2M10 12h4',
+            self::WATER => 'M12 3l4.5 4.5c2.5 2.5 2.5 6.5 0 9s-6.5 2.5-9 0-2.5-6.5 0-9L12 3zM8 13.5c2-1.5 6-1.5 8 0',
+            self::FERTILIZE => 'M7 8h10l2 3v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5l2-3zM12 8v8m-3-4.5l6 1m-6 0c.5-2 5.5-2 6 0',
+            default => 'M12 4v16m8-8H4',
         };
     }
 
@@ -150,6 +144,25 @@ enum LawnCareType: string
             self::SOIL_TEST => 'Ich habe den Boden analysiert',
             self::LIME => 'Ich habe gekalkt',
             self::LEAF_REMOVAL => 'Ich habe Laub entfernt',
+        };
+    }
+
+    public function formLabel(): string
+    {
+        return match ($this) {
+            self::MOW => 'mähen',
+            self::FERTILIZE => 'düngen',
+            self::WATER => 'bewässern',
+            self::AERATE => 'lüften',
+            self::SCARIFY => 'vertikutieren',
+            self::OVERSEED => 'nachsähen',
+            self::WEED => 'Unkraut entfernen',
+            self::PEST_CONTROL => 'Schädlinge bekämpfen',
+            self::SOIL_TEST => 'Boden analysieren',
+            self::LIME => 'kalken',
+            self::LEAF_REMOVAL => 'Laub entfernen',
+
+
         };
     }
 }
