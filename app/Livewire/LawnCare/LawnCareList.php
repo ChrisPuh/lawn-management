@@ -70,10 +70,7 @@ final class LawnCareList extends Component
     }
 
     #[On('care-recorded')]
-    public function refreshList(): void
-    {
-        // The view will be automatically re-rendered
-    }
+    public function refreshList(): void {}
 
     public function render(): View
     {

@@ -1,6 +1,7 @@
 <div
     x-data="{
-        show: @entangle('isOpen'),
+        show: @entangle('isOpen').live,
+        isEditing: @entangle('isEditing').live
     }"
     x-show="show"
     x-cloak
@@ -36,7 +37,7 @@
                         <div class="bg-primary-700 px-4 py-6 sm:px-6">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-lg font-medium text-white">
-                                    {{ $care?->type?->label() }} Details
+                                    {{ $careType?->label() }} Details
                                 </h2>
                                 <div class="flex items-center space-x-3">
                                     <button
@@ -44,7 +45,9 @@
                                         wire:click="toggleEdit"
                                         class="rounded-md bg-primary-700 text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-white"
                                     >
-                                        <span class="sr-only">{{ $isEditing ? 'Speichern' : 'Bearbeiten' }}</span>
+                                        <span class="sr-only">
+                                            {{ $isEditing ? 'Speichern' : 'Bearbeiten' }}
+                                        </span>
                                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                              stroke="currentColor">
                                             @if($isEditing)
@@ -58,14 +61,13 @@
                                     </button>
                                     <button
                                         type="button"
-                                        wire:click="$set('isOpen', false)"
+                                        wire:click="close"
                                         class="rounded-md bg-primary-700 text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-white"
                                     >
                                         <span class="sr-only">Schließen</span>
                                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                              stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                  d="M6 18L18 6M6 6l12 12"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
                                     </button>
                                 </div>
@@ -73,15 +75,61 @@
                         </div>
 
                         <!-- Form content -->
-                        <div class="relative flex-1 px-4 sm:px-6">
-                            <div class="absolute inset-0 top-4 px-4 sm:px-6">
-                                <div class="h-full" aria-hidden="true">
-                                    <form wire:submit="save">
-                                        {{ $this->form }}
-                                    </form>
-                                </div>
+                        <form wire:submit="save" class="flex-1 px-4 py-6 sm:px-6 space-y-6">
+                            @error('form')
+                            <div class="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                                {{ $message }}
                             </div>
-                        </div>
+                            @enderror
+
+                            <!-- Common Fields -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Durchgeführt am</label>
+                                <input
+                                    type="datetime-local"
+                                    wire:model="performed_at"
+                                    :disabled="!isEditing"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
+                                >
+                                @error('performed_at') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Geplant für</label>
+                                <input
+                                    type="datetime-local"
+                                    wire:model="scheduled_for"
+                                    :disabled="!isEditing"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
+                                >
+                                @error('scheduled_for') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Notizen</label>
+                                <textarea
+                                    wire:model="notes"
+                                    :disabled="!isEditing"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
+                                ></textarea>
+                                @error('notes') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <!-- Type-Specific Fields -->
+                            @switch($careType)
+                                @case(\App\Enums\LawnCare\LawnCareType::MOW)
+                                    @include('livewire.lawn-care.partials.mowing-fields')
+                                    @break
+
+                                @case(\App\Enums\LawnCare\LawnCareType::FERTILIZE)
+                                    @include('livewire.lawn-care.partials.fertilizing-fields')
+                                    @break
+
+                                @case(\App\Enums\LawnCare\LawnCareType::WATER)
+                                    @include('livewire.lawn-care.partials.watering-fields')
+                                    @break
+                            @endswitch
+                        </form>
                     </div>
                 </div>
             </div>

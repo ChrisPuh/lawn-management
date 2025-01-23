@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\LawnCare;
 
+use App\Contracts\LawnCare\UpdateLawnCareActionContract;
+use App\DataObjects\LawnCare\BaseLawnCareData;
+use App\DataObjects\LawnCare\UpdateFertilizingData;
+use App\DataObjects\LawnCare\UpdateMowingData;
+use App\DataObjects\LawnCare\UpdateWateringData;
 use App\Enums\LawnCare\BladeCondition;
 use App\Enums\LawnCare\LawnCareType;
 use App\Enums\LawnCare\MowingPattern;
@@ -11,84 +16,38 @@ use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
 use App\Models\LawnCare;
-use App\Rules\Validation\LawnCareRules;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use App\Rules\LawnCareRules;
+use DateTime;
+use Exception;
 use Illuminate\Contracts\View\View;
-use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\Auth;
+use InvalidArgumentException;
+use JsonSerializable;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Log;
 
-final class CareDetailsModal extends Component implements HasForms
+final class CareDetailsModal extends Component
 {
-    use InteractsWithForms;
-
     public ?LawnCare $care = null;
 
     public bool $isOpen = false;
 
     public bool $isEditing = false;
 
-    public ?array $data = [];
+    public ?int $lawn_id = null;
+
+    public ?string $performed_at = null;
+
+    public ?string $scheduled_for = null;
+
+    public ?string $notes = null;
+
+    public array $care_data = [];
 
     public function mount(): void
     {
-        $this->form->fill();
-    }
-
-    #[Computed]
-    public function getFormSchema(): array
-    {
-        if (! $this->care) {
-            return [];
-        }
-
-        return [
-            Section::make('Allgemein')
-                ->label('Allgemein')->schema([
-                    ...$this->getCommomFields(),
-                ]),
-            Section::make('Details vom '.ucfirst($this->care->type->formLabel()))
-                ->schema([
-                    ...$this->getSpecificFields(),
-                ]),
-        ];
-    }
-
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema($this->getFormSchema())
-            ->statePath('data');
-    }
-
-    public function toggleEdit(): void
-    {
-        switch ($this->isEditing) {
-            case true:
-                $this->save();
-                $this->isEditing = false;
-                break;
-            case false:
-                $this->isEditing = true;
-                break;
-            default:
-                break;
-
-        }
-
-    }
-
-    public function render(): View
-    {
-        return view('livewire.lawn-care.care-details-modal');
+        $this->resetProperties();
     }
 
     #[On('show-care-details')]
@@ -98,181 +57,143 @@ final class CareDetailsModal extends Component implements HasForms
         $this->isOpen = true;
         $this->isEditing = false;
 
-        // Fill form with care data
-        $this->form->fill([
-            'performed_at' => $this->care->performed_at,
-            'notes' => $this->care->notes,
-            'care_data' => $this->care->care_data,
-        ]);
+        $this->lawn_id = $care->lawn_id;
+        $this->performed_at = $care->performed_at?->format('Y-m-d H:i');
+        $this->scheduled_for = $care->scheduled_for?->format('Y-m-d H:i');
+        $this->notes = $care->notes;
+        $this->care_data = $this->extractCareData($care);
     }
 
-    public function close(): void
+    public function toggleEdit(): void
     {
-        $this->isOpen = false;
-        $this->isEditing = false;
-        $this->care = null;
-        $this->dispatch('care-details-closed');
+        $this->isEditing = ! $this->isEditing;
+
+        if (! $this->isEditing) {
+            $this->save();
+        }
     }
 
     public function save(): void
     {
-        $this->validate([
-            'data' => ['array'],
-            ...array_map(
-                fn ($key, $rules) => ["data.$key" => $rules],
-                array_keys(LawnCareRules::getRulesForType($this->care->type))
-            ),
-        ]);
-
-        if (! $this->care || ! $this->isEditing) {
+        if (! $this->care) {
             return;
         }
 
-        $data = $this->form->getState();
+        try {
+            $validatedData = $this->validate();
 
-        dd($data);
+            app(UpdateLawnCareActionContract::class)->execute(
+                $this->care,
+                $this->care->type,
+                $this->createUpdateData($validatedData)
+            );
 
-        $this->care->update([
-            'performed_at' => $data['performed_at'],
-            'notes' => $data['notes'],
-            'care_data' => $data['care_data'],
+            $this->isEditing = false;
+            $this->dispatch('care-recorded');
+        } catch (Exception $e) {
+            Log::error('Care Update Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $this->all(),
+            ]);
+
+            $this->addError('form', 'Ein Fehler ist aufgetreten: '.$e->getMessage());
+        }
+    }
+
+    #[On('care-recorded')]
+    public function close(): void
+    {
+        $this->resetProperties();
+        $this->dispatch('care-details-closed');
+    }
+
+    public function render(): View
+    {
+        return view('livewire.lawn-care.care-details-modal', [
+            'careType' => $this->care?->type,
+            'isEditing' => $this->isEditing,
+            'mowingPatterns' => MowingPattern::cases(),
+            'bladeConditions' => BladeCondition::cases(),
+            'wateringMethods' => WateringMethod::cases(),
+            'timeOfDay' => TimeOfDay::cases(),
+            'weatherConditions' => WeatherCondition::cases(),
         ]);
-
-
-        $this->isEditing = false;
-        $this->dispatch('care-recorded');
     }
 
-    private function getMowingFields(): array
+    public function rules(): array
     {
-        return [
-            Grid::make(2)
-                ->schema([
-                    TextInput::make('care_data.height_mm')
-                        ->label('Schnitthöhe (mm)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    Select::make('care_data.pattern')
-                        ->label('Muster')
-                        ->options(MowingPattern::class)
-                        ->disabled(! $this->isEditing),
-                    Toggle::make('care_data.collected')
-                        ->label('Schnittgut gesammelt')
-                        ->disabled(! $this->isEditing),
-                    Select::make('care_data.blade_condition')
-                        ->label('Klingenzustand')
-                        ->options(BladeCondition::class)
-                        ->disabled(! $this->isEditing),
-                    TextInput::make('care_data.duration_minutes')
-                        ->label('Dauer (Minuten)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                ]),
-        ];
+        if (! $this->care) {
+            return [];
+        }
+
+        return LawnCareRules::getRules($this->care->type);
     }
 
-    private function getFertilizingFields(): array
+    public function messages(): array
     {
-        return [
-            Grid::make(2)
-                ->schema([
-                    TextInput::make('care_data.product_name')
-                        ->label('Produkt')
-                        ->disabled(! $this->isEditing),
-                    TextInput::make('care_data.amount_per_sqm')
-                        ->label('Menge pro m²')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    TextInput::make('care_data.nutrients.nutrient_n')
-                        ->label('Stickstoff (N)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    TextInput::make('care_data.nutrients.nutrient_p')
-                        ->label('Phosphor (P)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    TextInput::make('care_data.nutrients.nutrient_k')
-                        ->label('Kalium (K)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    Toggle::make('care_data.watered')
-                        ->label('Bewässert')
-                        ->disabled(! $this->isEditing),
-                    TextInput::make('care_data.temperature_celsius')
-                        ->label('Temperatur (°C)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    Select::make('care_data.weather_condition')
-                        ->label('Wetter')
-                        ->options(WeatherCondition::class)
-                        ->disabled(! $this->isEditing),
-                ]),
-        ];
+        return LawnCareRules::getMessages();
     }
 
-    private function getWateringFields(): array
+    private function resetProperties(): void
     {
-        return [
-            Grid::make(2)
-                ->schema([
-                    TextInput::make('care_data.amount_liters')
-                        ->label('Menge (Liter)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    TextInput::make('care_data.duration_minutes')
-                        ->label('Dauer (Minuten)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    Select::make('care_data.method')
-                        ->label('Methode')
-                        ->options(WateringMethod::class)
-                        ->disabled(! $this->isEditing),
-                    TextInput::make('care_data.temperature_celsius')
-                        ->label('Temperatur (°C)')
-                        ->numeric()
-                        ->disabled(! $this->isEditing),
-                    Select::make('care_data.weather_condition')
-                        ->label('Wetter')
-                        ->options(WeatherCondition::class)
-                        ->disabled(! $this->isEditing),
-                    Select::make('care_data.time_of_day')
-                        ->label('Tageszeit')
-                        ->options(TimeOfDay::class)
-                        ->disabled(! $this->isEditing),
-                ]),
-        ];
+        $this->reset([
+            'care',
+            'isOpen',
+            'isEditing',
+            'lawn_id',
+            'performed_at',
+            'scheduled_for',
+            'notes',
+            'care_data',
+        ]);
     }
 
-    private function getSpecificFields(): array
+    private function extractCareData(LawnCare $care): array
     {
-        return match ($this->care->type) {
-            LawnCareType::MOW => $this->getMowingFields(),
-            LawnCareType::FERTILIZE => $this->getFertilizingFields(),
-            LawnCareType::WATER => $this->getWateringFields(),
-            default => [],
+        return $care->care_data instanceof JsonSerializable
+            ? $care->care_data->toArray()
+            : (array) $care->care_data;
+    }
+
+    private function createUpdateData(array $validatedData): BaseLawnCareData
+    {
+        $dataClass = match ($this->care->type) {
+            LawnCareType::MOW => UpdateMowingData::class,
+            LawnCareType::FERTILIZE => UpdateFertilizingData::class,
+            LawnCareType::WATER => UpdateWateringData::class,
+            default => throw new InvalidArgumentException('Unsupported lawn care type'),
         };
+
+        try {
+            return $dataClass::fromArray([
+                'lawn_id' => $validatedData['lawn_id'],
+                'care_data' => $validatedData['care_data'],
+                'notes' => $validatedData['notes'],
+                'performed_at' => $this->parseDateTime($validatedData['performed_at']),
+                'scheduled_for' => $this->parseDateTime($validatedData['scheduled_for']),
+            ], Auth::id());
+        } catch (Exception $e) {
+            Log::error('Update Data Creation Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $validatedData,
+            ]);
+
+            throw new InvalidArgumentException('Error creating update data: '.$e->getMessage(), 0, $e);
+        }
     }
 
-    private function getCommomFields()
+    private function parseDateTime($dateTime): ?string
     {
-        return [
-            Select::make('type')
-                ->label('Art der Pflege')
-                ->options(LawnCareType::class)
-                ->default($this->care?->type)  // or ->default($this->care?->type->value)
-                ->disabled(true),
-            DateTimePicker::make('performed_at')
-                ->label('Durchgeführt am')
-                ->disabled(! $this->isEditing),
-            DateTimePicker::make('scheduled_for')
-                ->label('Geplant für')
-                ->disabled(! $this->isEditing),
-            DateTimePicker::make('completed_at')
-                ->label('Abgeschlossen am')
-                ->disabled(! $this->isEditing),
-            TextInput::make('notes')
-                ->label('Notizen')
-                ->disabled(! $this->isEditing),
-        ];
+        if (is_string($dateTime)) {
+            return $dateTime;
+        }
+
+        if ($dateTime instanceof DateTime) {
+            return $dateTime->format('Y-m-d H:i:s');
+        }
+
+        return null;
     }
 }

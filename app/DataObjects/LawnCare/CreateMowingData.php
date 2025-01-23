@@ -25,8 +25,19 @@ final readonly class CreateMowingData extends BaseLawnCareData
     ) {
         parent::__construct($lawn_id, $user_id, $notes, $performed_at, $scheduled_for);
     }
-
     /**
+     * @param array{
+     *  lawn_id:int,
+     *  height_mm: float,
+     *  pattern:MowingPattern::class,
+     *  collected:boolean,
+     *  blade_condition:BladeCondition::class,
+     *  duration_minutes:int,
+     *  notes:sting,
+     *  performed_at:DateTime::class,
+     *  scheduled_for:DateTime::class
+     *} $validatedData
+     *
      * @throws DateMalformedStringException
      */
     public static function fromArray(array $validatedData, int $userId): self
