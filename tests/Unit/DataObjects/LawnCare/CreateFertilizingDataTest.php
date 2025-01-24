@@ -64,15 +64,19 @@ describe('CreateFertilizingData', function (): void {
             ->scheduled_for->toBe($scheduledFor);
     });
 
-    it('creates from array with all fields', function (): void {
+    it(/**
+     * @throws DateMalformedStringException
+     */ 'creates from array with all fields', function (): void {
         $validatedData = [
             'lawn_id' => 1,
-            'product_name' => 'Complete Lawn Fertilizer',
-            'amount_per_sqm' => '0.6',
-            'nutrients' => ['N', 'P', 'K', 'Ca'],
-            'watered' => true,
-            'temperature_celsius' => '25.3',
-            'weather_condition' => WeatherCondition::SUNNY->value,
+            'care_data' => [
+                'product_name' => 'Complete Lawn Fertilizer',
+                'amount_per_sqm' => '0.6',
+                'nutrients' => ['N', 'P', 'K', 'Ca'],
+                'watered' => true,
+                'temperature_celsius' => '25.3',
+                'weather_condition' => WeatherCondition::SUNNY->value,
+            ],
             'notes' => 'Summer fertilization',
             'performed_at' => '2024-01-19 14:30:00',
             'scheduled_for' => '2024-01-20 15:00:00',
@@ -98,10 +102,12 @@ describe('CreateFertilizingData', function (): void {
     it('handles optional fields from array', function (): void {
         $validatedData = [
             'lawn_id' => 1,
-            'product_name' => 'Basic Lawn Food',
-            'amount_per_sqm' => '0.5',
-            'nutrients' => ['N', 'P'],
-            'watered' => false,
+            'care_data' => [
+                'product_name' => 'Basic Lawn Food',
+                'amount_per_sqm' => '0.5',
+                'nutrients' => ['N', 'P'],
+                'watered' => false,
+            ]
         ];
 
         $data = CreateFertilizingData::fromArray($validatedData, 1);

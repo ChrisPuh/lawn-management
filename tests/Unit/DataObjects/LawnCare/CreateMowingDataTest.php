@@ -77,11 +77,13 @@ describe('CreateMowingData', function (): void {
     it('creates from array', function (): void {
         $validatedData = [
             'lawn_id' => 1,
-            'height_mm' => '45.5',
-            'pattern' => MowingPattern::DIAGONAL->value,
-            'collected' => true,
-            'blade_condition' => BladeCondition::SHARP->value,
-            'duration_minutes' => '30',
+            'care_data' => [
+                'height_mm' => '45.5',
+                'pattern' => MowingPattern::DIAGONAL->value,
+                'collected' => true,
+                'blade_condition' => BladeCondition::SHARP->value,
+                'duration_minutes' => '30',
+            ],
             'notes' => 'Test notes',
             'performed_at' => '2024-01-19 10:00:00',
             'scheduled_for' => '2024-01-20 10:00:00',
@@ -106,8 +108,10 @@ describe('CreateMowingData', function (): void {
     it('handles optional fields from array', function (): void {
         $validatedData = [
             'lawn_id' => 1,
-            'height_mm' => '45.5',
-            'collected' => true,
+            'care_data' => [
+                'height_mm' => '45.5',
+                'collected' => true,
+            ]
         ];
 
         $data = CreateMowingData::fromArray($validatedData, 1);

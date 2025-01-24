@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Lawn;
-use App\Models\LawnAerating;
 use App\Models\LawnCare;
-use App\Models\LawnFertilizing;
 use App\Models\LawnImage;
-use App\Models\LawnMowing;
-use App\Models\LawnScarifying;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Seeder;
@@ -32,10 +28,6 @@ final class DatabaseSeeder extends Seeder
         User::factory()
             ->has(
                 Lawn::factory(2)
-                    ->has(LawnMowing::factory(5), 'mowingRecords')
-                    ->has(LawnFertilizing::factory(3), 'fertilizingRecords')
-                    ->has(LawnScarifying::factory(2), 'scarifyingRecords')
-                    ->has(LawnAerating::factory(2), 'aeratingRecords')
                     ->has(LawnCare::factory()->mowing())
                     ->has(LawnCare::factory()->fertilizing())
                     ->has(LawnCare::factory()->watering())
@@ -45,19 +37,7 @@ final class DatabaseSeeder extends Seeder
                 'email' => 'chrisganzert@lawn.com',
             ]);
 
-        // Create additional users with lawns
-        User::factory(5)
-            ->has(
-                Lawn::factory(2)
-                    ->has(LawnMowing::factory(5), 'mowingRecords')
-                    ->has(LawnFertilizing::factory(3), 'fertilizingRecords')
-                    ->has(LawnScarifying::factory(2), 'scarifyingRecords')
-                    ->has(LawnAerating::factory(2), 'aeratingRecords')
-            )
-            ->create();
 
-        // Add maintenance record images
-        $this->addMaintenanceRecordImages();
     }
 
     private function clearLawnImages(): void
@@ -91,21 +71,14 @@ final class DatabaseSeeder extends Seeder
         }
     }
 
-    /**
-     * Add before and after images to maintenance records
-     */
-    private function addMaintenanceRecordImages(): void
-    {
-        $this->addImagesToMaintenanceRecords(LawnMowing::all(), LawnMowing::class);
-        $this->addImagesToMaintenanceRecords(LawnFertilizing::all(), LawnFertilizing::class);
-    }
+
 
     /**
      * Add images to specific maintenance records
      *
-     * @param  Collection  $records
+     * @param Collection $records
      */
-    private function addImagesToMaintenanceRecords($records, string $modelClass): void
+    private function addImagesToMaintenanceRecords(Collection $records, string $modelClass): void
     {
         $records->each(function ($record) use ($modelClass) {
             if (fake()->boolean(30)) {
