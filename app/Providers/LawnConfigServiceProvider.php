@@ -24,6 +24,7 @@ use App\Contracts\LawnCare\LogLawnCareActionContract;
 use App\Contracts\LawnCare\UpdateLawnCareActionContract;
 use App\Contracts\Services\LawnCare\LawnCareQueryServiceContract;
 use App\Livewire\LawnCare\CareDetailsModal;
+use App\Livewire\LawnCare\CreateCareModal;
 use App\Services\LawnCare\LawnCareQueryService;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -37,7 +38,7 @@ final class LawnConfigServiceProvider extends ServiceProvider
             'lawn'
         );
         Livewire::component('lawn-care.care-details-modal', CareDetailsModal::class);
-
+        Livewire::component('lawn-care.create-care-modal', CreateCareModal::class);
     }
 
     public function register(): void

@@ -17,7 +17,7 @@
 
             <!-- Add New Entry Button -->
             <button type="button"
-                    wire:click="$dispatch('open-modal', 'record-lawn-care')"
+                    wire:click="$dispatch('show-create-care', { lawnId: {{ $lawn->id }} })"
                     class="inline-flex items-center gap-x-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
@@ -91,5 +91,6 @@
         @endforelse
     </div>
     <livewire:lawn-care.care-details-modal wire:model="isModalOpen"/>
+    <livewire:lawn-care.create-care-modal/>
 
 </div>

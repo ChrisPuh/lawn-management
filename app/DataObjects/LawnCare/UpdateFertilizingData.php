@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataObjects\LawnCare;
 
+use App\Enums\LawnCare\Nutrient;
 use App\Enums\LawnCare\WeatherCondition;
 use DateMalformedStringException;
 use DateTime;
@@ -36,11 +37,7 @@ final readonly class UpdateFertilizingData extends BaseLawnCareData
      *     care_data: array{
      *         product_name: string,
      *         amount_per_sqm: float,
-     *         nutrients: array{
-     *             nutrient_n?: float,
-     *             nutrient_p?: float,
-     *             nutrient_k?: float
-     *         },
+     *         nutrients: array<Nutrient>,
      *         watered?: bool,
      *         temperature_celsius?: float|null,
      *         weather_condition?: string|null

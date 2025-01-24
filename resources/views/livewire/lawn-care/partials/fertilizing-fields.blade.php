@@ -49,6 +49,24 @@
         @error('care_data.weather_condition') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
     </div>
 
+    <div x-data="{ selected: @entangle('care_data.nutrients') }" class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Nährstoffe</label>
+        <div class="flex flex-wrap gap-2">
+            @foreach(\App\Enums\LawnCare\Nutrient::cases() as $nutrient)
+                <label class="inline-flex items-center">
+                    <input
+                        type="checkbox"
+                        value="{{ $nutrient->value }}"
+                        x-model="selected"
+                        class="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
+                    >
+                    <span class="ml-2">{{ $nutrient->label() }}</span>
+                </label>
+            @endforeach
+        </div>
+        @error('care_data.nutrients') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+    </div>
+
     <div class="flex items-center">
         <input
             type="checkbox"

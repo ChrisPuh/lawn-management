@@ -25,7 +25,7 @@ final class LawnCareRules
 
         $specificRules = match ($type) {
             LawnCareType::MOW => [
-                'care_data.height_mm' => ['required', 'numeric', 'min:20', 'max:100'],
+                'care_data.height_mm' => ['required', 'numeric', 'min:1', 'max:100'],
                 'care_data.pattern' => ['nullable', new Enum(MowingPattern::class)],
                 'care_data.collected' => ['boolean'],
                 'care_data.blade_condition' => ['nullable', new Enum(BladeCondition::class)],

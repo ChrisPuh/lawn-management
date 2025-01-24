@@ -42,8 +42,7 @@ final readonly class UpdateMowingData extends BaseLawnCareData
      *     performed_at?: string|null,
      *     scheduled_for?: string|null
      * } $validatedData
-     * @param int $userId
-     * @return self
+     *
      * @throws DateMalformedStringException
      */
     public static function fromArray(array $validatedData, int $userId): self
@@ -51,6 +50,7 @@ final readonly class UpdateMowingData extends BaseLawnCareData
         return new self(
             lawn_id: $validatedData['lawn_id'],
             user_id: $userId,
+
             height_mm: (float) $validatedData['care_data']['height_mm'],
             pattern: isset($validatedData['care_data']['pattern'])
                 ? MowingPattern::tryFrom($validatedData['care_data']['pattern'])
@@ -62,6 +62,7 @@ final readonly class UpdateMowingData extends BaseLawnCareData
             duration_minutes: isset($validatedData['care_data']['duration_minutes'])
                 ? (int) $validatedData['care_data']['duration_minutes']
                 : null,
+
             notes: $validatedData['notes'] ?? null,
             performed_at: $validatedData['performed_at']
                 ? new DateTime($validatedData['performed_at'])
