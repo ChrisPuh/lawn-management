@@ -9,8 +9,8 @@ use App\Models\LawnCare;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 
-describe('LawnCareQueryService', tests: function () {
-    beforeEach(closure: function () {
+describe('LawnCareQueryService', tests: function (): void {
+    beforeEach(closure: function (): void {
         /** @var User $user */
         $this->user = User::factory()->createOne();
         $this->lawn = Lawn::factory()->createOne([
@@ -19,8 +19,7 @@ describe('LawnCareQueryService', tests: function () {
         $this->service = app(LawnCareQueryServiceContract::class);
     });
 
-
-    it('filters lawn cares by type', function () {
+    it('filters lawn cares by type', function (): void {
         // Arrange
         LawnCare::factory()
             ->mowing()
@@ -48,7 +47,7 @@ describe('LawnCareQueryService', tests: function () {
             ->first()->type->toBe(LawnCareType::MOW);
     });
 
-    it('orders by performed_at and created_at in descending order', function () {
+    it('orders by performed_at and created_at in descending order', function (): void {
         // Arrange
         Carbon::setTestNow('2024-01-01 12:00:00');
 
@@ -87,7 +86,7 @@ describe('LawnCareQueryService', tests: function () {
             ->toBe([$newest->id, $middle->id, $oldest->id]);
     });
 
-    it('loads createdBy relation', function () {
+    it('loads createdBy relation', function (): void {
         // Arrange
         LawnCare::factory()
             ->mowing()
@@ -103,7 +102,7 @@ describe('LawnCareQueryService', tests: function () {
         expect($result->first()->relationLoaded('createdBy'))->toBeTrue();
     });
 
-    it('returns empty collection when no lawn cares exist', function () {
+    it('returns empty collection when no lawn cares exist', function (): void {
         // Act
         $result = $this->service->getFilteredLawnCares($this->lawn);
 

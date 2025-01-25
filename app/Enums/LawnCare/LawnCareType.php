@@ -35,7 +35,6 @@ enum LawnCareType: string
         };
     }
 
-
     public function iconPath(): string
     {
         return match ($this) {
@@ -161,7 +160,6 @@ enum LawnCareType: string
             self::SOIL_TEST => 'Boden analysieren',
             self::LIME => 'kalken',
             self::LEAF_REMOVAL => 'Laub entfernen',
-
 
         };
     }

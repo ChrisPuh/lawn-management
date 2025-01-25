@@ -13,8 +13,8 @@ use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
 
-describe('LawnCare List Component', function () {
-    beforeEach(function () {
+describe('LawnCare List Component', function (): void {
+    beforeEach(function (): void {
         $this->user = User::factory()->createOne();
         $this->lawn = Lawn::factory()->createOne([
             'user_id' => $this->user->id,
@@ -23,8 +23,8 @@ describe('LawnCare List Component', function () {
 
     });
 
-    describe('authorization', function () {
-        it('prevents unauthorized users from viewing the list', function () {
+    describe('authorization', function (): void {
+        it('prevents unauthorized users from viewing the list', function (): void {
             $otherUser = User::factory()->createOne();
 
             Livewire::actingAs($otherUser)
@@ -33,14 +33,14 @@ describe('LawnCare List Component', function () {
         });
     });
 
-    describe('rendering', function () {
-        it('shows empty state when no lawn cares exist', function () {
+    describe('rendering', function (): void {
+        it('shows empty state when no lawn cares exist', function (): void {
             Livewire::actingAs($this->user)
                 ->test(LawnCareList::class, ['lawn' => $this->lawn])
                 ->assertSee('Keine Pflegeeinträge vorhanden');
         });
 
-        it('shows lawn care entries with correct information', function () {
+        it('shows lawn care entries with correct information', function (): void {
             $care = LawnCare::factory()
                 ->mowing()
                 ->createOne([
@@ -58,7 +58,7 @@ describe('LawnCare List Component', function () {
                 ->assertSee($care->performed_at->format('d.m.Y'));
         });
 
-        it('orders entries by performed date descending', function () {
+        it('orders entries by performed date descending', function (): void {
             Carbon::setTestNow('2024-01-01 12:00:00');
 
             $oldest = LawnCare::factory()
@@ -86,8 +86,8 @@ describe('LawnCare List Component', function () {
         });
     });
 
-    describe('filtering', function () {
-        it('filters entries by type', function () {
+    describe('filtering', function (): void {
+        it('filters entries by type', function (): void {
             // Arrange
             $mowing = LawnCare::factory()
                 ->mowing()
@@ -133,8 +133,8 @@ describe('LawnCare List Component', function () {
         });
     });
 
-    describe('events', function () {
-        it('refreshes list when care-recorded event is dispatched', function () {
+    describe('events', function (): void {
+        it('refreshes list when care-recorded event is dispatched', function (): void {
             $initialCare = LawnCare::factory()
                 ->mowing()
                 ->createOne([
@@ -157,7 +157,7 @@ describe('LawnCare List Component', function () {
                 ->assertSee($newCare->type->label());
         });
 
-        it('dispatches show-care-details event when details button is clicked', function () {
+        it('dispatches show-care-details event when details button is clicked', function (): void {
             $care = LawnCare::factory()
                 ->mowing()
                 ->createOne([

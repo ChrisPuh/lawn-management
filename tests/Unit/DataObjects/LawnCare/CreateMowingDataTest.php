@@ -111,7 +111,7 @@ describe('CreateMowingData', function (): void {
             'care_data' => [
                 'height_mm' => '45.5',
                 'collected' => true,
-            ]
+            ],
         ];
 
         $data = CreateMowingData::fromArray($validatedData, 1);

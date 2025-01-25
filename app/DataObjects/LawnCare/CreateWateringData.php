@@ -14,21 +14,20 @@ use InvalidArgumentException;
 final readonly class CreateWateringData extends BaseLawnCareData
 {
     public function __construct(
-        int                      $lawn_id,
-        int                      $user_id,
+        int $lawn_id,
+        int $user_id,
 
-        public float             $amount_liters,
-        public int               $duration_minutes,
-        public WateringMethod    $method,
-        public ?float            $temperature_celsius = null,
+        public float $amount_liters,
+        public int $duration_minutes,
+        public WateringMethod $method,
+        public ?float $temperature_celsius = null,
         public ?WeatherCondition $weather_condition = null,
-        public ?TimeOfDay        $time_of_day = null,
+        public ?TimeOfDay $time_of_day = null,
 
-        ?string                  $notes = null,
-        ?DateTime                $performed_at = null,
-        ?DateTime                $scheduled_for = null,
-    )
-    {
+        ?string $notes = null,
+        ?DateTime $performed_at = null,
+        ?DateTime $scheduled_for = null,
+    ) {
 
         if ($amount_liters <= 0) {
             throw new InvalidArgumentException('Amount must be positive');
@@ -67,11 +66,11 @@ final readonly class CreateWateringData extends BaseLawnCareData
             lawn_id: $validatedData['lawn_id'],
             user_id: $userId,
 
-            amount_liters: (float)$validatedData['care_data']['amount_liters'],
-            duration_minutes: (int)$validatedData['care_data']['duration_minutes'],
+            amount_liters: (float) $validatedData['care_data']['amount_liters'],
+            duration_minutes: (int) $validatedData['care_data']['duration_minutes'],
             method: WateringMethod::from($validatedData['care_data']['method']),
             temperature_celsius: isset($validatedData['care_data']['temperature_celsius'])
-                ? (float)$validatedData['care_data']['temperature_celsius']
+                ? (float) $validatedData['care_data']['temperature_celsius']
                 : null,
             weather_condition: isset($validatedData['care_data']['weather_condition'])
                 ? WeatherCondition::tryFrom($validatedData['care_data']['weather_condition'])

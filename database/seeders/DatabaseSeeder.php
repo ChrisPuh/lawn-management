@@ -37,7 +37,6 @@ final class DatabaseSeeder extends Seeder
                 'email' => 'chrisganzert@lawn.com',
             ]);
 
-
     }
 
     private function clearLawnImages(): void
@@ -71,12 +70,8 @@ final class DatabaseSeeder extends Seeder
         }
     }
 
-
-
     /**
      * Add images to specific maintenance records
-     *
-     * @param Collection $records
      */
     private function addImagesToMaintenanceRecords(Collection $records, string $modelClass): void
     {

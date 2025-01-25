@@ -92,5 +92,7 @@
     </div>
     <livewire:lawn-care.care-details-modal wire:model="isModalOpen"/>
     <livewire:lawn-care.create-care-modal/>
+    <livewire:lawn-care.delete-lawn-care/>
+
 
 </div>

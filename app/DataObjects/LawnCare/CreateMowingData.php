@@ -25,6 +25,7 @@ final readonly class CreateMowingData extends BaseLawnCareData
     ) {
         parent::__construct($lawn_id, $user_id, $notes, $performed_at, $scheduled_for);
     }
+
     /**
      * @param array{
      *  lawn_id:int,

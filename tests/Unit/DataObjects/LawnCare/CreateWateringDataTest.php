@@ -83,14 +83,14 @@ describe('CreateWateringData', function (): void {
 
     // Nur wenn wir Validierung im Constructor haben
     it('validates positive values', function (): void {
-        expect(fn() => new CreateWateringData(
+        expect(fn () => new CreateWateringData(
             lawn_id: 1,
             user_id: 1,
             amount_liters: -1, // negative amount
             duration_minutes: 30,
             method: WateringMethod::MANUAL,
         ))->toThrow(InvalidArgumentException::class)
-            ->and(fn() => new CreateWateringData(
+            ->and(fn () => new CreateWateringData(
                 lawn_id: 1,
                 user_id: 1,
                 amount_liters: 10.5,
@@ -112,7 +112,7 @@ describe('CreateWateringData', function (): void {
                 'method' => WateringMethod::MANUAL->value,
                 'temperature_celsius' => null,
                 'weather_condition' => null,
-                'time_of_day' => null
+                'time_of_day' => null,
             ],
             'notes' => null,
             'performed_at' => '2024-01-19 10:00:00',

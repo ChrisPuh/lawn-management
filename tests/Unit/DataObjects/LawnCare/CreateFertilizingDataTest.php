@@ -107,7 +107,7 @@ describe('CreateFertilizingData', function (): void {
                 'amount_per_sqm' => '0.5',
                 'nutrients' => ['N', 'P'],
                 'watered' => false,
-            ]
+            ],
         ];
 
         $data = CreateFertilizingData::fromArray($validatedData, 1);
