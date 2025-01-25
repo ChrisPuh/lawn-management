@@ -9,7 +9,7 @@ use App\Enums\LawnCare\MowingPattern;
 use DateMalformedStringException;
 use DateTime;
 
-final readonly class CreateMowingData extends BaseLawnCareData
+final readonly class UpdateMowingData extends BaseLawnCareData
 {
     public function __construct(
         int $lawn_id,
@@ -27,19 +27,21 @@ final readonly class CreateMowingData extends BaseLawnCareData
     }
 
     /**
+     * Create an UpdateMowingData instance
+     *
      * @param array{
-     *  lawn_id:int,
-     *  care_data: array{
-     *          height_mm: float,
-     *          pattern?: string|null,
-     *          collected?: bool,
-     *          blade_condition?: string|null,
-     *          duration_minutes?: int|null
-     *      },
-     *  notes:sting,
-     *  performed_at:DateTime::class,
-     *  scheduled_for:DateTime::class
-     *} $validatedData
+     *     lawn_id: int,
+     *     care_data: array{
+     *         height_mm: float,
+     *         pattern?: string|null,
+     *         collected?: bool,
+     *         blade_condition?: string|null,
+     *         duration_minutes?: int|null
+     *     },
+     *     notes?: string|null,
+     *     performed_at?: string|null,
+     *     scheduled_for?: string|null
+     * } $validatedData
      *
      * @throws DateMalformedStringException
      */
@@ -50,7 +52,9 @@ final readonly class CreateMowingData extends BaseLawnCareData
             user_id: $userId,
 
             height_mm: (float) $validatedData['care_data']['height_mm'],
-            pattern: isset($validatedData['care_data']['pattern']) ? MowingPattern::tryFrom($validatedData['care_data']['pattern']) : null,
+            pattern: isset($validatedData['care_data']['pattern'])
+                ? MowingPattern::tryFrom($validatedData['care_data']['pattern'])
+                : null,
             collected: (bool) ($validatedData['care_data']['collected'] ?? true),
             blade_condition: isset($validatedData['care_data']['blade_condition'])
                 ? BladeCondition::tryFrom($validatedData['care_data']['blade_condition'])
@@ -60,8 +64,12 @@ final readonly class CreateMowingData extends BaseLawnCareData
                 : null,
 
             notes: $validatedData['notes'] ?? null,
-            performed_at: isset($validatedData['performed_at']) ? new DateTime($validatedData['performed_at']) : null,
-            scheduled_for: isset($validatedData['scheduled_for']) ? new DateTime($validatedData['scheduled_for']) : null,
+            performed_at: $validatedData['performed_at']
+                ? new DateTime($validatedData['performed_at'])
+                : null,
+            scheduled_for: $validatedData['scheduled_for']
+                ? new DateTime($validatedData['scheduled_for'])
+                : null
         );
     }
 }

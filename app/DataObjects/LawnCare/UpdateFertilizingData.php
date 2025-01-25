@@ -9,7 +9,7 @@ use App\Enums\LawnCare\WeatherCondition;
 use DateMalformedStringException;
 use DateTime;
 
-final readonly class CreateFertilizingData extends BaseLawnCareData
+final readonly class UpdateFertilizingData extends BaseLawnCareData
 {
     public function __construct(
         int $lawn_id,
@@ -30,48 +30,47 @@ final readonly class CreateFertilizingData extends BaseLawnCareData
     }
 
     /**
+     * Create an UpdateFertilizingData instance
+     *
      * @param array{
-     *      lawn_id: int,
-     *      care_data: array{
-     *          product_name: string,
-     *          amount_per_sqm: float,
-     *          nutrients: array<Nutrient>,
-     *          watered?: bool,
-     *          temperature_celsius?: float|null,
-     *          weather_condition?: string|null
-     *      },
-     *      notes?: string|null,
-     *      performed_at?: string|null,
-     *      scheduled_for?: string|null
-     *  } $validatedData
+     *     lawn_id: int,
+     *     care_data: array{
+     *         product_name: string,
+     *         amount_per_sqm: float,
+     *         nutrients: array<Nutrient>,
+     *         watered?: bool,
+     *         temperature_celsius?: float|null,
+     *         weather_condition?: string|null
+     *     },
+     *     notes?: string|null,
+     *     performed_at?: string|null,
+     *     scheduled_for?: string|null
+     * } $validatedData
      *
      * @throws DateMalformedStringException
      */
     public static function fromArray(array $validatedData, int $userId): self
     {
-
         return new self(
             lawn_id: $validatedData['lawn_id'],
             user_id: $userId,
-
             product_name: $validatedData['care_data']['product_name'],
             amount_per_sqm: (float) $validatedData['care_data']['amount_per_sqm'],
             nutrients: $validatedData['care_data']['nutrients'] ?? [],
-            watered: $validatedData['care_data']['watered'],
+            watered: (bool) ($validatedData['care_data']['watered'] ?? false),
             temperature_celsius: isset($validatedData['care_data']['temperature_celsius'])
                 ? (float) $validatedData['care_data']['temperature_celsius']
                 : null,
             weather_condition: isset($validatedData['care_data']['weather_condition'])
                 ? WeatherCondition::tryFrom($validatedData['care_data']['weather_condition'])
                 : null,
-
             notes: $validatedData['notes'] ?? null,
-            performed_at: isset($validatedData['performed_at'])
+            performed_at: $validatedData['performed_at']
                 ? new DateTime($validatedData['performed_at'])
                 : null,
-            scheduled_for: isset($validatedData['scheduled_for'])
+            scheduled_for: $validatedData['scheduled_for']
                 ? new DateTime($validatedData['scheduled_for'])
-                : null,
+                : null
         );
     }
 }

@@ -7,10 +7,12 @@ namespace App\Models;
 use App\Enums\LawnCare\LawnCareType;
 use App\Traits\CanGetTableNameStatically;
 use DateTime;
+use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -18,8 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $user_id
  * @property string $action
  * @property array<array-key, mixed>|null $data
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read LawnCare $lawnCare
  * @property-read User $user
  *
@@ -39,7 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder<static>|LawnCareLog whereUpdatedAt($value)
  * @method static Builder<static>|LawnCareLog whereUserId($value)
  *
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 final class LawnCareLog extends Model
 {

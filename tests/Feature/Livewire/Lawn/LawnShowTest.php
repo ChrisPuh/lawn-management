@@ -133,7 +133,7 @@ describe('Lawn show Component', function (): void {
 
             // Should not see the oldest activity
             $component->assertDontSeeHtml(now()->subDays(10)->format('d.m.Y'));
-        });
+        })->todo(note: 'this test should exist in the CareHistoryTest (App\Livewire\Lawn\CareHistory)', assignee: 'ChrisPuh');
 
         test('displays care action buttons', function (): void {
             LawnCare::factory()

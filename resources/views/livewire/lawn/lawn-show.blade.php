@@ -11,7 +11,7 @@
         </a>
     </x-slot>
 
-    <div class="space-y-8">
+    <section class="space-y-8">
         <div class="overflow-hidden rounded-lg border border-primary-200 bg-white shadow-sm">
             <!-- Header -->
             <div class="flex items-center justify-between border-b border-primary-200 px-6 py-4">
@@ -75,5 +75,8 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    <section class="mt-8">
+        <livewire:lawn-care.lawn-care-list :lawn="$lawn" />
+    </section>
 </div>
