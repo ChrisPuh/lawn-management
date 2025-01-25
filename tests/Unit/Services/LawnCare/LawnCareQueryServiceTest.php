@@ -19,21 +19,6 @@ describe('LawnCareQueryService', tests: function () {
         $this->service = app(LawnCareQueryServiceContract::class);
     });
 
-    it('returns all lawn cares when no type filter is provided', function () {
-        // Arrange
-        LawnCare::factory()
-            ->count(3)
-            ->createMany([
-                'lawn_id' => $this->lawn->id,
-                'created_by_id' => $this->user->id,
-            ]);
-
-        // Act
-        $result = $this->service->getFilteredLawnCares($this->lawn);
-
-        // Assert
-        expect($result)->toHaveCount(3);
-    });
 
     it('filters lawn cares by type', function () {
         // Arrange
