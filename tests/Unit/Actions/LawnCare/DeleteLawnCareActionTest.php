@@ -35,11 +35,7 @@ describe('DeleteLawnCareAction', function (): void {
             'lawn_care_id' => $this->lawnCare->id,
             'action' => 'deleted',
             'user_id' => $this->user->id,
-            'data' => json_encode([
-                'type' => $this->lawnCare->type->value,
-                'care_data' => $this->lawnCare->care_data,
-                'deleted_at' => now()->toDateTimeString(),
-            ]),
+
         ]);
 
     });

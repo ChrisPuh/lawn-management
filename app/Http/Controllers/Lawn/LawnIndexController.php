@@ -1,23 +1,19 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Livewire\Lawn;
+namespace App\Http\Controllers\Lawn;
 
 use App\Enums\LawnCare\LawnCareType;
 use App\Models\Lawn;
 use App\Models\LawnCare;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\On;
-use Livewire\Component;
 
-final class LawnIndex extends Component
+class LawnIndexController
 {
-    #[Layout('components.layouts.authenticated.index', ['title' => 'Rasenflächen'])]
-    public function render(): View
+
+    public function __invoke(): View
     {
+
         /** @var Collection<int, Lawn> $lawns */
         $lawns = Lawn::query()
             ->forUser()
@@ -33,29 +29,12 @@ final class LawnIndex extends Component
 
         $lastCareInfo = $this->getLastCareAcrossAllLawns($lawns);
 
-        return view('livewire.lawn.lawn-index', [
+        return view('lawn.index', [
+            'title' => 'Rasenflächen',
             'lawns' => $lawns,
             'careDates' => $careDates,
             'lastCareInfo' => $lastCareInfo,
         ]);
-    }
-
-    #[On('createLawn')]
-    public function createLawn(): void
-    {
-        $this->redirect(route('lawn.create'), navigate: true);
-    }
-
-    #[On('showLawn')]
-    public function showLawn(int $id): void
-    {
-        $this->redirect(route('lawn.show', $id), navigate: true);
-    }
-
-    #[On('editLawn')]
-    public function editLawn(int $id): void
-    {
-        $this->redirect(route('lawn.edit', $id), navigate: true);
     }
 
     /**
@@ -90,4 +69,5 @@ final class LawnIndex extends Component
         return $type->pastTense();
 
     }
+
 }

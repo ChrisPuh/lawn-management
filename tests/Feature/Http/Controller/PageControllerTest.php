@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Feature\Controller;
+namespace Tests\Feature\Http\Controller;
 
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

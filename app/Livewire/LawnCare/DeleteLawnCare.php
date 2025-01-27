@@ -34,7 +34,7 @@ final class DeleteLawnCare extends Component
             $this->dispatch('care-recorded');
             $this->cancel();
         } catch (Exception $e) {
-            $this->addError('deletion', 'Fehler beim Löschen: ' . $e->getMessage());
+            $this->addError('deletion', 'Fehler beim Löschen: '.$e->getMessage());
         }
     }
 
