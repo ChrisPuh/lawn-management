@@ -6,7 +6,6 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Lawn\LawnCreate;
 use App\Livewire\Lawn\LawnEdit;
-use App\Livewire\Lawn\LawnIndex;
 use Illuminate\Support\Facades\Route;
 
 // routes/web.php
@@ -44,11 +43,11 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
 //
 
 Route::middleware('auth')->as('lawn.')->prefix('lawn')->group(function (): void {
-    Route::get('/', \App\Http\Controllers\Lawn\LawnIndexController::class)
+    Route::get('/', App\Http\Controllers\Lawn\LawnIndexController::class)
         ->middleware('can:viewAny,App\Models\Lawn')
         ->name('index');
 

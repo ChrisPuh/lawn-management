@@ -8,39 +8,40 @@ use App\Http\Controllers\Lawn\LawnIndexController;
 use App\Models\Lawn;
 use App\Models\LawnCare;
 use App\Models\User;
+use Auth;
+
 use function Pest\Laravel\get;
 
-describe(LawnIndexController::class, function () {
+describe(LawnIndexController::class, function (): void {
 
-    beforeEach(function () {
+    beforeEach(function (): void {
         $this->user = User::factory()->create();
         $this->actingAs($this->user);
     });
 
-    describe('authorization', function () {
+    describe('authorization', function (): void {
 
-        it('requires authentication', function () {
-            \Auth::logout();
+        it('requires authentication', function (): void {
+            Auth::logout();
             get(route('lawn.index'))->assertRedirect(route('login'));
 
         });
     });
 
-    describe('rendering', function () {
+    describe('rendering', function (): void {
 
+        it('renders lawn index component', function (): void {
+        get(route('lawn.index'))
+        ->assertViewIs('lawn.index')
+        ->assertSeeText('Meine Rasenflächen');
+            });
 
-        it('renders lawn index component', function () {
-            get(route('lawn.index'))
-                ->assertViewIs('lawn.index')
-                ->assertSeeText('Meine Rasenflächen');
-        });
-
-        it('shows empty state when no lawns exist', function () {
-            get(route('lawn.index'))
-                ->assertSee('Keine Rasenflächen')
-                ->assertSee('Erstellen Sie Ihre erste Rasenfläche um zu beginnen.')
-                ->assertSee('Rasenfläche anlegen');
-        });
+        it('shows empty state when no lawns exist', function (): void {
+        get(route('lawn.index'))
+        ->assertSee('Keine Rasenflächen')
+        ->assertSee('Erstellen Sie Ihre erste Rasenfläche um zu beginnen.')
+        ->assertSee('Rasenfläche anlegen');
+            });
     });
 
     describe('lawn listing', function (): void {
@@ -56,7 +57,7 @@ describe(LawnIndexController::class, function () {
             get(route('lawn.index'))
                 ->assertViewHas(
                     'lawns',
-                    fn($lawns) => $lawns->count() === 2 &&
+                    fn ($lawns) => $lawns->count() === 2 &&
                         $lawns->pluck('id')->diff($userLawns->pluck('id'))->isEmpty()
                 )
                 ->assertSee('2');
@@ -226,8 +227,6 @@ describe(LawnIndexController::class, function () {
                 ->assertSee('Keine Pflege');
         });
 
-
     });
-
 
 });

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Lawn;
 
 use App\Enums\LawnCare\LawnCareType;
@@ -8,9 +10,8 @@ use App\Models\LawnCare;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 
-class LawnIndexController
+final class LawnIndexController
 {
-
     public function __invoke(): View
     {
 
@@ -69,5 +70,4 @@ class LawnIndexController
         return $type->pastTense();
 
     }
-
 }

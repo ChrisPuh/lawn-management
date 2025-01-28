@@ -11,8 +11,8 @@ use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 
-describe(LawnShowController::class, function () {
-    beforeEach(function () {
+describe(LawnShowController::class, function (): void {
+    beforeEach(function (): void {
         $this->user = User::factory()->create();
         $this->lawn = Lawn::factory()->create([
             'user_id' => $this->user->id,
@@ -29,9 +29,9 @@ describe(LawnShowController::class, function () {
         });
     });
 
-    describe('rendering', function () {
+    describe('rendering', function (): void {
 
-        it('renders the lawn show view', function () {
+        it('renders the lawn show view', function (): void {
             actingAs($this->user)
                 ->get(route('lawn.show', $this->lawn))
                 ->assertOk()
@@ -44,7 +44,7 @@ describe(LawnShowController::class, function () {
                 ->assertSeeHtml($this->lawn->grass_seed->label());
         });
 
-        describe('care history', function () {
+        describe('care history', function (): void {
             it('displays care history with no records', function (): void {
                 actingAs($this->user)
                     ->get(route('lawn.show', $this->lawn))
@@ -90,14 +90,14 @@ describe(LawnShowController::class, function () {
                 ->assertSeeHtml('Klicken Sie unten auf "Bild auswählen');
         });
 
-        it('shows creation date in correct formate', function () {
+        it('shows creation date in correct formate', function (): void {
             actingAs($this->user)
                 ->get(route('lawn.show', $this->lawn))
                 ->assertSee($this->lawn->created_at->format('d.m.Y'));
         });
     });
-    describe('lawn view', function () {
-        it('shows the lawn details', function () {
+    describe('lawn view', function (): void {
+        it('shows the lawn details', function (): void {
 
             actingAs($this->user)
                 ->get(route('lawn.show', $this->lawn))
@@ -111,7 +111,6 @@ describe(LawnShowController::class, function () {
                 ->assertSee('Bild auswählen')
                 ->assertSee('Noch kein Bild vorhanden');
         });
-
 
     });
 });
