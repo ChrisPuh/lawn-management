@@ -1,13 +1,22 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "lawn-management",
+    "version": "0.1.0-alpha.1",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "A comprehensive lawn care management application for tracking, monitoring, and maintaining healthy lawns and gardens.",
     "keywords": [
-        "laravel",
-        "framework"
+        "lawn-care",
+        "garden-management",
+        "agricultural-tools",
+        "lawn-tracking",
+        "garden-maintenance"
     ],
+    "homepage": "https://github.com/ChrisPuh/lawn-management",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/ChrisPuh/lawn-management/issues",
+        "source": "https://github.com/ChrisPuh/lawn-management"
+    },
     "require": {
         "php": "^8.4",
         "filament/filament": "^3.2",
