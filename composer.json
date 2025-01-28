@@ -15,7 +15,8 @@
         "laravel/breeze": "^2.3.2",
         "laravel/framework": "^11.40.0",
         "laravel/tinker": "^2.10",
-        "livewire/livewire": "^3.5.18"
+        "livewire/livewire": "^3.5.18",
+        "spatie/laravel-cookie-consent": "^3.3"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5.4",

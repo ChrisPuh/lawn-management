@@ -21,12 +21,24 @@
         body.loading * {
             opacity: 0;
         }
+
+        /* Cookie consent transitions */
+        .cookie-consent-enter-active,
+        .cookie-consent-leave-active {
+            transition: all 0.3s ease;
+        }
+
+        .cookie-consent-enter-from,
+        .cookie-consent-leave-to {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
     </style>
 
     @livewireStyles
     @filamentStyles
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -36,22 +48,27 @@
             document.body.classList.remove('loading');
         });
     </script>
+    @stack('scripts')
 </head>
 
 <body class="loading flex min-h-screen flex-col bg-background-light font-sans antialiased dark:bg-gray-900">
-    <!-- Navigation -->
-    <x-navigation.navbar />
 
-    <!-- Main Content -->
-    <main class="w-full flex-1">
-        {{ $slot }}
-    </main>
+<!-- Navigation -->
+<x-navigation.navbar/>
 
-    <!-- Footer -->
-    <x-navigation.footer />
+<!-- Cookie Consent -->
+@include('cookie-consent::index')
 
-    @livewireScripts
-    @filamentScripts
+<!-- Main Content -->
+<main class="w-full flex-1">
+    {{ $slot }}
+</main>
+
+<!-- Footer -->
+<x-navigation.footer/>
+
+@livewireScripts
+@filamentScripts
 </body>
 
 </html>
