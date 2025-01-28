@@ -2,35 +2,46 @@
 
 declare(strict_types=1);
 
-use App\Livewire\Lawn\EmptyState;
-use App\Livewire\Lawn\LawnIndex;
+namespace Tests\Feature\Http\Controller\Lawn;
+
+use App\Http\Controllers\Lawn\LawnIndexController;
 use App\Models\Lawn;
 use App\Models\LawnCare;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 
 use function Pest\Laravel\get;
-use function Pest\Livewire\livewire;
 
-beforeEach(function (): void {
-    $this->user = User::factory()->create();
-    $this->actingAs($this->user);
-});
+describe(LawnIndexController::class, function (): void {
 
-describe('lawn index component', function (): void {
+    beforeEach(function (): void {
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+    });
+
+    describe('authorization', function (): void {
+
+        it('requires authentication', function (): void {
+            Auth::logout();
+            get(route('lawn.index'))->assertRedirect(route('login'));
+
+        });
+    });
+
     describe('rendering', function (): void {
-        test('renders lawn index component', function (): void {
-            livewire(LawnIndex::class)
-                ->assertViewIs('livewire.lawn.lawn-index')
-                ->assertSeeText('Meine Rasenflächen');
-        });
 
-        test('shows empty state when no lawns exist', function (): void {
-            livewire(LawnIndex::class)
-                ->assertSee('Keine Rasenflächen')
-                ->assertSee('Erstellen Sie Ihre erste Rasenfläche um zu beginnen.')
-                ->assertSee('Rasenfläche anlegen');
-        });
+        it('renders lawn index component', function (): void {
+        get(route('lawn.index'))
+        ->assertViewIs('lawn.index')
+        ->assertSeeText('Meine Rasenflächen');
+            });
+
+        it('shows empty state when no lawns exist', function (): void {
+        get(route('lawn.index'))
+        ->assertSee('Keine Rasenflächen')
+        ->assertSee('Erstellen Sie Ihre erste Rasenfläche um zu beginnen.')
+        ->assertSee('Rasenfläche anlegen');
+            });
     });
 
     describe('lawn listing', function (): void {
@@ -43,7 +54,7 @@ describe('lawn index component', function (): void {
                 'user_id' => User::factory()->create()->id,
             ]);
 
-            livewire(LawnIndex::class)
+            get(route('lawn.index'))
                 ->assertViewHas(
                     'lawns',
                     fn ($lawns) => $lawns->count() === 2 &&
@@ -60,7 +71,7 @@ describe('lawn index component', function (): void {
                 'name' => 'Vorgarten',
             ]);
 
-            livewire(LawnIndex::class)
+            get(route('lawn.index'))
                 ->assertSee('Keine Pflege');
         });
 
@@ -93,7 +104,7 @@ describe('lawn index component', function (): void {
                     'performed_at' => '2024-12-29',
                 ]);
 
-            livewire(LawnIndex::class)
+            get(route('lawn.index'))
                 ->assertSee('Hintergarten')
                 ->assertSee('gedüngt')
                 ->assertSee('29.12.2024');
@@ -129,7 +140,7 @@ describe('lawn index component', function (): void {
                     'performed_at' => '2024-12-29',
                 ]);
 
-            livewire(LawnIndex::class)
+            get(route('lawn.index'))
                 ->assertSee('Vorgarten')
                 ->assertSee('bewässert')
                 ->assertSee('29.12.2024');
@@ -163,44 +174,13 @@ describe('lawn index component', function (): void {
                     'performed_at' => '2024-12-29',
                 ]);
 
-            livewire(LawnIndex::class)
+            get(route('lawn.index'))
                 ->assertSee('Mein Rasen')
                 ->assertSee('gemäht')
                 ->assertSee('25.12.2024')
                 ->assertDontSee('Fremder Rasen');
         });
     });
-
-    describe('empty state', function (): void {
-        test('shows empty state component correctly', function (): void {
-            livewire(EmptyState::class)
-                ->assertSee('Keine Rasenflächen')
-                ->assertSee('Erstellen Sie Ihre erste Rasenfläche um zu beginnen.')
-                ->assertSee('Rasenfläche anlegen');
-        });
-
-        test('empty state is shown when no lawns exist', function (): void {
-            livewire(LawnIndex::class)
-                ->assertSeeLivewire(EmptyState::class)
-                ->assertSee('Keine Rasenflächen');
-        });
-
-        test('empty state is not shown when lawns exist', function (): void {
-            Lawn::factory()->create([
-                'user_id' => $this->user->id,
-            ]);
-
-            livewire(LawnIndex::class)
-                ->assertDontSeeLivewire(EmptyState::class);
-        });
-
-        test('dispatches create lawn event on button click', function (): void {
-            livewire(EmptyState::class)
-                ->call('createLawn')
-                ->assertDispatched('createLawn');
-        });
-    });
-
     describe('lawn card', function (): void {
         test('renders lawn card data correctly', function (): void {
             $lawn = Lawn::factory()->create([
@@ -208,7 +188,7 @@ describe('lawn index component', function (): void {
                 'user_id' => $this->user->id,
             ]);
 
-            livewire(LawnIndex::class)
+            get(route('lawn.index'))
                 ->assertSeeLivewire('lawn.index-card', [
                     'lawn' => $lawn,
                     'careDate' => null,
@@ -228,7 +208,7 @@ describe('lawn index component', function (): void {
                 'size' => '100m²',
             ]);
 
-            livewire(LawnIndex::class)
+            get(route('lawn.index'))
                 ->assertSee('Test Lawn')
                 ->assertSee('Garten')
                 ->assertSee('100m²');
@@ -242,55 +222,11 @@ describe('lawn index component', function (): void {
                 'size' => null,
             ]);
 
-            livewire(LawnIndex::class)
+            get(route('lawn.index'))
                 ->assertSee('Nicht angegeben')
                 ->assertSee('Keine Pflege');
         });
 
-        test('dispatches show and edit lawn events', function (): void {
-            $lawn = Lawn::factory()->create(['user_id' => $this->user->id]);
-
-            livewire('lawn.index-card', [
-                'lawn' => $lawn,
-                'careDate' => null,
-            ])
-                ->call('showLawn')
-                ->assertDispatched('showLawn', $lawn->id)
-                ->call('editLawn')
-                ->assertDispatched('editLawn', $lawn->id);
-        });
     });
 
-    describe('navigation', function (): void {
-        test('navigates to create page', function (): void {
-            livewire(LawnIndex::class)
-                ->call('createLawn')
-                ->assertRedirect(route('lawn.create'));
-        });
-
-        test('navigates to show page', function (): void {
-            $lawn = Lawn::factory()->create([
-                'user_id' => $this->user->id,
-            ]);
-
-            livewire(LawnIndex::class)
-                ->call('showLawn', $lawn->id)
-                ->assertRedirect(route('lawn.show', $lawn->id));
-        });
-
-        test('navigates to edit page', function (): void {
-            $lawn = Lawn::factory()->create([
-                'user_id' => $this->user->id,
-            ]);
-
-            livewire(LawnIndex::class)
-                ->call('editLawn', $lawn->id)
-                ->assertRedirect(route('lawn.edit', $lawn->id));
-        });
-    });
-
-    test('requires authentication', function (): void {
-        Auth::logout();
-        get(route('lawn.index'))->assertRedirect(route('login'));
-    });
 });

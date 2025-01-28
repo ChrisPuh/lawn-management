@@ -33,17 +33,16 @@
         </dl>
     </div>
     <div class="flex divide-x divide-primary-200 border-t border-primary-200">
-        <button
-            wire:click="showLawn"
+        <a href="{{ route('lawn.show', $lawn) }}"
             class="flex flex-1 items-center justify-center py-3 text-sm font-medium text-primary-600 hover:bg-primary-50"
         >
             Details
-        </button>
-        <button
-            wire:click="editLawn"
+        </a>
+        <a
+            href="{{route('lawn.edit', $lawn)}}"
             class="flex flex-1 items-center justify-center py-3 text-sm font-medium text-primary-600 hover:bg-primary-50"
         >
             Bearbeiten
-        </button>
+        </a>
     </div>
 </div>

@@ -44,7 +44,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-
             $table->index(['lawn_id', 'type']);
             $table->index(['scheduled_for', 'completed_at']);
         });
