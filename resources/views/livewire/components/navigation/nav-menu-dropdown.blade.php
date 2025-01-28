@@ -39,7 +39,11 @@
             <a href="{{ route('privacy') }}"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700" role="menuitem">
                 Privacy
+            </a> <a href="{{ route('feedback') }}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700" role="menuitem">
+                Feedback
             </a>
+
         @endauth
     </div>
 </div>

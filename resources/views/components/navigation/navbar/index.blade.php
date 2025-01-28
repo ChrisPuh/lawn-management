@@ -15,13 +15,18 @@
                         <a href="{{ route('lawn.index') }}" class="hover:text-primary-200">Lawns</a>
 
                     </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ route('feedback') }}" class="hover:text-primary-200">FeedBack</a>
+
+                    </div>
+
                 @endauth
             </div>
 
             <!-- Right: Auth -->
             <div class="flex items-center space-x-12">
                 @auth
-                    <livewire:components.navigation.nav-menu-dropdown />
+                    <livewire:components.navigation.nav-menu-dropdown/>
                 @else
                     <div class="flex items-center space-x-4">
 
@@ -37,11 +42,11 @@
 
                 <div class="">
                     @auth
-                        <livewire:components.navigation.user-menu-dropdown />
+                        <livewire:components.navigation.user-menu-dropdown/>
                     @else
                         <a href="{{ route('login') }}" class="hover:text-primary-200">Login</a>
                         <a href="{{ route('register') }}"
-                            class="rounded bg-primary-600 px-4 py-2 hover:bg-primary-700">Register</a>
+                           class="rounded bg-primary-600 px-4 py-2 hover:bg-primary-700">Register</a>
                     @endauth
                 </div>
             </div>

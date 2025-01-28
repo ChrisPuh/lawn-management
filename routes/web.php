@@ -61,5 +61,13 @@ Route::middleware(['auth', 'verified', 'cookie.consent'])->group(function () {
     });
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/feedback', function () {
+        return view('feedback.create', [
+            'title' => 'Feedback'
+        ]);
+    })->name('feedback');
+});
+
 // Auth routes - no consent needed
 require __DIR__.'/auth.php';
