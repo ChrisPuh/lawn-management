@@ -7,6 +7,7 @@ namespace App\Filament\Resources;
 use App\Enums\WaitlistStatus;
 use App\Filament\Resources\WaitlistResource\Pages;
 use App\Models\Waitlist;
+use Exception;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -17,13 +18,16 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
 
-class WaitlistResource extends Resource
+final class WaitlistResource extends Resource
 {
     protected static ?string $model = Waitlist::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-queue-list';
+
     protected static ?string $navigationLabel = 'Warteliste';
+
     protected static ?string $modelLabel = 'Warteliste Eintrag';
+
     protected static ?string $pluralModelLabel = 'Warteliste Einträge';
 
     public static function form(Form $form): Form
@@ -44,6 +48,7 @@ class WaitlistResource extends Resource
                 Select::make('status')
                     ->options(array_reduce(WaitlistStatus::cases(), function ($carry, $status) {
                         $carry[$status->value] = $status->label();
+
                         return $carry;
                     }, []))
                     ->required()
@@ -57,7 +62,7 @@ class WaitlistResource extends Resource
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function table(Table $table): Table
     {
@@ -92,8 +97,9 @@ class WaitlistResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options(array_reduce(WaitlistStatus::cases(), function($carry, $status) {
+                    ->options(array_reduce(WaitlistStatus::cases(), function ($carry, $status) {
                         $carry[$status->value] = $status->label();
+
                         return $carry;
                     }, []))
                     ->label('Status filtern'),
@@ -103,13 +109,13 @@ class WaitlistResource extends Resource
                 Tables\Actions\Action::make('invite')
                     ->icon('heroicon-o-paper-airplane')
                     ->label('Einladen')
-                    ->action(function (Waitlist $record) {
+                    ->action(function (Waitlist $record): void {
                         $record->update([
                             'status' => WaitlistStatus::Invited,
                             'invited_at' => Carbon::now(),
                         ]);
                     })
-                    ->visible(fn(Waitlist $record) => $record->status === WaitlistStatus::Pending),
+                    ->visible(fn (Waitlist $record) => $record->status === WaitlistStatus::Pending),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

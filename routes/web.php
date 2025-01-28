@@ -30,7 +30,7 @@ Route::controller(PageController::class)->group(function (): void {
 });
 
 // Protected routes requiring auth AND cookie consent
-Route::middleware(['auth', 'verified', 'cookie.consent'])->group(function () {
+Route::middleware(['auth', 'verified', 'cookie.consent'])->group(function (): void {
     Route::get('/dashboard', function () {
         return view('dashboard', [
             'title' => 'Dashboard',
@@ -61,10 +61,10 @@ Route::middleware(['auth', 'verified', 'cookie.consent'])->group(function () {
     });
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function (): void {
     Route::get('/feedback', function () {
         return view('feedback.create', [
-            'title' => 'Feedback'
+            'title' => 'Feedback',
         ]);
     })->name('feedback');
 });

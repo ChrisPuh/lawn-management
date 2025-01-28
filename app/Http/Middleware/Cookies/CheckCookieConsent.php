@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware\Cookies;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckCookieConsent
+final class CheckCookieConsent
 {
     /**
      * Handle an incoming request.
@@ -24,11 +26,11 @@ class CheckCookieConsent
             session(['cookie_consent' => true]);
         }
 
-        if (!$hasConsent && $this->routeRequiresConsent($request)) {
+        if (! $hasConsent && $this->routeRequiresConsent($request)) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => 'Cookie consent required',
-                    'requires_consent' => true
+                    'requires_consent' => true,
                 ], 403);
             }
 
@@ -49,7 +51,7 @@ class CheckCookieConsent
             'tracking/*',
         ];
 
-        return array_any($requiresConsent, fn($path) => $request->is($path));
+        return array_any($requiresConsent, fn ($path) => $request->is($path));
 
     }
 }

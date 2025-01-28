@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Cookies;
 
 use Illuminate\Support\Facades\Cookie;
 
-class CookieConsentService
+final class CookieConsentService
 {
     public function hasConsent(): bool
     {

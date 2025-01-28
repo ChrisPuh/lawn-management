@@ -41,7 +41,7 @@ final class PageController extends Controller
     public function cookiePolicy(): View
     {
         return view('cookie-policy', [
-            'title' => 'Cookie-Richtlinie'
+            'title' => 'Cookie-Richtlinie',
         ]);
     }
 }

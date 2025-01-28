@@ -24,7 +24,6 @@ final class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(CookieConsentService::class);
 
-
         $this->app->bind(AuthenticateUserInterface::class, AuthenticateUser::class);
         $this->app->bind(RegisterUserInterface::class, RegisterUserAction::class);
         $this->app->bind(ResendVerificationActionInterface::class, ResendVerificationAction::class);

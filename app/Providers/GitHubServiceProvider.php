@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Contracts\Services\IssueTrackerInterface;
 use App\Services\GitHub\GitHubIssueService;
 use Illuminate\Support\ServiceProvider;
 
-class GitHubServiceProvider extends ServiceProvider
+final class GitHubServiceProvider extends ServiceProvider
 {
     /**
      * Register services.

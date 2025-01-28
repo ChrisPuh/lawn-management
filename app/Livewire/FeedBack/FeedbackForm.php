@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\FeedBack;
 
 use App\Contracts\Services\IssueTrackerInterface;
-use App\Services\GitHub\GitHubIssueService;
+use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
-class FeedbackForm extends Component
+final class FeedbackForm extends Component
 {
     public string $type = 'bug';
+
     public string $title = '';
+
     public string $description = '';
 
     public function rules(): array
@@ -38,7 +42,7 @@ class FeedbackForm extends Component
         $validated = $this->validate();
 
         try {
-            $labels = match($validated['type']) {
+            $labels = match ($validated['type']) {
                 'bug' => ['bug', 'user-reported'],
                 'feature' => ['enhancement', 'user-requested'],
                 'improvement' => ['improvement', 'user-requested'],
@@ -55,7 +59,7 @@ class FeedbackForm extends Component
 
             session()->flash('feedback-success', 'Vielen Dank für Ihr Feedback! Wir werden uns darum kümmern.');
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Failed to create issue', [
                 'error' => $e->getMessage(),
                 'feedback' => $validated,
@@ -64,20 +68,21 @@ class FeedbackForm extends Component
             session()->flash('feedback-error', 'Es gab ein Problem beim Speichern Ihres Feedbacks. Bitte versuchen Sie es später erneut.');
         }
     }
+
+    public function render(): View
+    {
+        return view('livewire.feed-back.feedback-form');
+    }
+
     private function formatDescription(string $description): string
     {
         $userEmail = auth()->user()?->email ?? 'Anonymous';
 
         return implode("\n\n", [
-            "## User Feedback",
+            '## User Feedback',
             $description,
-            "---",
-            "Submitted by: " . $userEmail
+            '---',
+            'Submitted by: '.$userEmail,
         ]);
-    }
-
-    public function render(): View
-    {
-        return view('livewire.feed-back.feedback-form');
     }
 }

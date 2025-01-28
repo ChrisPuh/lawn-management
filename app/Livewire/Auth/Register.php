@@ -27,6 +27,7 @@ final class Register extends Component implements HasForms
     use InteractsWithForms;
 
     public ?array $data = [];
+
     public bool $registrationEnabled;
 
     public function mount(): void
@@ -86,6 +87,7 @@ final class Register extends Component implements HasForms
 
         if ($this->registrationEnabled) {
             $registerAction->register($validated);
+
             return $this->redirect(route('dashboard'));
         }
 

@@ -8,17 +8,18 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cookie;
 use Livewire\Component;
 
-class ConstructionBanner extends Component
+final class ConstructionBanner extends Component
 {
-    public bool $show = true;
-
     private const COOKIE_NAME = 'construction_banner_hidden';
+
     private const COOKIE_DURATION = 60 * 24 * 7; // 7 Tage in Minuten
+
+    public bool $show = true;
 
     public function mount(): void
     {
         // Prüfe zuerst Cookie, dann Session
-        $this->show = !(
+        $this->show = ! (
             Cookie::has(self::COOKIE_NAME) ||
             session()->has(self::COOKIE_NAME)
         );

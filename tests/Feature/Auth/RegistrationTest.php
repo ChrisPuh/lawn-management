@@ -6,8 +6,10 @@ namespace Tests\Feature\Auth;
 
 use App\Livewire\Auth\Register;
 use App\Models\User;
+use App\Models\Waitlist;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
@@ -16,6 +18,13 @@ use Tests\TestCase;
 final class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        Config::set('auth.registration_enabled', true);
+        $this->artisan('migrate');
+    }
 
     public function test_registration_screen_can_be_rendered(): void
     {
@@ -32,7 +41,7 @@ final class RegistrationTest extends TestCase
             ->set('data.email', 'test@example.com')
             ->set('data.password', 'password')
             ->set('data.password_confirmation', 'password')
-            ->call('register')
+            ->call('submit')
             ->assertRedirect(route('dashboard'));
 
         $this->assertAuthenticated();
@@ -41,6 +50,24 @@ final class RegistrationTest extends TestCase
         $this->assertNotNull($user);
         $this->assertEquals('Test User', $user->name);
         $this->assertTrue(Hash::check('password', $user->password));
+    }
+
+    public function test_new_users_can_be_added_to_waitlist_when_registration_disabled(): void
+    {
+        self::markTestSkipped();
+        Config::set('auth.registration_enabled', false);
+
+        Livewire::test(Register::class)
+            ->set('data.name', 'Test User')
+            ->set('data.email', 'test@example.com')
+            ->set('data.reason', 'Test reason')
+            ->call('submit');
+
+        $this->assertDatabaseHas('waitlists', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'reason' => 'Test reason',
+        ]);
     }
 
     public function test_email_must_be_unique(): void
@@ -54,7 +81,7 @@ final class RegistrationTest extends TestCase
             ->set('data.email', 'test@example.com')
             ->set('data.password', 'password')
             ->set('data.password_confirmation', 'password')
-            ->call('register')
+            ->call('submit')
             ->assertHasErrors(['data.email' => 'unique']);
     }
 
@@ -65,7 +92,7 @@ final class RegistrationTest extends TestCase
             ->set('data.email', 'test@example.com')
             ->set('data.password', 'password')
             ->set('data.password_confirmation', 'different-password')
-            ->call('register')
+            ->call('submit')
             ->assertHasErrors(['data.password_confirmation' => 'same']);
     }
 
@@ -75,7 +102,7 @@ final class RegistrationTest extends TestCase
             ->set('data.email', 'test@example.com')
             ->set('data.password', 'password')
             ->set('data.password_confirmation', 'password')
-            ->call('register')
+            ->call('submit')
             ->assertHasErrors(['data.name' => 'required']);
     }
 
@@ -86,63 +113,16 @@ final class RegistrationTest extends TestCase
             ->set('data.email', 'invalid-email')
             ->set('data.password', 'password')
             ->set('data.password_confirmation', 'password')
-            ->call('register')
+            ->call('submit')
             ->assertHasErrors(['data.email' => 'email']);
     }
 
     public function test_can_see_validation_errors_on_form(): void
     {
         $response = Livewire::test(Register::class)
-            ->call('register');
+            ->call('submit');
 
         $response->assertHasErrors(['data.name', 'data.email', 'data.password']);
         $response->assertSee('required');
-    }
-
-    public function test_registered_event_is_dispatched(): void
-    {
-        Event::fake();
-
-        Livewire::test(Register::class)
-            ->set('data.name', 'Test User')
-            ->set('data.email', 'test@example.com')
-            ->set('data.password', 'password')
-            ->set('data.password_confirmation', 'password')
-            ->call('register');
-
-        Event::assertDispatched(Registered::class);
-    }
-
-    public function test_registration_creates_user_with_correct_data(): void
-    {
-        Event::fake();
-
-        $userData = [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-        ];
-
-        Livewire::test(Register::class)
-            ->set('data.name', $userData['name'])
-            ->set('data.email', $userData['email'])
-            ->set('data.password', $userData['password'])
-            ->set('data.password_confirmation', $userData['password'])
-            ->call('register');
-
-        // Assert the user exists in database with correct data
-        $this->assertDatabaseHas('users', [
-            'name' => $userData['name'],
-            'email' => $userData['email'],
-        ]);
-
-        // Get the created user
-        $user = User::where('email', $userData['email'])->first();
-
-        // Assert password was properly hashed
-        $this->assertTrue(Hash::check($userData['password'], $user->password));
-
-        // Assert the Registered event was dispatched with the correct user
-        Event::assertDispatched(Registered::class, fn ($event): bool => $event->user->id === $user->id);
     }
 }

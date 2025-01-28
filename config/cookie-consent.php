@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     'enabled' => env('COOKIE_CONSENT_ENABLED', true),
@@ -12,6 +14,6 @@ return [
         'message' => 'Diese Website verwendet Cookies für essentielle Funktionen und zur Verbesserung Ihrer Nutzererfahrung.',
         'agree' => 'Akzeptieren',
         'deny' => 'Ablehnen',
-        'learn_more' => 'Details ansehen'
-    ]
+        'learn_more' => 'Details ansehen',
+    ],
 ];

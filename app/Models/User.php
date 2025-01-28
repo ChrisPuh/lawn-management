@@ -49,7 +49,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-final class User extends Authenticatable implements MustVerifyEmail, FilamentUser
+final class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use CanGetTableNameStatically;
 
