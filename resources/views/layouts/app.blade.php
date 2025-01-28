@@ -59,8 +59,12 @@
 <!-- Cookie Consent -->
 @include('cookie-consent::index')
 
+<!-- Construction Banner -->
+<livewire:construction-banner />
+
 <!-- Main Content -->
 <main class="w-full flex-1">
+
     {{ $slot }}
 </main>
 
