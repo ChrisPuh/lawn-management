@@ -13,7 +13,7 @@
         "filament/forms": "^3.2.130",
         "filament/tables": "^3.2.130",
         "laravel/breeze": "^2.3.2",
-        "laravel/framework": "^11.39.0",
+        "laravel/framework": "^11.40.0",
         "laravel/tinker": "^2.10",
         "livewire/livewire": "^3.5.18"
     },
@@ -27,9 +27,9 @@
         "laravel/pint": "^1.20",
         "laravel/sail": "^1.40.0",
         "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.5",
-        "pestphp/pest": "^3.7.2",
-        "pestphp/pest-plugin-laravel": "^3.0",
+        "nunomaduro/collision": "^8.6.1",
+        "pestphp/pest": "^3.7.4",
+        "pestphp/pest-plugin-laravel": "^3.1",
         "pestphp/pest-plugin-livewire": "^3.0",
         "pestphp/pest-plugin-type-coverage": "^3.2.3",
         "rector/rector": "^2.0.7"
