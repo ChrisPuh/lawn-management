@@ -42,6 +42,7 @@ return new class extends Migration
             $table->datetime('scheduled_for')->nullable();
             $table->datetime('completed_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index(['lawn_id', 'type']);
             $table->index(['scheduled_for', 'completed_at']);
@@ -49,8 +50,8 @@ return new class extends Migration
 
         Schema::create(LawnCareLog::getTableName(), function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lawn_care_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('lawn_care_id');
+            $table->foreignId('user_id')->constrained();
             $table->string('action');
             $table->json('data')->nullable();
             $table->timestamps();

@@ -8,6 +8,18 @@ enum WeatherCondition: string
 {
     case SUNNY = 'sunny';
     case CLOUDY = 'cloudy';
-    case OVERCAST = 'overcast';
     case RAINY = 'rainy';
+    case WINDY = 'windy';
+    case OVERCAST = 'overcast';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::SUNNY => 'Sonnig',
+            self::CLOUDY => 'Bewölkt',
+            self::RAINY => 'Regnerisch',
+            self::WINDY => 'Windig',
+            self::OVERCAST => 'Bedeckt',
+        };
+    }
 }

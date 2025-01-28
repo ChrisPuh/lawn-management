@@ -12,6 +12,7 @@ use App\Contracts\Auth\AuthenticateUserInterface;
 use App\Contracts\Auth\LogoutActionInterface;
 use App\Contracts\Auth\RegisterUserInterface;
 use App\Contracts\Auth\ResendVerificationActionInterface;
+use App\Services\Cookies\CookieConsentService;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -21,6 +22,8 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton(CookieConsentService::class);
+
         $this->app->bind(AuthenticateUserInterface::class, AuthenticateUser::class);
         $this->app->bind(RegisterUserInterface::class, RegisterUserAction::class);
         $this->app->bind(ResendVerificationActionInterface::class, ResendVerificationAction::class);

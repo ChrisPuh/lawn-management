@@ -7,6 +7,8 @@ namespace App\Models;
 use App\Traits\CanGetTableNameStatically;
 use Database\Factories\UserFactory;
 use Eloquent;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -47,11 +49,11 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-final class User extends Authenticatable implements MustVerifyEmail
+final class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use CanGetTableNameStatically;
 
-    /** @use HasFactory<UserFactory> */
+    /** @uses  HasFactory<UserFactory> */
     use HasFactory;
 
     use Notifiable;
@@ -92,5 +94,12 @@ final class User extends Authenticatable implements MustVerifyEmail
     {
         /** @var HasMany<Lawn, User> */
         return $this->hasMany(Lawn::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        $adminEmails = explode(',', config('app.admin_emails', ''));
+
+        return in_array($this->email, $adminEmails) && $this->hasVerifiedEmail();
     }
 }

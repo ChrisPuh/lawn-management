@@ -37,4 +37,11 @@ final class PageController extends Controller
     {
         return view('landing.contact');
     }
+
+    public function cookiePolicy(): View
+    {
+        return view('cookie-policy', [
+            'title' => 'Cookie-Richtlinie',
+        ]);
+    }
 }

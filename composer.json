@@ -1,21 +1,33 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "lawn-management",
+    "version": "0.1.0-alpha.1",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "A comprehensive lawn care management application for tracking, monitoring, and maintaining healthy lawns and gardens.",
     "keywords": [
-        "laravel",
-        "framework"
+        "lawn-care",
+        "garden-management",
+        "agricultural-tools",
+        "lawn-tracking",
+        "garden-maintenance"
     ],
+    "homepage": "https://github.com/ChrisPuh/lawn-management",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/ChrisPuh/lawn-management/issues",
+        "source": "https://github.com/ChrisPuh/lawn-management"
+    },
     "require": {
         "php": "^8.4",
+        "filament/filament": "^3.2",
         "filament/forms": "^3.2.130",
+        "filament/notifications": "^3.2",
         "filament/tables": "^3.2.130",
         "laravel/breeze": "^2.3.2",
-        "laravel/framework": "^11.39.0",
+        "laravel/framework": "^11.40.0",
         "laravel/tinker": "^2.10",
-        "livewire/livewire": "^3.5.18"
+        "livewire/livewire": "^3.5.18",
+        "spatie/laravel-cookie-consent": "^3.3"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5.4",
@@ -27,9 +39,9 @@
         "laravel/pint": "^1.20",
         "laravel/sail": "^1.40.0",
         "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.5",
-        "pestphp/pest": "^3.7.2",
-        "pestphp/pest-plugin-laravel": "^3.0",
+        "nunomaduro/collision": "^8.6.1",
+        "pestphp/pest": "^3.7.4",
+        "pestphp/pest-plugin-laravel": "^3.1",
         "pestphp/pest-plugin-livewire": "^3.0",
         "pestphp/pest-plugin-type-coverage": "^3.2.3",
         "rector/rector": "^2.0.7"
@@ -77,14 +89,14 @@
         "test:refector": "./vendor/bin/rector --dry-run",
         "test:coverage": [
             "@putenv XDEBUG_MODE=coverage",
-            "./vendor/bin/pest --parallel --coverage --exactly=79.1"
+            "memory_limit=-1 ./vendor/bin/pest --parallel --coverage --exactly=79.1"
         ],
         "test:coverage-html": [
             "@putenv XDEBUG_MODE=coverage",
             "@php -d xdebug.mode=coverage vendor/bin/pest --coverage-html coverage --parallel"
         ],
-        "type-coverage": "./vendor/bin/pest --type-coverage --min=97.8",
-        "test:type-coverage": "./vendor/bin/pest --type-coverage --min=97.8",
+        "type-coverage": "php -d memory_limit=-1 ./vendor/bin/pest --type-coverage --min=97.7",
+        "test:type-coverage": "php -d memory_limit=-1 ./vendor/bin/pest --type-coverage --min=97.7",
         "test:parallel": "./vendor/bin/pest --parallel",
         "test:php-stan": "@analyse",
         "test": [

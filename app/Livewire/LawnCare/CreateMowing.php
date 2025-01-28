@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Livewire\LawnCare;
 
-use App\Actions\LawnCare\CreateMowingAction;
+use App\Contracts\LawnCare\CreateLawnCareActionContract;
 use App\DataObjects\LawnCare\CreateMowingData;
 use App\Enums\LawnCare\BladeCondition;
+use App\Enums\LawnCare\LawnCareType;
 use App\Enums\LawnCare\MowingPattern;
 use App\Http\Requests\CreateMowingRequest;
 use App\Models\Lawn;
 use DateMalformedStringException;
-use DateTime;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
@@ -44,24 +44,28 @@ final class CreateMowing extends Component
     /**
      * @throws DateMalformedStringException
      */
-    public function save(CreateMowingAction $action): void
+    public function save(CreateLawnCareActionContract $action): void
     {
         $validated = $this->validate((new CreateMowingRequest)->rules());
 
-        $data = new CreateMowingData(
-            lawn_id: $this->lawn_id,
-            user_id: auth()->id(),
-            height_mm: (float) $this->height_mm,
-            pattern: $this->pattern ? MowingPattern::from($this->pattern) : null,
-            collected: $this->collected,
-            blade_condition: $this->blade_condition ? BladeCondition::from($this->blade_condition) : null,
-            duration_minutes: $this->duration_minutes,
-            notes: $this->notes,
-            performed_at: $this->performed_at ? new DateTime($this->performed_at) : null,
-            scheduled_for: $this->scheduled_for ? new DateTime($this->scheduled_for) : null,
-        );
+        $action->execute(
+            type: LawnCareType::MOW,
+            data: CreateMowingData::fromArray(
+                validatedData: [
+                    'lawn_id' => $validated->lawn_id,
+                    'height_mm' => $validated->height_mm,
+                    'pattern' => $validated->pattern,
+                    'collected' => $validated->collected,
+                    'blade_condition' => $validated->blade_condition,
+                    'duration_minutes' => $validated->duration_minutes,
+                    'notes' => $validated->notes,
+                    'performed_at' => $validated->performed_at,
+                    'scheduled_for' => $validated->scheduled_for,
+                ],
+                userId: Auth()->id()
 
-        $action->execute($data);
+            ),
+        );
 
         $this->dispatch('lawn-care-created');
     }

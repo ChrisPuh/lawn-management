@@ -119,4 +119,6 @@ return [
         'expire' => 60, // Verification link expiry in minutes
     ],
 
+    'registration_enabled' => env('REGISTRATION_ENABLED', false),
+
 ];
