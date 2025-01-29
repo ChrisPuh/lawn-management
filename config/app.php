@@ -54,7 +54,8 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://lawn-app-18073593475.europe-west3.run.app/'),
+    'asset_url' => env('ASSET_URL', 'https://your-domain.com'),
 
     /*
     |--------------------------------------------------------------------------
