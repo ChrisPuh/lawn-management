@@ -32,14 +32,17 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
 # Copy application
 COPY . .
 
-# Install dependencies
+# Install dependencies with npm ci for consistent builds
 RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
+RUN npm ci && npm run build
 
 # Create SQLite database
 RUN touch database/database.sqlite \
-    && chmod -R 775 storage bootstrap/cache database \
-    && chown -R www-data:www-data storage bootstrap/cache database
+    && chmod -R 775 storage bootstrap/cache database public/build \
+    && chown -R www-data:www-data storage bootstrap/cache database public/build
+
+# Ensure Vite assets are linked
+RUN php artisan storage:link
 
 EXPOSE 8080
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]

@@ -7,5 +7,8 @@ export default defineConfig({
             input: ["resources/css/app.css", "resources/js/app.js"],
             refresh: [...refreshPaths, "app/Livewire/**"],
         }),
-    ],
+    ],build:{
+        outDir: 'public/build',
+        emptyOutDir: true
+    }
 });
