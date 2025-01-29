@@ -25,12 +25,13 @@ final class EmptyState extends Component
                     <h3 class="mt-2 text-sm font-medium text-gray-900">Keine Rasenflächen</h3>
                     <p class="mt-1 text-sm text-gray-500">Erstellen Sie Ihre erste Rasenfläche um zu beginnen.</p>
                     <div class="mt-6">
-                        <button wire:click="createLawn" class="inline-flex items-center rounded-md bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-600">
+                          <a href="{{route('lawn.create')}}"
+                        class="inline-flex items-center rounded-md bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-600">
                             <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                             </svg>
                             Rasenfläche anlegen
-                        </button>
+                        </a>
                     </div>
                 </div>
                 blade;

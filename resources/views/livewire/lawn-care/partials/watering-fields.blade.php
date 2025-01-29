@@ -1,4 +1,7 @@
 {{-- watering-fields.blade.php --}}
+@props([
+    'isEditing' => false
+])
 <div class="space-y-6">
     <div>
         <label class="block text-sm font-medium text-gray-700">Wassermenge (Liter)</label>
@@ -6,7 +9,7 @@
             type="number"
             step="0.01"
             wire:model="care_data.amount_liters"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
         @error('care_data.amount_liters') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -17,7 +20,7 @@
         <input
             type="number"
             wire:model="care_data.duration_minutes"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
         @error('care_data.duration_minutes') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -27,7 +30,7 @@
         <label class="block text-sm font-medium text-gray-700">Methode</label>
         <select
             wire:model="care_data.method"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
             <option value="">Bitte wählen...</option>
@@ -42,7 +45,7 @@
         <label class="block text-sm font-medium text-gray-700">Tageszeit</label>
         <select
             wire:model="care_data.time_of_day"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
             <option value="">Bitte wählen...</option>
@@ -58,7 +61,7 @@
         <input
             type="number"
             wire:model="care_data.temperature_celsius"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
         @error('care_data.temperature_celsius') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -68,7 +71,7 @@
         <label class="block text-sm font-medium text-gray-700">Wetterbedingungen</label>
         <select
             wire:model="care_data.weather_condition"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
             <option value="">Bitte wählen...</option>

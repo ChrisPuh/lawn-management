@@ -90,6 +90,8 @@ final class CareDetailsModal extends Component
 
             $this->isEditing = false;
             $this->dispatch('care-recorded');
+            $this->redirect(route('lawn.show', $this->lawn_id));
+
         } catch (Exception $e) {
             Log::error('Care Update Error', [
                 'message' => $e->getMessage(),
