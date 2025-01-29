@@ -1,32 +1,44 @@
 steps:
-  # Installiere Abhängigkeiten
+  # Install dependencies
   - name: 'composer:2'
-    args: ['install', '--no-dev', '--optimize-autoloader']
+    args: ['install', '--no-dev', '--no-interaction']
 
-  # Kopiere Umgebungsdatei
+  # Copy environment file
   - name: 'debian'
     args: ['cp', '.env.example', '.env']
 
-  # Generiere App-Schlüssel
+  # Generate app key
   - name: 'php:8.4'
     entrypoint: php
     args: ['artisan', 'key:generate', '--force']
 
-  # Frontend-Assets
+  # Run migrations
+  - name: 'php:8.4'
+    entrypoint: php
+    args: ['artisan', 'migrate', '--force']
+
+  # Run seeders
+  - name: 'php:8.4'
+    entrypoint: php
+    args: ['artisan', 'db:seed', '--force']
+
+  # Install and build frontend assets
   - name: 'node:20'
     entrypoint: npm
-    args: ['ci']
+    args: ['install']
   - name: 'node:20'
     entrypoint: npm
     args: ['run', 'build']
 
-  # Container-Image bauen und pushen
+  # Build and push the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/lawn-app', '.']
+
+  # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/lawn-app']
 
-  # Cloud Run Deployment
+  # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -40,8 +52,6 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
-      - '--set-env-vars'
-      - 'APP_NAME=LawnManagement,APP_ENV=production,APP_DEBUG=false,DB_CONNECTION=sqlite'
 
 images:
   - 'gcr.io/$PROJECT_ID/lawn-app'

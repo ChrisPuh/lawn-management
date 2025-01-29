@@ -57,6 +57,7 @@ return [
     'url' => env('APP_URL', 'https://lawn-app-18073593475.europe-west3.run.app/'),
     'asset_url' => env('ASSET_URL', 'https://your-domain.com'),
     'force_https' => env('FORCE_HTTPS', false),
+    'admin_initial_password' => env('ADMIN_INITIAL_PASSWORD', 'default_secure_password'),
 
     /*
     |--------------------------------------------------------------------------
