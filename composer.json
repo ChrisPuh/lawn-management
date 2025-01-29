@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "lawn-management",
+    "name": "chrispuh/lawn-management",
     "version": "0.1.0-alpha.1",
     "type": "project",
     "description": "A comprehensive lawn care management application for tracking, monitoring, and maintaining healthy lawns and gardens.",
@@ -19,15 +19,15 @@
     },
     "require": {
         "php": "^8.4",
-        "filament/filament": "^3.2",
+        "filament/filament": "^3.2.130",
         "filament/forms": "^3.2.130",
-        "filament/notifications": "^3.2",
+        "filament/notifications": "^3.2.130",
         "filament/tables": "^3.2.130",
-        "laravel/breeze": "^2.3.2",
-        "laravel/framework": "^11.40.0",
-        "laravel/tinker": "^2.10",
-        "livewire/livewire": "^3.5.18",
-        "spatie/laravel-cookie-consent": "^3.3"
+        "laravel/breeze": "^2.3.3",
+        "laravel/framework": "^11.41.0",
+        "laravel/tinker": "^2.10.1",
+        "livewire/livewire": "^3.5.19",
+        "spatie/laravel-cookie-consent": "^3.3.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5.4",
@@ -35,9 +35,9 @@
         "enlightn/security-checker": "^2.0",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.0.2",
-        "laravel/pail": "^1.2.1",
+        "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.20",
-        "laravel/sail": "^1.40.0",
+        "laravel/sail": "^1.41.0",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.6.1",
         "pestphp/pest": "^3.7.4",
