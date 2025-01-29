@@ -6,9 +6,14 @@ export default defineConfig({
         laravel({
             input: ["resources/css/app.css", "resources/js/app.js"],
             refresh: [...refreshPaths, "app/Livewire/**"],
+            detectServerName: true,
         }),
-    ],build:{
+    ],
+    build: {
         outDir: 'public/build',
         emptyOutDir: true
+    },
+    server: {
+        https: true
     }
 });
