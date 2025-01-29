@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nginx \
-    libsqlite3-dev \  # Füge SQLite hinzu
-    sqlite3  # Und das SQLite CLI tool
+    libsqlite3-dev \
+    sqlite3
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd
