@@ -38,5 +38,37 @@ RUN mkdir -p public/storage
 RUN chmod -R 775 storage public/storage
 RUN chown -R www-data:www-data storage public/storage
 
-# Startup-Skript kopieren und Rechte setzen
-COPY startup.sh /startup
+# Nginx Konfiguration
+RUN echo 'server { \
+    listen 8080; \
+    listen [::]:8080; \
+    server_name _; \
+    root /var/www/html/public; \
+    index index.php; \
+    location / { \
+        try_files $uri $uri/ /index.php?$query_string; \
+    } \
+    location ~ \.php$ { \
+        fastcgi_pass 127.0.0.1:9000; \
+        fastcgi_index index.php; \
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \
+        include fastcgi_params; \
+    } \
+}' > /etc/nginx/sites-available/default
+
+# Startup script
+COPY startup.sh /startup.sh
+RUN chmod +x /startup.sh
+
+# Environment variables
+ENV PORT=8080
+ENV NGINX_PORT=8080
+
+# Remove default nginx configuration
+RUN rm /etc/nginx/sites-enabled/default
+RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Default command
+CMD ["/startup.sh"]
+
+EXPOSE 8080
