@@ -35,17 +35,31 @@ COPY composer.json composer.lock ./
 # Composer Dependencies installieren
 RUN composer install --no-dev --no-scripts --no-autoloader
 
+# Package.json kopieren und NPM Dependencies installieren
+COPY package.json package-lock.json ./
+RUN npm ci
+
 # Restliche Anwendungsdateien kopieren
 COPY . .
 
 # Composer Autoloader optimieren
 RUN composer dump-autoload --optimize
 
-# Storage directory vorbereiten
-RUN mkdir -p storage/app/public
-RUN mkdir -p public/storage
-RUN chmod -R 775 storage public/storage
-RUN chown -R www-data:www-data storage public/storage
+# Assets bauen
+RUN npm run build
+
+# Storage und Bootstrap Cache vorbereiten
+RUN mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/storage/framework/cache \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/testing \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && mkdir -p /var/www/html/bootstrap/cache
+
+# Berechtigungen setzen
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 # PHP-FPM Konfiguration anpassen
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/' /usr/local/etc/php-fpm.d/www.conf
@@ -79,10 +93,6 @@ ENV NGINX_PORT=8080
 # Remove default nginx configuration
 RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-
-# Berechtigungen setzen
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 755 /var/www/html
 
 # Default command
 CMD ["/startup.sh"]
