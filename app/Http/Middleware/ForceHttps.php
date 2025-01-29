@@ -16,9 +16,23 @@ class ForceHttps
      */
     public function handle($request, Closure $next)
     {
+        // Debuggen Sie die Umleitung
+        \Log::info('ForceHttps Middleware', [
+            'secure' => $request->secure(),
+            'environment' => App::environment(),
+            'url' => $request->fullUrl()
+        ]);
+
+        // Temporär nur loggen, nicht umleiten
         if (!$request->secure() && App::environment('production')) {
-            return redirect()->secure($request->getRequestUri());
+            \Log::warning('Potential HTTPS redirect', [
+                'url' => $request->fullUrl()
+            ]);
+
         }
+//        if (!$request->secure() && App::environment('production')) {
+//            return redirect()->secure($request->getRequestUri());
+//        }
 
         return $next($request);
     }

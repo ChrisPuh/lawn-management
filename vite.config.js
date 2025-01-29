@@ -14,6 +14,6 @@ export default defineConfig({
         emptyOutDir: true
     },
     server: {
-        https: true
+
     }
 });
