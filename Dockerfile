@@ -40,9 +40,6 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 RUN composer install --no-dev --optimize-autoloader
 RUN npm ci && npm run build
 
-# Generate application key
-RUN php artisan key:generate
-
 # Create SQLite database if not exists
 RUN touch database/database.sqlite \
     && chmod 775 database/database.sqlite \
