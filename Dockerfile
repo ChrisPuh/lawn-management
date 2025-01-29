@@ -29,14 +29,26 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm
 
-# Anwendungsdateien kopieren
+# Composer files kopieren
+COPY composer.json composer.lock ./
+
+# Composer Dependencies installieren
+RUN composer install --no-dev --no-scripts --no-autoloader
+
+# Restliche Anwendungsdateien kopieren
 COPY . .
+
+# Composer Autoloader optimieren
+RUN composer dump-autoload --optimize
 
 # Storage directory vorbereiten
 RUN mkdir -p storage/app/public
 RUN mkdir -p public/storage
 RUN chmod -R 775 storage public/storage
 RUN chown -R www-data:www-data storage public/storage
+
+# PHP-FPM Konfiguration anpassen
+RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/' /usr/local/etc/php-fpm.d/www.conf
 
 # Nginx Konfiguration
 RUN echo 'server { \
@@ -67,6 +79,10 @@ ENV NGINX_PORT=8080
 # Remove default nginx configuration
 RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Berechtigungen setzen
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 755 /var/www/html
 
 # Default command
 CMD ["/startup.sh"]
