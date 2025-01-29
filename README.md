@@ -4,30 +4,87 @@
 
 ## 🚀 Features
 
--   📅 Task scheduling for lawn maintenance (fertilizing, aerating, etc.)
--   📊 Visual lawn health tracking
--   🏡 Garden management system
--   📸 Image upload capabilities
--   👤 User authentication and profiles
+- 📅 Task scheduling for lawn maintenance (fertilizing, aerating, etc.)
+- 📊 Visual lawn health tracking
+- 🏡 Garden management system
+- 📸 Image upload capabilities
+- 👤 User authentication and profiles
 
 ## 💻 Tech Stack
 
--   ![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=flat&logo=laravel&logoColor=white) Laravel 10
--   ![Livewire](https://img.shields.io/badge/Livewire-4E56A6?style=flat&logo=livewire&logoColor=white) Livewire
--   ![Blade](https://img.shields.io/badge/Blade-FF2D20?style=flat&logo=laravel&logoColor=white) Blade Templates
--   ![Tailwind](https://img.shields.io/badge/Tailwind-38B2AC?style=flat&logo=tailwind-css&logoColor=white) Tailwind CSS
--   ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white) MySQL/PostgreSQL
+- ![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=flat&logo=laravel&logoColor=white) Laravel 11
+- ![Livewire](https://img.shields.io/badge/Livewire-4E56A6?style=flat&logo=livewire&logoColor=white) Livewire
+- ![Blade](https://img.shields.io/badge/Blade-FF2D20?style=flat&logo=laravel&logoColor=white) Blade Templates
+- ![Tailwind](https://img.shields.io/badge/Tailwind-38B2AC?style=flat&logo=tailwind-css&logoColor=white) Tailwind CSS
+- ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white) MySQL/PostgreSQL
 
 ## ⚙️ Requirements
 
--   PHP >= 8.2
--   Composer
--   Node.js & NPM
--   MySQL/PostgreSQL
--   GitHub Personal Access Token with scopes:
-    -   `repo`
-    -   `project`
-    -   `read:project`
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
+- MySQL/PostgreSQL
+
+## 🕰️ Scheduled Tasks
+
+### Temporary File Cleanup
+
+The application includes an automated task to clean up temporary files:
+
+- **Command:** `app:cleanup-temp-files`
+- **Frequency:** Daily at midnight
+- **Configuration:**
+  - Retention period configurable in `.env`
+  - Default: 24 hours
+  - Can be forced with `--force` flag
+
+#### Running the Scheduler
+
+- **Local Development:**
+
+    ```bash
+    php artisan schedule:work
+    ```
+
+- **Production (Crontab):**
+
+    ```bash
+    * * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1
+    ```
+
+### Configuring Scheduler
+
+Create `app/Providers/ScheduleServiceProvider.php`:
+
+```php
+<?php
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class ScheduleServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->app->booted(function () {
+            $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+
+            $schedule->command('app:cleanup-temp-files')
+                ->daily()
+                ->appendOutputTo(storage_path('logs/temp-cleanup.log'));
+        });
+    }
+}
+```
+
+Add to `config/app.php` providers:
+
+```php
+'providers' => [
+    // Other providers...
+    App\Providers\ScheduleServiceProvider::class,
+],
+```
 
 ## 🚀 Getting Started
 
@@ -46,6 +103,10 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
+# Testing Setup
+cp .env.testing.example .env.testing
+./setup-testing-env.sh
+
 # Database setup
 php artisan migrate
 
@@ -56,61 +117,34 @@ npm run build
 php artisan serve
 ```
 
-### GitHub Project Setup
+### Environment Configuration
 
-#### 1. Create GitHub Token
-
-1. Navigate to GitHub Settings → Developer Settings → Personal Access Tokens → Tokens (classic)
-2. Click "Generate new token" → "Generate new token (classic)"
-3. Enable required scopes: `repo`, `project`, `read:project`
-4. Copy the generated token
-
-#### 2. Configure Environment
-
-```bash
-# Create environment file for GitHub scripts
-cp create-labels.env.example create-labels.env
-```
-
-Edit `create-labels.env`:
+Key scheduling-related environment variables:
 
 ```env
-GITHUB_TOKEN=your_token_here
-GITHUB_REPO=username/lawn-management
+# Temporary file cleanup settings
+LAWN_TEMP_PATH=private/livewire-tmp
+LAWN_TEMP_RETENTION_HOURS=24
+LAWN_TEMP_CLEANUP_ENABLED=true
 ```
-
-#### 3. Run Setup Scripts
-
-```bash
-# Create GitHub labels
-php create-labels.php
-
-# Create milestones
-php create-milestones.php
-
-# Create project board
-php create-project.php
-```
-
-This will set up:
-
--   🏷️ Issue labels for tracking priorities and types
--   🎯 Project milestones for development phases
--   📋 Project board with custom fields and views
 
 ## 👨‍💻 Development
 
 ### Standards
 
--   ✅ Follow PSR-12 coding standards
--   ✅ Write tests for new features
--   ✅ Comment complex logic
--   ✅ Keep controllers thin, models fat
+- ✅ Follow PSR-12 coding standards
+- ✅ Write tests for new features
+- ✅ Comment complex logic
+- ✅ Keep controllers thin, models fat
 
 ### Testing
 
 ```bash
+# Run tests
 php artisan test
+
+# Static analysis
+composer analyse
 ```
 
 ## 🤝 Contributing
@@ -121,35 +155,31 @@ php artisan test
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open pull request
 
-## 📁 Project Structure
+## 🧹 Development Cleanup Commands
 
+### Clear Lawn Images
+
+During local development, you may want to clear all lawn images:
+
+```bash
+# Clear images with confirmation prompt
+php artisan lawn:clear-images
+
+# Force clear without confirmation
+php artisan lawn:clear-images --force
 ```
-lawn-management/
-├── app/                  # Application code
-│   ├── Http/            # Controllers, Middleware
-│   ├── Models/          # Eloquent models
-│   └── Services/        # Business logic
-├── database/
-│   ├── migrations/      # Database migrations
-│   └── seeders/        # Database seeders
-├── resources/
-│   ├── views/          # Blade templates
-│   └── js/            # JavaScript files
-├── routes/             # Application routes
-└── tests/             # Test files
-```
+
+**Warning:**
+
+- This command is ONLY available in non-production environments
+- It deletes ALL lawn images from storage and database
+- Use with caution
 
 ## 📝 Commit Convention
 
 This project follows strict commit message conventions to ensure consistent git history and automatic generation of changelogs.
 
-See [COMMIT_CONVENTION.md](COMMIT_CONVENTION.md) for detailed guidelines and examples.
-
-Quick example:
-
-```bash
-git commit -m "feat(lawn): add automatic watering detection"
-```
+See [COMMIT_CONVENTION.md](COMMIT_CONVENTION.md) for detailed guidelines.
 
 ## 📄 License
 

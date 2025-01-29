@@ -28,8 +28,8 @@ final class NavigationTest extends TestCase
     {
         $segments = config('navigation.breadcrumbs.segments');
 
-        foreach ($segments as $route => $routeSegments) {
-            foreach ($routeSegments as $key => $segment) {
+        foreach ($segments as $routeSegments) {
+            foreach ($routeSegments as $segment) {
                 $this->assertArrayHasKey('label', $segment);
                 $this->assertArrayHasKey('route', $segment);
             }

@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\RegisterUserAction;
+use App\Enums\WaitlistStatus;
 use App\Models\User;
+use App\Models\Waitlist;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Config;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -23,17 +28,14 @@ final class Register extends Component implements HasForms
 
     public ?array $data = [];
 
-    /**
-     * mount the form
-     */
+    public bool $registrationEnabled;
+
     public function mount(): void
     {
+        $this->registrationEnabled = Config::get('auth.registration_enabled', false);
         $this->form->fill();
     }
 
-    /**
-     * create a new form
-     */
     public function form(Form $form): Form
     {
         return $form
@@ -42,44 +44,80 @@ final class Register extends Component implements HasForms
                     ->required()
                     ->maxLength(255)
                     ->autocomplete('name')
-                    ->placeholder('Your Name')
+                    ->placeholder('Ihr Name')
                     ->autofocus(),
+
                 TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255)
                     ->autocomplete('email')
-                    ->placeholder('your@email.com')
-                    ->unique(User::class),
-                TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->minLength(8)
-                    ->placeholder('••••••••')
-                    ->autocomplete('new-password'),
-                TextInput::make('password_confirmation')
-                    ->password()
-                    ->required()
-                    ->minLength(8)
-                    ->placeholder('••••••••')
-                    ->same('password')
-                    ->autocomplete('new-password'),
+                    ->placeholder('ihre@email.com')
+                    ->unique($this->registrationEnabled ? User::class : Waitlist::class),
+
+                ...($this->registrationEnabled ? [
+                    TextInput::make('password')
+                        ->password()
+                        ->required()
+                        ->minLength(8)
+                        ->placeholder('••••••••')
+                        ->autocomplete('new-password'),
+
+                    TextInput::make('password_confirmation')
+                        ->password()
+                        ->required()
+                        ->minLength(8)
+                        ->placeholder('••••••••')
+                        ->same('password')
+                        ->autocomplete('new-password'),
+                ] : [
+                    Textarea::make('reason')
+                        ->label('Warum möchten Sie Lawn Management nutzen?')
+                        ->placeholder('Optional: Beschreiben Sie kurz, wie Sie Lawn Management nutzen möchten...')
+                        ->maxLength(1000)
+                        ->rows(3),
+                ]),
             ])
             ->statePath('data');
     }
 
-    public function register(RegisterUserAction $registerAction)
+    public function submit(RegisterUserAction $registerAction): mixed
     {
         $validated = $this->form->getState();
 
-        $registerAction->register($validated);
+        if ($this->registrationEnabled) {
+            $registerAction->register($validated);
 
-        return $this->redirect(route('dashboard'));
+            return $this->redirect(route('dashboard'));
+        }
+
+        // Add to waitlist
+        Waitlist::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'reason' => $validated['reason'] ?? null,
+            'status' => WaitlistStatus::Pending,
+        ]);
+
+        // Both Filament Notification and Session Flash
+        Notification::make()
+            ->success()
+            ->title('Vielen Dank!')
+            ->body('Sie wurden erfolgreich auf die Warteliste gesetzt. Wir informieren Sie, sobald die Registrierung möglich ist.')
+            ->send();
+
+        session()->flash('status', 'Sie wurden erfolgreich auf die Warteliste gesetzt. Wir informieren Sie, sobald die Registrierung möglich ist.');
+
+        $this->form->fill();
+
+        return null;
     }
 
     #[Layout('components.layouts.landing')]
     public function render(): View
     {
-        return view('livewire.auth.register');
+        return view('livewire.auth.register', [
+            'registrationEnabled' => $this->registrationEnabled,
+        ]);
     }
 }

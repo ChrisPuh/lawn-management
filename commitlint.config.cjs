@@ -17,11 +17,7 @@ module.exports = {
                 "revert",
             ],
         ],
-        "scope-enum": [
-            2,
-            "always",
-            ["auth", "tasks", "lawn", "garden", "ui", "db", "config", "test"],
-        ],
+       
         "scope-empty": [2, "never"],
         "subject-empty": [2, "never"],
         "subject-full-stop": [2, "never", "."],

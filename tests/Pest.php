@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 pest()->extend(Tests\TestCase::class)
     // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+    ->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------
@@ -28,10 +28,9 @@ pest()->extend(Tests\TestCase::class)
 |
 */
 
-expect()->extend('toBeOne', function () {
+expect()->extend('toBeOne', fn () =>
     /** @phpstan-ignore variable.undefined */
-    return $this->toBe(1);
-});
+    $this->toBe(1));
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +43,7 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function something(): void
 {
     // ..
 }

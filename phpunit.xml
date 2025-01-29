@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
-    bootstrap="tests/Pest.php"
-    colors="true"
-    cacheDirectory=".phpunit.cache"
-    beStrictAboutOutputDuringTests="true"
-    beStrictAboutChangesToGlobalState="true"
-    failOnRisky="true"
-    failOnWarning="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
+         bootstrap="tests/Pest.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutChangesToGlobalState="true"
+         failOnRisky="true"
+         failOnWarning="true"
 >
     <coverage>
         <report>
@@ -40,5 +40,17 @@
         <env name="QUEUE_CONNECTION" value="sync" />
         <env name="SESSION_DRIVER" value="array" />
         <env name="TELESCOPE_ENABLED" value="false" />
+        <!-- Lawn Configuration -->
+        <env name="LAWN_STORAGE_PATH" value="lawns" />
+        <env name="LAWN_TEMP_PATH" value="private/livewire-tmp" />
+        <env name="LAWN_TEMP_RETENTION_HOURS" value="24" />
+        <env name="LAWN_TEMP_DISK" value="local" />
+        <env name="LAWN_ARCHIVE_ENABLED" value="true" />
+        <env name="LAWN_ARCHIVE_PATH" value="archive" />
+        <env name="LAWN_ARCHIVE_RETENTION_MONTHS" value="3" />
+        <env name="LAWN_ARCHIVE_DISK" value="public" />
+        <env name="LAWN_IMAGE_MAX_WIDTH" value="1200" />
+        <env name="LAWN_IMAGE_QUALITY" value="80" />
+        <env name="LAWN_IMAGE_MAX_SIZE" value="5120" />
     </php>
 </phpunit>

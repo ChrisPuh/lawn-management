@@ -5,13 +5,10 @@ declare(strict_types=1);
 use App\Enums\GrassSeed;
 use App\Enums\GrassType;
 use App\Rules\Validation\LawnRules;
-use Tests\TestCase;
 
-uses(TestCase::class);
-
-describe('LawnRules', function () {
-    describe('nameRules', function () {
-        it('returns expected validation rules', function () {
+describe('LawnRules', function (): void {
+    describe('nameRules', function (): void {
+        it('returns expected validation rules', function (): void {
             $rules = LawnRules::nameRules();
 
             expect($rules)->toBeArray()
@@ -24,8 +21,8 @@ describe('LawnRules', function () {
         });
     });
 
-    describe('locationRules', function () {
-        it('returns expected validation rules', function () {
+    describe('locationRules', function (): void {
+        it('returns expected validation rules', function (): void {
             $rules = LawnRules::locationRules();
 
             expect($rules)->toBeArray()
@@ -37,8 +34,8 @@ describe('LawnRules', function () {
         });
     });
 
-    describe('sizeRules', function () {
-        it('returns expected validation rules', function () {
+    describe('sizeRules', function (): void {
+        it('returns expected validation rules', function (): void {
             $rules = LawnRules::sizeRules();
 
             expect($rules)->toBeArray()
@@ -50,8 +47,8 @@ describe('LawnRules', function () {
         });
     });
 
-    describe('grassSeedRules', function () {
-        it('contains all enum values', function () {
+    describe('grassSeedRules', function (): void {
+        it('contains all enum values', function (): void {
             $rules = LawnRules::grassSeedRules();
             $enumValues = collect(GrassSeed::cases())->map->value()->implode(',');
 
@@ -63,8 +60,8 @@ describe('LawnRules', function () {
         });
     });
 
-    describe('typeRules', function () {
-        it('contains all enum values', function () {
+    describe('typeRules', function (): void {
+        it('contains all enum values', function (): void {
             $rules = LawnRules::typeRules();
             $enumValues = collect(GrassType::cases())->map->value()->implode(',');
 
@@ -76,8 +73,8 @@ describe('LawnRules', function () {
         });
     });
 
-    describe('messages', function () {
-        it('returns all required validation messages', function () {
+    describe('messages', function (): void {
+        it('returns all required validation messages', function (): void {
             $messages = LawnRules::messages();
 
             expect($messages)->toBeArray()

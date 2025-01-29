@@ -10,8 +10,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Livewire;
 
-describe('LawnEdit', function () {
-    beforeEach(function () {
+describe('LawnEdit', function (): void {
+    beforeEach(function (): void {
         $this->user = User::factory()->create();
         Auth::login($this->user);
 
@@ -25,29 +25,29 @@ describe('LawnEdit', function () {
         ]);
     });
 
-    describe('form validation', function () {
-        it('validates name is required', function () {
+    describe('form validation', function (): void {
+        it('validates name is required', function (): void {
             Livewire::test(LawnEdit::class, ['lawn' => $this->lawn])
                 ->set('data.name', '')
                 ->call('save')
                 ->assertHasErrors(['data.name' => 'required']);
         });
 
-        it('validates name minimum length', function () {
+        it('validates name minimum length', function (): void {
             Livewire::test(LawnEdit::class, ['lawn' => $this->lawn])
                 ->set('data.name', 'ab')
                 ->call('save')
                 ->assertHasErrors(['data.name' => 'min']);
         });
 
-        it('validates name format', function () {
+        it('validates name format', function (): void {
             Livewire::test(LawnEdit::class, ['lawn' => $this->lawn])
                 ->set('data.name', '!@#invalid')
                 ->call('save')
                 ->assertHasErrors(['data.name' => 'regex']);
         });
 
-        it('validates unique name for user', function () {
+        it('validates unique name for user', function (): void {
             Lawn::factory()->create([
                 'user_id' => $this->user->id,
                 'name' => 'Existing Lawn',
@@ -59,7 +59,7 @@ describe('LawnEdit', function () {
                 ->assertHasErrors(['data.name' => 'unique']);
         });
 
-        it('allows same name for different users', function () {
+        it('allows same name for different users', function (): void {
             $otherUser = User::factory()->create();
             Lawn::factory()->create([
                 'user_id' => $otherUser->id,
@@ -72,21 +72,21 @@ describe('LawnEdit', function () {
                 ->assertHasNoErrors(['data.name']);
         });
 
-        it('validates size format', function () {
+        it('validates size format', function (): void {
             Livewire::test(LawnEdit::class, ['lawn' => $this->lawn])
                 ->set('data.size', 'invalid')
                 ->call('save')
                 ->assertHasErrors(['data.size' => 'regex']);
         });
 
-        it('validates grass_seed is valid enum value', function () {
+        it('validates grass_seed is valid enum value', function (): void {
             Livewire::test(LawnEdit::class, ['lawn' => $this->lawn])
                 ->set('data.grass_seed', 'invalid')
                 ->call('save')
                 ->assertHasErrors(['data.grass_seed' => 'in']);
         });
 
-        it('validates type is valid enum value', function () {
+        it('validates type is valid enum value', function (): void {
             Livewire::test(LawnEdit::class, ['lawn' => $this->lawn])
                 ->set('data.type', 'invalid')
                 ->call('save')
@@ -94,8 +94,8 @@ describe('LawnEdit', function () {
         });
     });
 
-    describe('form functionality', function () {
-        it('mounts with lawn data', function () {
+    describe('form functionality', function (): void {
+        it('mounts with lawn data', function (): void {
             $component = Livewire::test(LawnEdit::class, [
                 'lawn' => $this->lawn,
             ]);
@@ -107,7 +107,7 @@ describe('LawnEdit', function () {
                 ->assertSet('data.type', GrassType::Sport->value());
         });
 
-        it('updates lawn and redirects', function () {
+        it('updates lawn and redirects', function (): void {
             $component = Livewire::test(LawnEdit::class, [
                 'lawn' => $this->lawn,
             ]);
@@ -126,7 +126,7 @@ describe('LawnEdit', function () {
             $component->assertRedirect(route('lawn.show', $this->lawn));
         });
 
-        it('persists the updated data in database', function () {
+        it('persists the updated data in database', function (): void {
             $component = Livewire::test(LawnEdit::class, [
                 'lawn' => $this->lawn,
             ]);
