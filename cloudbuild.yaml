@@ -12,6 +12,11 @@ steps:
     entrypoint: php
     args: ['artisan', 'key:generate', '--force']
 
+  # Create storage link
+  - name: 'php:8.4'
+    entrypoint: php
+    args: ['artisan', 'storage:link', '--force']
+
   # Run migrations
   - name: 'php:8.4'
     entrypoint: php
