@@ -54,15 +54,26 @@ RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/testing \
     && mkdir -p /var/www/html/storage/framework/views \
-    && mkdir -p /var/www/html/bootstrap/cache
+    && mkdir -p /var/www/html/bootstrap/cache \
+    && mkdir -p /var/www/html/database
+
+# SQLite Datenbank erstellen
+RUN touch /var/www/html/database/database.sqlite \
+    && chmod 666 /var/www/html/database/database.sqlite \
+    && chown www-data:www-data /var/www/html/database/database.sqlite \
+    && chmod 777 /var/www/html/database
 
 # Berechtigungen setzen
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
+    && find /var/www/html/storage -type f -exec chmod 664 {} \; \
+    && find /var/www/html/storage -type d -exec chmod 775 {} \; \
+    && find /var/www/html/bootstrap/cache -type f -exec chmod 664 {} \; \
+    && find /var/www/html/bootstrap/cache -type d -exec chmod 775 {} \;
 
 # PHP-FPM Konfiguration anpassen
-RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/' /usr/local/etc/php-fpm.d/www.conf \
+    && sed -i 's/user = www-data/user = root/' /usr/local/etc/php-fpm.d/www.conf \
+    && sed -i 's/group = www-data/group = root/' /usr/local/etc/php-fpm.d/www.conf
 
 # Nginx Konfiguration
 RUN echo 'server { \
@@ -93,6 +104,9 @@ ENV NGINX_PORT=8080
 # Remove default nginx configuration
 RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# USER root für die Container-Ausführung
+USER root
 
 # Default command
 CMD ["/startup.sh"]
