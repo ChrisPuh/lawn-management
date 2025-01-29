@@ -29,20 +29,33 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm
 
-# Copy application
+# Copy application files
 COPY . .
 
-# Install dependencies with npm ci for consistent builds
+# Set correct permissions
+RUN chmod -R 775 storage bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 RUN npm ci && npm run build
 
-# Create SQLite database
+# Generate application key
+RUN php artisan key:generate
+
+# Create SQLite database if not exists
 RUN touch database/database.sqlite \
-    && chmod -R 775 storage bootstrap/cache database public/build \
-    && chown -R www-data:www-data storage bootstrap/cache database public/build
+    && chmod 775 database/database.sqlite \
+    && chown www-data:www-data database/database.sqlite
 
-# Ensure Vite assets are linked
-RUN php artisan storage:link
+# Use Nginx or PHP-FPM with a startup script
+RUN echo '#!/bin/bash' > /startup.sh \
+    && echo 'php artisan migrate --force' >> /startup.sh \
+    && echo 'php-fpm -F' >> /startup.sh \
+    && chmod +x /startup.sh
 
+# Expose port
 EXPOSE 8080
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+
+# Use a startup script
+CMD ["/startup.sh"]
