@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     sqlite3 \
     libzip-dev \
-    libicu-dev
+    libicu-dev \
+    supervisor
 
 # PHP-Erweiterungen
 RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd zip
@@ -48,14 +49,22 @@ RUN composer dump-autoload --optimize
 # Assets bauen
 RUN npm run build
 
+# Nginx Konfiguration
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+RUN rm -rf /etc/nginx/sites-enabled/* /etc/nginx/sites-available/*
+
+# Supervisor Konfiguration
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # Storage und Bootstrap Cache vorbereiten
 RUN mkdir -p /var/www/html/storage/logs \
-    && mkdir -p /var/www/html/storage/framework/cache \
-    && mkdir -p /var/www/html/storage/framework/sessions \
-    && mkdir -p /var/www/html/storage/framework/testing \
-    && mkdir -p /var/www/html/storage/framework/views \
-    && mkdir -p /var/www/html/bootstrap/cache \
-    && mkdir -p /var/www/database
+    /var/www/html/storage/framework/cache \
+    /var/www/html/storage/framework/sessions \
+    /var/www/html/storage/framework/testing \
+    /var/www/html/storage/framework/views \
+    /var/www/html/bootstrap/cache \
+    /var/www/database \
+    /run/php
 
 # Berechtigungen setzen
 RUN chown -R www-data:www-data /var/www/html \
@@ -64,21 +73,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chown -R www-data:www-data /var/www/database \
     && chmod -R 775 /var/www/database
 
-# Nginx Konfiguration
-COPY docker/default.conf /etc/nginx/sites-available/default
-RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-
-# PHP-FPM Konfiguration
-COPY docker/www.conf /usr/local/etc/php-fpm.d/www.conf
-
-# Umgebungsvariablen
 ENV PORT=8080
-ENV NGINX_PORT=8080
-
-# Startup script
-COPY docker/startup.sh /startup.sh
-RUN chmod +x /startup.sh
-
-CMD ["/startup.sh"]
-
 EXPOSE 8080
+
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
