@@ -54,50 +54,46 @@ RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/testing \
     && mkdir -p /var/www/html/storage/framework/views \
-    && mkdir -p /var/www/html/bootstrap/cache
-
-# Persistent storage directory für SQLite
-RUN mkdir -p /var/www/database \
-    && touch /var/www/database/database.sqlite \
-    && chown -R www-data:www-data /var/www/database \
-    && chmod -R 775 /var/www/database \
-    && chmod 664 /var/www/database/database.sqlite
+    && mkdir -p /var/www/html/bootstrap/cache \
+    && mkdir -p /var/www/database
 
 # Berechtigungen setzen
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
-
-# Nginx Konfiguration
-RUN echo 'server { \
-    listen 8080; \
-    listen [::]:8080; \
-    server_name _; \
-    root /var/www/html/public; \
-    index index.php; \
-    location / { \
-        try_files $uri $uri/ /index.php?$query_string; \
-    } \
-    location ~ \.php$ { \
-        fastcgi_pass unix:/var/run/php-fpm.sock; \
-        fastcgi_index index.php; \
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \
-        include fastcgi_params; \
-    } \
-}' > /etc/nginx/sites-available/default
+    && chmod -R 775 /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/database \
+    && chmod -R 775 /var/www/database
 
 # PHP-FPM Konfiguration
-RUN echo '[www] \
-    user = www-data \
-    group = www-data \
-    listen = /var/run/php-fpm.sock \
-    listen.owner = www-data \
-    listen.group = www-data \
-    pm = dynamic \  
-    pm.max_children = 5 \
-    pm.start_servers = 2 \
-    pm.min_spare_servers = 1 \
-    pm.max_spare_servers = 3' > /usr/local/etc/php-fpm.d/www.conf
+RUN echo '[www]' > /usr/local/etc/php-fpm.d/www.conf \
+    && echo 'user = www-data' >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo 'group = www-data' >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo 'listen = 127.0.0.1:9000' >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo 'pm = dynamic' >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo 'pm.max_children = 5' >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo 'pm.start_servers = 2' >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo 'pm.min_spare_servers = 1' >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo 'pm.max_spare_servers = 3' >> /usr/local/etc/php-fpm.d/www.conf
+
+# Nginx Konfiguration
+RUN echo 'server { \n\
+    listen 8080; \n\
+    listen [::]:8080; \n\
+    server_name _; \n\
+    root /var/www/html/public; \n\
+    index index.php; \n\
+    location / { \n\
+        try_files $uri $uri/ /index.php?$query_string; \n\
+    } \n\
+    location ~ \.php$ { \n\
+        fastcgi_pass 127.0.0.1:9000; \n\
+        fastcgi_index index.php; \n\
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \n\
+        include fastcgi_params; \n\
+    } \n\
+}' > /etc/nginx/sites-available/default
+
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
 # Startup script
 COPY startup.sh /startup.sh
