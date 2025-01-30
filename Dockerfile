@@ -54,26 +54,19 @@ RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/testing \
     && mkdir -p /var/www/html/storage/framework/views \
-    && mkdir -p /var/www/html/bootstrap/cache \
-    && mkdir -p /var/www/html/database
+    && mkdir -p /var/www/html/bootstrap/cache
 
-# SQLite Datenbank erstellen
-RUN touch /var/www/html/database/database.sqlite \
-    && chmod 666 /var/www/html/database/database.sqlite \
-    && chown www-data:www-data /var/www/html/database/database.sqlite \
-    && chmod 777 /var/www/html/database
+# Persistent storage directory für SQLite
+RUN mkdir -p /var/www/database \
+    && touch /var/www/database/database.sqlite \
+    && chown -R www-data:www-data /var/www/database \
+    && chmod -R 775 /var/www/database \
+    && chmod 664 /var/www/database/database.sqlite
 
 # Berechtigungen setzen
 RUN chown -R www-data:www-data /var/www/html \
-    && find /var/www/html/storage -type f -exec chmod 664 {} \; \
-    && find /var/www/html/storage -type d -exec chmod 775 {} \; \
-    && find /var/www/html/bootstrap/cache -type f -exec chmod 664 {} \; \
-    && find /var/www/html/bootstrap/cache -type d -exec chmod 775 {} \;
-
-# PHP-FPM Konfiguration anpassen
-RUN sed -i 's/listen = 127.0.0.1:9000/listen = 9000/' /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i 's/user = www-data/user = root/' /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i 's/group = www-data/group = root/' /usr/local/etc/php-fpm.d/www.conf
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 # Nginx Konfiguration
 RUN echo 'server { \
@@ -86,29 +79,30 @@ RUN echo 'server { \
         try_files $uri $uri/ /index.php?$query_string; \
     } \
     location ~ \.php$ { \
-        fastcgi_pass 127.0.0.1:9000; \
+        fastcgi_pass unix:/var/run/php-fpm.sock; \
         fastcgi_index index.php; \
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \
         include fastcgi_params; \
     } \
 }' > /etc/nginx/sites-available/default
 
+# PHP-FPM Konfiguration
+RUN echo '[www] \
+    user = www-data \
+    group = www-data \
+    listen = /var/run/php-fpm.sock \
+    listen.owner = www-data \
+    listen.group = www-data \
+    pm = dynamic \  
+    pm.max_children = 5 \
+    pm.start_servers = 2 \
+    pm.min_spare_servers = 1 \
+    pm.max_spare_servers = 3' > /usr/local/etc/php-fpm.d/www.conf
+
 # Startup script
 COPY startup.sh /startup.sh
 RUN chmod +x /startup.sh
 
-# Environment variables
-ENV PORT=8080
-ENV NGINX_PORT=8080
-
-# Remove default nginx configuration
-RUN rm /etc/nginx/sites-enabled/default
-RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-
-# USER root für die Container-Ausführung
-USER root
-
-# Default command
 CMD ["/startup.sh"]
 
 EXPOSE 8080
