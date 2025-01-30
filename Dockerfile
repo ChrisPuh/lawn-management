@@ -64,39 +64,19 @@ RUN chown -R www-data:www-data /var/www/html \
     && chown -R www-data:www-data /var/www/database \
     && chmod -R 775 /var/www/database
 
-# PHP-FPM Konfiguration
-RUN echo '[www]' > /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'user = www-data' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'group = www-data' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'listen = 127.0.0.1:9000' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm = dynamic' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm.max_children = 5' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm.start_servers = 2' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm.min_spare_servers = 1' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm.max_spare_servers = 3' >> /usr/local/etc/php-fpm.d/www.conf
-
 # Nginx Konfiguration
-RUN echo 'server { \n\
-    listen 8080; \n\
-    listen [::]:8080; \n\
-    server_name _; \n\
-    root /var/www/html/public; \n\
-    index index.php; \n\
-    location / { \n\
-        try_files $uri $uri/ /index.php?$query_string; \n\
-    } \n\
-    location ~ \.php$ { \n\
-        fastcgi_pass 127.0.0.1:9000; \n\
-        fastcgi_index index.php; \n\
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \n\
-        include fastcgi_params; \n\
-    } \n\
-}' > /etc/nginx/sites-available/default
+COPY docker/default.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+# PHP-FPM Konfiguration
+COPY docker/www.conf /usr/local/etc/php-fpm.d/www.conf
+
+# Umgebungsvariablen
+ENV PORT=8080
+ENV NGINX_PORT=8080
 
 # Startup script
-COPY startup.sh /startup.sh
+COPY docker/startup.sh /startup.sh
 RUN chmod +x /startup.sh
 
 CMD ["/startup.sh"]
