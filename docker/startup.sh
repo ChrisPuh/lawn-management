@@ -1,6 +1,25 @@
 #!/bin/bash
 
-echo "Starting deployment..."
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+# Enable verbose output
+set -x
+
+echo "Starting deployment with enhanced logging..."
+
+# Print environment variables for debugging
+env
+
+# Check Cloud Storage bucket access
+echo "Checking Cloud Storage bucket access..."
+if gsutil ls gs://$GOOGLE_CLOUD_STORAGE_BUCKET 2>/dev/null; then
+    echo "Successfully accessed bucket: $GOOGLE_CLOUD_STORAGE_BUCKET"
+else
+    echo "ERROR: Cannot access Cloud Storage bucket $GOOGLE_CLOUD_STORAGE_BUCKET"
+    # Attempt to list buckets to diagnose permissions
+    gsutil ls
+fi
 
 # Replace environment variables in nginx config
 envsubst '$PORT' < /etc/nginx/sites-available/default > /etc/nginx/sites-enabled/default
@@ -14,48 +33,36 @@ mkdir -p /var/www/database
 chown -R www-data:www-data /var/www/database
 chmod -R 775 /var/www/database
 
-# Check Cloud Storage for existing database
-echo "Checking Cloud Storage bucket: $GOOGLE_CLOUD_STORAGE_BUCKET"
-if gsutil ls gs://$GOOGLE_CLOUD_STORAGE_BUCKET/database.sqlite 2>/dev/null; then
-    echo "Found existing database, downloading..."
-    gsutil cp gs://$GOOGLE_CLOUD_STORAGE_BUCKET/database.sqlite /var/www/database/database.sqlite
-    if [ $? -ne 0 ]; then
-        echo "Error downloading database from Cloud Storage"
-        exit 1
-    fi
-else
-    echo "No existing database found in Cloud Storage"
+# Extended database initialization logging
+echo "Database Initialization Process..."
+
+# Check database file path
+DATABASE_PATH="/var/www/database/database.sqlite"
+echo "Expected Database Path: $DATABASE_PATH"
+
+# Check if database exists
+if [ ! -f "$DATABASE_PATH" ]; then
+    echo "No existing database found. Creating new database..."
+    touch "$DATABASE_PATH"
+    chmod 664 "$DATABASE_PATH"
+    chown www-data:www-data "$DATABASE_PATH"
 fi
 
-# Create or update database
-if [ ! -f "/var/www/database/database.sqlite" ]; then
-    echo "Creating new database..."
-    touch /var/www/database/database.sqlite
-    chmod 664 /var/www/database/database.sqlite
-    chown www-data:www-data /var/www/database/database.sqlite
+# Verbose database operations
+echo "Running database migrations..."
+php artisan migrate --force --verbose
 
-    echo "Running initial migration and seeding..."
-    php artisan migrate --force
-    if [ $? -ne 0 ]; then
-        echo "Migration failed"
-        exit 1
-    fi
+echo "Running database seeding..."
+php artisan db:seed --force --verbose
 
-    php artisan db:seed --force
-    if [ $? -ne 0 ]; then
-        echo "Seeding failed"
-        exit 1
-    fi
-
-    echo "Uploading new database to Cloud Storage..."
-    gsutil cp /var/www/database/database.sqlite gs://$GOOGLE_CLOUD_STORAGE_BUCKET/database.sqlite
-    if [ $? -ne 0 ]; then
-        echo "Error uploading database to Cloud Storage"
-        exit 1
-    fi
+# Attempt to upload database to Cloud Storage (with more logging)
+echo "Attempting to upload database to Cloud Storage..."
+if gsutil cp "$DATABASE_PATH" "gs://$GOOGLE_CLOUD_STORAGE_BUCKET/database.sqlite" 2>&1; then
+    echo "Successfully uploaded database to Cloud Storage"
 else
-    echo "Running migrations on existing database..."
-    php artisan migrate --force
+    echo "WARNING: Failed to upload database to Cloud Storage"
+    # Print detailed gsutil error information
+    gsutil cp "$DATABASE_PATH" "gs://$GOOGLE_CLOUD_STORAGE_BUCKET/database.sqlite"
 fi
 
 echo "Creating storage link..."
@@ -65,7 +72,7 @@ echo "Optimizing application..."
 php artisan optimize
 
 echo "Starting PHP-FPM..."
-php-fpm
+php-fpm &
 
 echo "Starting Nginx..."
 exec nginx -g 'daemon off;'

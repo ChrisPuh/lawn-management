@@ -42,6 +42,10 @@ final class DatabaseSeeder extends Seeder
             // Entwicklungsumgebung: Benutzer mit Lawns und Pflegemaßnahmen
             $this->createDevelopmentData($user);
         }
+
+        //TODO if (!app()->environment('production') || config('app.debug')) {
+        $this->call(DiagnosticSeeder::class);
+        
     }
 
     private function createDevelopmentData(User $user): void
