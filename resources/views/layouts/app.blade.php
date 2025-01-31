@@ -7,18 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Lawn Management') }} - {{ $title ?? '' }}</title>
 
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{asset('/apple-touch-icon.png')}}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{asset('/favicon-32x32.png')}}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/favicon-16x16.png')}}">
-    <link rel="manifest" href="{{asset('/site.webmanifest')}}">
+    <!-- Favicon - Use secure_asset() -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ secure_asset('apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ secure_asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ secure_asset('favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ secure_asset('site.webmanifest') }}">
+
+    <!-- Meta Tags for HTTPS -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <style>
         [x-cloak] {
             display: none !important;
         }
 
-        /* Add this to prevent initial Alpine.js rendering flicker */
         [x-cloak] * {
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
@@ -28,7 +30,6 @@
             opacity: 0;
         }
 
-        /* Cookie consent transitions */
         .cookie-consent-enter-active,
         .cookie-consent-leave-active {
             transition: all 0.3s ease;
@@ -43,6 +44,8 @@
 
     @livewireStyles
     @filamentStyles
+
+    <!-- Use HTTPS for external resources -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
@@ -66,11 +69,10 @@
 @include('cookie-consent::index')
 
 <!-- Construction Banner -->
-<livewire:construction-banner />
+<livewire:construction-banner/>
 
 <!-- Main Content -->
 <main class="w-full flex-1">
-
     {{ $slot }}
 </main>
 

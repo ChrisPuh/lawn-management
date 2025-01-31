@@ -1,11 +1,14 @@
 {{-- mowing-fields.blade.php --}}
+@props([
+    'isEditing' => false
+])
 <div class="space-y-6">
     <div>
         <label class="block text-sm font-medium text-gray-700">Schnitthöhe (mm)</label>
         <input
             type="number"
             wire:model="care_data.height_mm"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
         @error('care_data.height_mm') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -15,7 +18,7 @@
         <label class="block text-sm font-medium text-gray-700">Muster</label>
         <select
             wire:model="care_data.pattern"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
             <option value="">Bitte wählen...</option>
@@ -30,7 +33,7 @@
         <label class="block text-sm font-medium text-gray-700">Klingenzustand</label>
         <select
             wire:model="care_data.blade_condition"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
             <option value="">Bitte wählen...</option>
@@ -46,7 +49,7 @@
         <input
             type="number"
             wire:model="care_data.duration_minutes"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
         @error('care_data.duration_minutes') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -56,7 +59,7 @@
         <input
             type="checkbox"
             wire:model="care_data.collected"
-            :disabled="!isEditing"
+            wire:disabled="{{ !$isEditing }}"
             class="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:bg-gray-100"
         >
         <label class="ml-2 block text-sm text-gray-700">Schnittgut gesammelt</label>

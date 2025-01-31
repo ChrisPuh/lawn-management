@@ -10,7 +10,7 @@ use App\Models\LawnImage;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Log;
 
@@ -24,73 +24,72 @@ final class DatabaseSeeder extends Seeder
         // Clear existing lawn images before seeding
         $this->clearLawnImages();
 
-        // Create primary user
-        User::factory()
-            ->has(
-                Lawn::factory(2)
-                    ->has(LawnCare::factory()->mowing())
-                    ->has(LawnCare::factory()->fertilizing())
-                    ->has(LawnCare::factory()->watering())
-            )
-            ->create([
+        // Benutzer-Erstellung basierend auf der Umgebung
+        $user = User::firstOrCreate(
+            ['email' => 'chrisganzert@lawn.com'],
+            [
                 'name' => 'Chris Ganzert',
-                'email' => 'chrisganzert@lawn.com',
-            ]);
+                'password' => Hash::make(config('app.admin_initial_password')),
+                'email_verified_at' => now(), // Immer verifiziert
+            ]
+        );
 
+        // Unterschiedliches Seeding basierend auf der Umgebung
+        if (app()->environment('production')) {
+            // Nur Benutzer in Produktion
+            Log::info('Seeding only admin user in production');
+        } else {
+            // Entwicklungsumgebung: Benutzer mit Lawns und Pflegemaßnahmen
+            $this->createDevelopmentData($user);
+        }
+
+        //TODO if (!app()->environment('production') || config('app.debug')) {
+        $this->call(DiagnosticSeeder::class);
+        
+    }
+
+    private function createDevelopmentData(User $user): void
+    {
+        // Erstelle 2 initiale Lawns für den Benutzer
+        $lawns = Lawn::factory(2)->for($user)->create();
+
+        // Füge Pflegemaßnahmen hinzu
+        $lawns->each(function ($lawn) {
+            // Erstelle verschiedene Pflegemaßnahmen
+            LawnCare::factory()->mowing()->for($lawn)->create();
+            LawnCare::factory()->fertilizing()->for($lawn)->create();
+            LawnCare::factory()->watering()->for($lawn)->create();
+        });
+
+        Log::info('Seeding development data with lawns and maintenance');
     }
 
     private function clearLawnImages(): void
     {
         try {
-            // Explicitly delete all lawn images from the database
+            // Lösche alle Lawn Images aus der Datenbank
             LawnImage::query()->delete();
 
-            // Clear physical files from storage
+            // Lösche physische Dateien
             $lawnsImagePath = 'lawns';
 
-            // Check if the directory exists
             if (Storage::disk('public')->exists($lawnsImagePath)) {
-                // Remove all files in the lawns directory
                 $files = Storage::disk('public')->allFiles($lawnsImagePath);
 
                 foreach ($files as $file) {
                     Storage::disk('public')->delete($file);
                 }
 
-                // Optionally, remove empty subdirectories
+                // Lösche leere Unterverzeichnisse
                 $directories = Storage::disk('public')->directories($lawnsImagePath);
                 foreach ($directories as $dir) {
                     Storage::disk('public')->deleteDirectory($dir);
                 }
             }
 
-            Log::info('DatabaseSeeder: All lawn images cleared from database and storage');
+            Log::info('DatabaseSeeder: Alle Lawn Images gelöscht');
         } catch (Exception $e) {
-            Log::error('DatabaseSeeder: Error clearing lawn images: '.$e->getMessage());
+            Log::error('DatabaseSeeder: Fehler beim Löschen der Lawn Images: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Add images to specific maintenance records
-     */
-    private function addImagesToMaintenanceRecords(Collection $records, string $modelClass): void
-    {
-        $records->each(function ($record) use ($modelClass) {
-            if (fake()->boolean(30)) {
-                // Create before image
-                LawnImage::factory()->before()->create([
-                    'lawn_id' => $record->lawn_id,
-                    'imageable_id' => $record->id,
-                    'imageable_type' => $modelClass,
-                ]);
-
-                // Create after image
-                LawnImage::factory()->after()->create([
-                    'lawn_id' => $record->lawn_id,
-                    'imageable_id' => $record->id,
-                    'imageable_type' => $modelClass,
-                ]);
-            }
-        });
     }
 }

@@ -25,7 +25,9 @@ final class LawnCreate extends Component implements HasForms
 
     public ?array $data = [];
 
-    public function mount(): void {}
+    public function mount(): void
+    {
+    }
 
     public function form(Form $form): Form
     {
@@ -62,7 +64,7 @@ final class LawnCreate extends Component implements HasForms
                     ->nullable()
                     ->label('Grassorte')
                     ->options(collect(GrassSeed::cases())->mapWithKeys(
-                        fn (GrassSeed $type) => [$type->value() => $type->label()]
+                        fn(GrassSeed $type) => [$type->value() => $type->label()]
                     ))
                     ->rules(LawnRules::grassSeedRules())
                     ->validationMessages(LawnRules::messages()),
@@ -71,7 +73,7 @@ final class LawnCreate extends Component implements HasForms
                     ->nullable()
                     ->label('Rasentyp')
                     ->options(collect(GrassType::cases())->mapWithKeys(
-                        fn (GrassType $type) => [$type->value() => $type->label()]
+                        fn(GrassType $type) => [$type->value() => $type->label()]
                     ))
                     ->rules(LawnRules::typeRules())
                     ->validationMessages(LawnRules::messages()),
@@ -86,7 +88,7 @@ final class LawnCreate extends Component implements HasForms
 
         $lawn = Lawn::create($data);
 
-        $this->redirect(route('lawn.show', $lawn), navigate: true);
+        $this->redirect(route('lawn.show', $lawn));
     }
 
     #[Layout('components.layouts.authenticated.index', ['title' => 'Neue Rasenfläche'])]
