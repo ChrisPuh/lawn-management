@@ -9,7 +9,7 @@ use App\Models\LawnImage;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 
-describe('LawnImage Model', function (): void {
+describe(LawnImage::class, function (): void {
     describe('attributes', function (): void {
         test('has correct fillable attributes', function (): void {
             $image = new LawnImage;
@@ -105,7 +105,7 @@ describe('LawnImage Model', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['lawn_id' => null]);
 
-            expect(fn () => $image->save())
+            expect(fn() => $image->save())
                 ->toThrow(QueryException::class);
         });
 
@@ -121,7 +121,7 @@ describe('LawnImage Model', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['imageable_id' => null]);
 
-            expect(fn () => $image->save())
+            expect(fn() => $image->save())
                 ->toThrow(QueryException::class);
         });
 
@@ -129,7 +129,7 @@ describe('LawnImage Model', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['imageable_type' => null]);
 
-            expect(fn () => $image->save())
+            expect(fn() => $image->save())
                 ->toThrow(QueryException::class);
         });
 
@@ -137,7 +137,7 @@ describe('LawnImage Model', function (): void {
             /** @var LawnImage $image */
             $image = LawnImage::factory()->make(['type' => null]);
 
-            expect(fn () => $image->save())
+            expect(fn() => $image->save())
                 ->toThrow(QueryException::class);
         });
 

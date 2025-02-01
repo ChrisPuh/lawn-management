@@ -37,7 +37,7 @@
         "larastan/larastan": "^3.0.2",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.20",
-        "laravel/sail": "^1.41.0",
+        "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.6.1",
         "pestphp/pest": "^3.7.4",
@@ -77,27 +77,41 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+            "docker compose up -d"
         ],
         "analyse": [
-            "@php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon"
+            "docker compose exec laravel.test php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon"
         ],
-        "pest": "./vendor/bin/pest",
-        "lint": "./vendor/bin/pint",
-        "refactor": "./vendor/bin/rector",
-        "test:lint": "./vendor/bin/pint --test",
-        "test:refector": "./vendor/bin/rector --dry-run",
+        "pest": [
+            "docker compose exec laravel.test php vendor/bin/pest"
+        ],
+        "lint": [
+            "docker compose exec laravel.test php ./vendor/bin/pint"
+        ],
+        "refactor": [
+            "docker compose exec laravel.test php ./vendor/bin/rector"
+        ],
+        "test:lint": [
+            "docker compose exec laravel.test php ./vendor/bin/pint --test"
+        ],
+        "test:refector": [
+            "docker compose exec laravel.test php ./vendor/bin/rector --dry-run"
+        ],
         "test:coverage": [
-            "@putenv XDEBUG_MODE=coverage",
-            "memory_limit=-1 ./vendor/bin/pest --parallel --coverage --exactly=79.1"
+            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --parallel --coverage --exactly=79.1"
         ],
         "test:coverage-html": [
-            "@putenv XDEBUG_MODE=coverage",
-            "@php -d xdebug.mode=coverage vendor/bin/pest --coverage-html coverage --parallel"
+            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --coverage-html coverage --parallel"
         ],
-        "type-coverage": "php -d memory_limit=-1 ./vendor/bin/pest --type-coverage --min=97.7",
-        "test:type-coverage": "php -d memory_limit=-1 ./vendor/bin/pest --type-coverage --min=97.7",
-        "test:parallel": "./vendor/bin/pest --parallel",
+        "type-coverage": [
+            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.7"
+        ],
+        "test:type-coverage": [
+            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.7"
+        ],
+        "test:parallel": [
+            "docker compose exec laravel.test php vendor/bin/pest --parallel"
+        ],
         "test:php-stan": "@analyse",
         "test": [
             "@test:refector",
