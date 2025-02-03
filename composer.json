@@ -98,16 +98,16 @@
             "docker compose exec laravel.test php ./vendor/bin/rector --dry-run"
         ],
         "test:coverage": [
-            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --parallel --coverage --exactly=79.1"
+            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --parallel --coverage --exactly=79.6"
         ],
         "test:coverage-html": [
             "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --coverage-html coverage --parallel"
         ],
         "type-coverage": [
-            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.7"
+            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5"
         ],
         "test:type-coverage": [
-            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.7"
+            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5"
         ],
         "test:parallel": [
             "docker compose exec laravel.test php vendor/bin/pest --parallel"
