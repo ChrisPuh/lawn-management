@@ -21,19 +21,94 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup environment files
+      - name: Prepare scripts directory
         run: |
-          echo "🔧 Setting up environment files..."
-          cp .env.testing .env
-          cp .env.testing .env.testing
+          echo "📁 Creating scripts directory..."
+          mkdir -p .github/scripts
 
+          echo "📝 Creating setup script..."
+          cat > .github/scripts/setup-testing-env.sh << 'EOL'
+
+          echo "🔑 Setting execute permissions..."
+          chmod +x .github/scripts/setup-testing-env.sh
+
+          echo "✅ Script preparation complete!"
+
+      - name: Setup environment
+        run: |
+          echo "🔧 Running environment setup script..."
+          .github/scripts/setup-testing-env.sh
+
+      - name: Install Dependencies
+        run: |
+          echo "📦 Installing Composer dependencies..."
+          docker run --rm -u "1000:1000" \
+            -v "$(pwd):/var/www/html" \
+            -w /var/www/html \
+            laravelsail/php84-composer:latest \
+            composer install --ignore-platform-reqs
+          echo "✅ Dependencies installed successfully"
+
+      - name: Set up Docker
+        run: |
+          echo "🐳 Building Docker containers..."
+          docker compose build --build-arg WWWGROUP=1000 --build-arg WWWUSER=1000
+
+          echo "🚀 Starting Docker containers..."
+          docker compose up -d
+
+          echo "📊 Container Status:"
+          docker compose ps
+
+          echo "⏳ Waiting for services to be ready..."
+          sleep 10
+
+          echo "🔍 Container Logs:"
+          docker compose logs
+
+      - name: Setup Application
+        run: |
+          echo "🔑 Generating application key..."
+          docker compose exec -T laravel.test php artisan key:generate
+
+          echo "📁 Preparing storage..."
+          docker compose exec -T laravel.test php artisan storage:link
+          mkdir -p storage/app/public/lawns
+          mkdir -p storage/app/private/livewire-tmp
+          mkdir -p storage/app/public/archive
+          chmod -R 777 storage bootstrap/cache
+
+      - name: Run Tests
+        run: |
+          docker compose exec -T laravel.test php artisan test:clear
+          docker compose exec -T laravel.test composer test
+
+      - name: Upload coverage to Codecov
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Archive Logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: |
+            storage/logs/*.log
+            .env
+            .env.testing
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down
           # Add required variables
           {
-            echo "WWWGROUP=1000"
-            echo "WWWUSER=1000"
-            echo "DB_DATABASE=testing"
-            echo "DB_USERNAME=root"
-            echo "DB_PASSWORD=password"
+          echo "WWWGROUP=1000"
+          echo "WWWUSER=1000"
+          echo "DB_DATABASE=testing"
+          echo "DB_USERNAME=root"
+          echo "DB_PASSWORD=password"
           } >> .env
 
           echo "📄 Environment files created"
