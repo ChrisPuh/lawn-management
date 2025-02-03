@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\WaitlistStatus;
+use App\Enums\WaitListStatus;
 use App\Traits\CanGetTableNameStatically;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,7 +28,7 @@ final class WaitList extends Model
     ];
 
     protected $casts = [
-        'status' => WaitlistStatus::class,
+        'status' => WaitListStatus::class,
         'invited_at' => 'datetime',
         'registered_at' => 'datetime',
         'declined_at' => 'datetime'

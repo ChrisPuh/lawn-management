@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum WaitlistStatus: string
+enum WaitListStatus: string
 {
     case Pending = 'pending';
     case Invited = 'invited';
