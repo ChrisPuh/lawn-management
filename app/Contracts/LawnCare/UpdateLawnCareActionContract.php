@@ -18,9 +18,9 @@ interface UpdateLawnCareActionContract
      *
      * @param LawnCare $lawnCare Die zu aktualisierende Lawn Care Instanz
      * @param LawnCareType $type Der Typ der Rasenpflege
-     * @param BaseLawnCareData{
-     *     UpdateWateringData,UpdateMowingData, UpdateFertilizingData
-     * } $data Die Aktualisierungsdaten
+     * @param UpdateWateringData|UpdateMowingData|UpdateFertilizingData $data Die Aktualisierungsdaten
+     *
+     * @return LawnCare
      */
     public function execute(LawnCare $lawnCare, LawnCareType $type, BaseLawnCareData $data): LawnCare;
 }

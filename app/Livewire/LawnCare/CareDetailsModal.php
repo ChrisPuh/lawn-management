@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\LawnCare;
 
 use App\Contracts\LawnCare\UpdateLawnCareActionContract;
-use App\DataObjects\LawnCare\BaseLawnCareData;
 use App\DataObjects\LawnCare\UpdateFertilizingData;
 use App\DataObjects\LawnCare\UpdateMowingData;
 use App\DataObjects\LawnCare\UpdateWateringData;
@@ -66,16 +65,16 @@ final class CareDetailsModal extends Component
 
     public function toggleEdit(): void
     {
-        $this->isEditing = ! $this->isEditing;
+        $this->isEditing = !$this->isEditing;
 
-        if (! $this->isEditing) {
+        if (!$this->isEditing) {
             $this->save();
         }
     }
 
     public function save(): void
     {
-        if (! $this->care) {
+        if (!$this->care) {
             return;
         }
 
@@ -99,7 +98,7 @@ final class CareDetailsModal extends Component
                 'data' => $this->all(),
             ]);
 
-            $this->addError('form', 'Ein Fehler ist aufgetreten: '.$e->getMessage());
+            $this->addError('form', 'Ein Fehler ist aufgetreten: ' . $e->getMessage());
         }
     }
 
@@ -125,7 +124,7 @@ final class CareDetailsModal extends Component
 
     public function rules(): array
     {
-        if (! $this->care) {
+        if (!$this->care) {
             return [];
         }
 
@@ -155,11 +154,20 @@ final class CareDetailsModal extends Component
     {
         return $care->care_data instanceof JsonSerializable
             ? $care->care_data->toArray()
-            : (array) $care->care_data;
+            : (array)$care->care_data;
     }
 
-    private function createUpdateData(array $validatedData): BaseLawnCareData
+    /**
+     * @param array $validatedData
+     * @return UpdateMowingData|UpdateFertilizingData|UpdateWateringData
+     * @throws InvalidArgumentException
+     */
+    private function createUpdateData(array $validatedData): UpdateMowingData|UpdateFertilizingData|UpdateWateringData
     {
+        if (!$this->care) {
+            throw new InvalidArgumentException('No care instance available');
+        }
+
         $dataClass = match ($this->care->type) {
             LawnCareType::MOW => UpdateMowingData::class,
             LawnCareType::FERTILIZE => UpdateFertilizingData::class,
@@ -168,6 +176,7 @@ final class CareDetailsModal extends Component
         };
 
         try {
+            /** @var UpdateMowingData|UpdateFertilizingData|UpdateWateringData */
             return $dataClass::fromArray([
                 'lawn_id' => $validatedData['lawn_id'],
                 'care_data' => $validatedData['care_data'],
@@ -182,7 +191,7 @@ final class CareDetailsModal extends Component
                 'data' => $validatedData,
             ]);
 
-            throw new InvalidArgumentException('Error creating update data: '.$e->getMessage(), 0, $e);
+            throw new InvalidArgumentException('Error creating update data: ' . $e->getMessage(), 0, $e);
         }
     }
 
