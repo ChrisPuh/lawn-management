@@ -71,13 +71,8 @@ jobs:
           # Ensure coverage directory exists
           mkdir -p coverage
 
-          # Run tests with coverage
-          XDEBUG_MODE=coverage php -d memory_limit=-1 vendor/bin/pest \
-            --coverage \
-            --coverage-html=coverage \
-            --coverage-clover=coverage/clover.xml \
-            --log-junit=coverage/junit.xml \
-            || true
+          # Run tests using Composer script
+          composer test
 
           # Ensure some coverage files are generated
           if [ ! -f "coverage/clover.xml" ]; then
