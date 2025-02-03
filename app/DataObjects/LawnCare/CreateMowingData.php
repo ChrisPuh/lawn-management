@@ -36,7 +36,7 @@ final readonly class CreateMowingData extends BaseLawnCareData
      *          blade_condition?: string|null,
      *          duration_minutes?: int|null
      *      },
-     *  notes:sting,
+     *  notes:string,
      *  performed_at:DateTime::class,
      *  scheduled_for:DateTime::class
      *} $validatedData

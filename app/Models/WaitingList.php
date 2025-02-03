@@ -4,12 +4,27 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\WaitListStatus;
+use App\Enums\WaitingListStatus;
 use App\Traits\CanGetTableNameStatically;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-final class WaitList extends Model
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string|null $reason
+ * @property WaitingListStatus $status
+ * @property Carbon|null $invited_at
+ * @property Carbon|null $registered_at
+ * @property Carbon|null $declined_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
+ * @method static \Database\Factories\WaitListFactory factory($count = null, $state = [])
+ */
+final class WaitingList extends Model
 {
     use CanGetTableNameStatically;
     use HasFactory;
@@ -28,7 +43,7 @@ final class WaitList extends Model
     ];
 
     protected $casts = [
-        'status' => WaitListStatus::class,
+        'status' => WaitingListStatus::class,
         'invited_at' => 'datetime',
         'registered_at' => 'datetime',
         'declined_at' => 'datetime'

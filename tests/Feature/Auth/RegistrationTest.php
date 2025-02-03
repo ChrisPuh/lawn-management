@@ -6,7 +6,7 @@ namespace Tests\Feature\Auth;
 
 use App\Livewire\Auth\Register;
 use App\Models\User;
-use App\Models\Waitlist;
+use App\Models\WaitingList;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
