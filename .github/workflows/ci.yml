@@ -50,13 +50,6 @@ jobs:
         run: |
           composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Debug MySQL Connection
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mysql-client
-          mysqladmin -h 127.0.0.1 -u root -ppassword ping
-          mysql -h 127.0.0.1 -u root -ppassword -e "SHOW DATABASES;"
-
       - name: Prepare Laravel environment
         env:
           DB_CONNECTION: mysql
@@ -71,7 +64,7 @@ jobs:
           php artisan config:clear
           php artisan config:cache
 
-      - name: Run Migrations
+      - name: Prepare Database
         env:
           DB_CONNECTION: mysql
           DB_HOST: 127.0.0.1
@@ -80,7 +73,12 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: password
         run: |
-          php artisan migrate --env=testing --force
+          # Verify database connection
+          mysql -h 127.0.0.1 -u root -ppassword -e "SHOW DATABASES;"
+
+          # Run migrations for testing database
+          php artisan migrate:fresh --env=testing --force
+          php artisan db:seed --env=testing --force
 
       - name: Run Rector checks
         run: php ./vendor/bin/rector --dry-run
