@@ -80,37 +80,37 @@
             "docker compose up -d"
         ],
         "analyse": [
-            "docker compose exec laravel.test php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon"
+            "docker compose exec -T laravel.test php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon"
         ],
         "pest": [
-            "docker compose exec laravel.test php vendor/bin/pest"
+            "docker compose exec -T laravel.test php vendor/bin/pest"
         ],
         "lint": [
-            "docker compose exec laravel.test php ./vendor/bin/pint"
+            "docker compose exec -T laravel.test php ./vendor/bin/pint"
         ],
         "refactor": [
-            "docker compose exec laravel.test php ./vendor/bin/rector"
+            "docker compose exec -T laravel.test php ./vendor/bin/rector"
         ],
         "test:lint": [
-            "docker compose exec laravel.test php ./vendor/bin/pint --test"
+            "docker compose exec -T laravel.test php ./vendor/bin/pint --test"
         ],
         "test:refector": [
-            "docker compose exec laravel.test php ./vendor/bin/rector --dry-run"
+            "docker compose exec -T laravel.test php ./vendor/bin/rector --dry-run"
         ],
         "test:coverage": [
-            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --parallel --coverage --exactly=79.6"
+            "docker compose exec -T laravel.test php -d memory_limit=-1 vendor/bin/pest --parallel --coverage --exactly=79.6"
         ],
         "test:coverage-html": [
-            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --coverage-html coverage --parallel"
+            "docker compose exec -T laravel.test php -d memory_limit=-1 vendor/bin/pest --coverage-html coverage --parallel"
         ],
         "type-coverage": [
-            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5"
+            "docker compose exec -T laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5"
         ],
         "test:type-coverage": [
-            "docker compose exec laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5"
+            "docker compose exec -T laravel.test php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5"
         ],
         "test:parallel": [
-            "docker compose exec laravel.test php vendor/bin/pest --parallel"
+            "docker compose exec -T laravel.test php vendor/bin/pest --parallel"
         ],
         "test:php-stan": "@analyse",
         "test": [

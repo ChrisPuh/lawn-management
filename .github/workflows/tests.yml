@@ -10,99 +10,47 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: testing
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-      redis:
-        image: redis:alpine
-        ports:
-          - 6379:6379
-        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-      memcached:
-        image: memcached:alpine
-        ports:
-          - 11211:11211
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, gd
-          tools: composer:v2
-          coverage: xdebug
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
       - name: Copy .env.testing
         run: cp .env.testing.example .env.testing
 
-      - name: Install Composer Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Install Dependencies
+        run: docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
 
-      - name: Generate key
-        run: php artisan key:generate --env=testing
-
-      - name: Directory Permissions
-        run: chmod -R 777 storage bootstrap/cache
-
-      - name: Install NPM Dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
-
-      - name: Prepare Storage Directories
+      - name: Set up Docker
         run: |
+          docker compose up -d
+          docker compose ps
+          sleep 10  # Give containers time to fully start
+
+      - name: Setup Environment
+        run: |
+          docker compose exec -T laravel.test php artisan key:generate
+          docker compose exec -T laravel.test php artisan storage:link
           mkdir -p storage/app/public/lawns
           mkdir -p storage/app/private/livewire-tmp
           mkdir -p storage/app/public/archive
-          php artisan storage:link
+          chmod -R 777 storage bootstrap/cache
 
       - name: Create Database
-        run: |
-          mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "CREATE DATABASE IF NOT EXISTS testing;"
+        run: docker compose exec -T mysql mysql -uroot -ppassword -e "CREATE DATABASE IF NOT EXISTS testing;"
 
       - name: Run Tests
         env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: testing
-          DB_USERNAME: root
-          DB_PASSWORD: password
-          REDIS_HOST: 127.0.0.1
-          REDIS_PASSWORD: null
-          REDIS_PORT: 6379
-          MEMCACHED_HOST: 127.0.0.1
-          LAWN_STORAGE_PATH: lawns
-          LAWN_TEMP_PATH: private/livewire-tmp
-          LAWN_TEMP_RETENTION_HOURS: 24
-          LAWN_TEMP_DISK: local
-          LAWN_ARCHIVE_ENABLED: true
-          LAWN_ARCHIVE_PATH: archive
-          LAWN_ARCHIVE_RETENTION_MONTHS: 3
-          LAWN_ARCHIVE_DISK: public
-          LAWN_IMAGE_MAX_WIDTH: 1200
-          LAWN_IMAGE_QUALITY: 80
-          LAWN_IMAGE_MAX_SIZE: 5120
-        run: composer test
+          WWWUSER: ${{ github.run_id }}
+          WWWGROUP: ${{ github.run_id }}
+        run: |
+          docker compose exec -T laravel.test php artisan test:clear
+          docker compose exec -T laravel.test composer test
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down
