@@ -21,16 +21,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create ENV files
+      - name: Copy ENV files
         run: |
           echo "🔧 Creating environment files..."
           cp .env.testing.example .env
           cp .env.testing.example .env.testing
-
-          echo "⚙️ Setting application key..."
-          php artisan key:generate --env=testing
-
-          echo "✅ Environment setup complete!"
+          echo "✅ Environment files copied!"
 
       - name: Install Dependencies
         run: |
@@ -60,6 +56,9 @@ jobs:
 
       - name: Setup Application
         run: |
+          echo "🔑 Generating application key..."
+          docker compose exec -T laravel.test php artisan key:generate --env=testing
+
           echo "📁 Preparing storage..."
           docker compose exec -T laravel.test php artisan storage:link
           mkdir -p storage/app/public/lawns
