@@ -14,22 +14,21 @@ final class LawnImageFactory extends Factory
 {
     public function definition(): array
     {
+        $lawn = Lawn::factory()->create();
         $imageableTypes = [
             Lawn::class,
         ];
         $imageableType = fake()->randomElement($imageableTypes);
 
-        // Use a consistent lawn ID for testing
-        $lawnId = 1;
-
-        // Generate a unique filename
+        // Generate a unique filename using the actual lawn ID
         $filename = sprintf(
             'lawns/%d/images/test_%s.jpg',
-            $lawnId,
+            $lawn->id,
             uniqid()
         );
 
         // Ensure directory exists (for testing)
+        Storage::fake('public');
         Storage::disk('public')->makeDirectory(dirname($filename));
 
         // Store a fake image file
@@ -39,10 +38,10 @@ final class LawnImageFactory extends Factory
         );
 
         return [
-            'lawn_id' => $lawnId,
+            'lawn_id' => $lawn->id,
             'image_path' => $filename,
             'imageable_type' => $imageableType,
-            'imageable_id' => $imageableType::factory(),
+            'imageable_id' => $lawn->id,  // Use the same lawn as imageable
             'type' => fake()->randomElement(LawnImageType::cases()),
             'description' => null,
             'archived_at' => null,
@@ -50,24 +49,35 @@ final class LawnImageFactory extends Factory
         ];
     }
 
-    public function before(): LawnImageFactory
+    public function forLawn(Lawn $lawn): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'lawn_id' => $lawn->id,
+            'imageable_type' => Lawn::class,
+            'imageable_id' => $lawn->id,
+            'image_path' => sprintf(
+                'lawns/%d/images/test_%s.jpg',
+                $lawn->id,
+                uniqid()
+            ),
+        ]);
+    }
+
+    public function before(): static
     {
         return $this->state(fn (array $attributes) => [
             'type' => LawnImageType::BEFORE,
         ]);
     }
 
-    public function after(): LawnImageFactory
+    public function after(): static
     {
         return $this->state(fn (array $attributes) => [
             'type' => LawnImageType::AFTER,
         ]);
     }
 
-    /**
-     * Create a factory state for archived images
-     */
-    public function archived(): LawnImageFactory
+    public function archived(): static
     {
         return $this->state(fn (array $attributes) => [
             'archived_at' => now()->subMonths(4),
@@ -75,10 +85,7 @@ final class LawnImageFactory extends Factory
         ]);
     }
 
-    /**
-     * Indicate that the image has no path
-     */
-    public function withoutPath(): LawnImageFactory
+    public function withoutPath(): static
     {
         return $this->state(fn (array $attributes) => [
             'image_path' => null,

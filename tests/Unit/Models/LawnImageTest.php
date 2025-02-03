@@ -9,7 +9,7 @@ use App\Models\LawnImage;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 
-describe('LawnImage Model', function (): void {
+describe(LawnImage::class, function (): void {
     describe('attributes', function (): void {
         test('has correct fillable attributes', function (): void {
             $image = new LawnImage;

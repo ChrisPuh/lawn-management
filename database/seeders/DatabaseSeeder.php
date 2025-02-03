@@ -43,9 +43,9 @@ final class DatabaseSeeder extends Seeder
             $this->createDevelopmentData($user);
         }
 
-        //TODO if (!app()->environment('production') || config('app.debug')) {
+        // TODO if (!app()->environment('production') || config('app.debug')) {
         $this->call(DiagnosticSeeder::class);
-        
+
     }
 
     private function createDevelopmentData(User $user): void
@@ -89,7 +89,7 @@ final class DatabaseSeeder extends Seeder
 
             Log::info('DatabaseSeeder: Alle Lawn Images gelöscht');
         } catch (Exception $e) {
-            Log::error('DatabaseSeeder: Fehler beim Löschen der Lawn Images: ' . $e->getMessage());
+            Log::error('DatabaseSeeder: Fehler beim Löschen der Lawn Images: '.$e->getMessage());
         }
     }
 }

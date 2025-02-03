@@ -28,18 +28,18 @@ final readonly class CreateMowingData extends BaseLawnCareData
 
     /**
      * @param array{
-     *  lawn_id:int,
+     *  lawn_id: int,
      *  care_data: array{
-     *          height_mm: float,
-     *          pattern?: string|null,
-     *          collected?: bool,
-     *          blade_condition?: string|null,
-     *          duration_minutes?: int|null
-     *      },
-     *  notes:sting,
-     *  performed_at:DateTime::class,
-     *  scheduled_for:DateTime::class
-     *} $validatedData
+     *      height_mm: float,
+     *      pattern?: string|null,
+     *      collected?: bool,
+     *      blade_condition?: string|null,
+     *      duration_minutes?: int|null
+     *  },
+     *  notes?: string|null,
+     *  performed_at?: string|null,
+     *  scheduled_for?: string|null
+     * } $validatedData
      *
      * @throws DateMalformedStringException
      */

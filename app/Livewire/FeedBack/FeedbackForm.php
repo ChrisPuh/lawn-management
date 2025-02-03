@@ -76,7 +76,7 @@ final class FeedbackForm extends Component
 
     private function formatDescription(string $description): string
     {
-        $userEmail = auth()->user()?->email ?? 'Anonymous';
+        $userEmail = auth()->user()->email ?? 'Anonymous';
 
         return implode("\n\n", [
             '## User Feedback',
