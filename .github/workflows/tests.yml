@@ -10,47 +10,107 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      WWWGROUP: 1000
+      WWWUSER: 1000
+      DB_DATABASE: testing
+      DB_USERNAME: root
+      DB_PASSWORD: password
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy .env.testing
-        run: cp .env.testing.example .env.testing
+      - name: Setup environment files
+        run: |
+          echo "🔧 Setting up environment files..."
+          cp .env.testing .env
+          cp .env.testing .env.testing
+
+          # Add required variables
+          {
+            echo "WWWGROUP=1000"
+            echo "WWWUSER=1000"
+            echo "DB_DATABASE=testing"
+            echo "DB_USERNAME=root"
+            echo "DB_PASSWORD=password"
+          } >> .env
+
+          echo "📄 Environment files created"
+          echo "Current .env file:"
+          cat .env
 
       - name: Install Dependencies
-        run: docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
+        run: |
+          echo "📦 Installing Composer dependencies..."
+          docker run --rm -u "1000:1000" \
+            -v "$(pwd):/var/www/html" \
+            -w /var/www/html \
+            laravelsail/php84-composer:latest \
+            composer install --ignore-platform-reqs
+          echo "✅ Dependencies installed successfully"
 
       - name: Set up Docker
         run: |
-          docker compose up -d
-          docker compose ps
-          sleep 10  # Give containers time to fully start
+          echo "🐳 Building Docker containers..."
+          docker compose build --build-arg WWWGROUP=1000 --build-arg WWWUSER=1000
 
-      - name: Setup Environment
+          echo "🚀 Starting Docker containers..."
+          docker compose up -d
+
+          echo "📊 Container Status:"
+          docker compose ps
+
+          echo "⏳ Waiting for containers to be ready..."
+          sleep 10
+
+      - name: Setup Application
         run: |
+          echo "🔑 Generating application key..."
           docker compose exec -T laravel.test php artisan key:generate
+
+          echo "🔗 Creating storage link..."
           docker compose exec -T laravel.test php artisan storage:link
+
+          echo "📁 Creating required directories..."
           mkdir -p storage/app/public/lawns
           mkdir -p storage/app/private/livewire-tmp
           mkdir -p storage/app/public/archive
+
+          echo "📝 Setting permissions..."
           chmod -R 777 storage bootstrap/cache
 
-      - name: Create Database
-        run: docker compose exec -T mysql mysql -uroot -ppassword -e "CREATE DATABASE IF NOT EXISTS testing;"
+          echo "✅ Application setup complete"
+
+      - name: Prepare Database
+        run: |
+          echo "🗄️ Creating test database..."
+          docker compose exec -T mysql mysql \
+            -uroot -ppassword \
+            -e "CREATE DATABASE IF NOT EXISTS testing;"
+
+          echo "🔄 Running migrations..."
+          docker compose exec -T laravel.test php artisan migrate:fresh --env=testing
+
+          echo "✅ Database setup complete"
 
       - name: Run Tests
-        env:
-          WWWUSER: ${{ github.run_id }}
-          WWWGROUP: ${{ github.run_id }}
         run: |
+          echo "🧹 Clearing test cache..."
           docker compose exec -T laravel.test php artisan test:clear
+
+          echo "🧪 Running test suite..."
           docker compose exec -T laravel.test composer test
 
-      - name: Upload coverage reports to Codecov
+      - name: Upload coverage reports
+        if: success()
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Stop containers
         if: always()
-        run: docker compose down
+        run: |
+          echo "🛑 Stopping Docker containers..."
+          docker compose down
+          echo "✅ Cleanup complete"
