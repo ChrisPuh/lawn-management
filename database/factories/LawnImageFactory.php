@@ -51,7 +51,7 @@ final class LawnImageFactory extends Factory
 
     public function forLawn(Lawn $lawn): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'lawn_id' => $lawn->id,
             'imageable_type' => Lawn::class,
             'imageable_id' => $lawn->id,
@@ -65,21 +65,21 @@ final class LawnImageFactory extends Factory
 
     public function before(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => LawnImageType::BEFORE,
         ]);
     }
 
     public function after(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => LawnImageType::AFTER,
         ]);
     }
 
     public function archived(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'archived_at' => now()->subMonths(4),
             'delete_after' => now()->subMonth(),
         ]);
@@ -87,7 +87,7 @@ final class LawnImageFactory extends Factory
 
     public function withoutPath(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'image_path' => null,
         ]);
     }

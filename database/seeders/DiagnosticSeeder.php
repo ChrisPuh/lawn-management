@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use Exception;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\Table;
-use Exception;
 
 final class DiagnosticSeeder extends Seeder
 {
@@ -49,7 +47,7 @@ final class DiagnosticSeeder extends Seeder
     private function logDatabaseDetails(): void
     {
         $connection = config('database.default');
-        $database = config('database.connections.' . $connection);
+        $database = config('database.connections.'.$connection);
 
         $this->output->section('Database Connection');
 
@@ -97,7 +95,7 @@ final class DiagnosticSeeder extends Seeder
                 $this->output->newLine();
             }
         } catch (Exception $e) {
-            $this->output->error('Error listing tables: ' . $e->getMessage());
+            $this->output->error('Error listing tables: '.$e->getMessage());
         }
     }
 
@@ -124,6 +122,6 @@ final class DiagnosticSeeder extends Seeder
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
 
-        return round($bytes / (1024 ** $pow), 2) . ' ' . $units[$pow];
+        return round($bytes / (1024 ** $pow), 2).' '.$units[$pow];
     }
 }

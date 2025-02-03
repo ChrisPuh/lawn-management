@@ -16,7 +16,6 @@ use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
 use App\Rules\LawnCareRules;
-use DateTime;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -74,7 +73,7 @@ final class CreateCareModal extends Component
                 'data' => $this->all(),
             ]);
 
-            $this->addError('form', 'Ein Fehler ist aufgetreten: ' . $e->getMessage());
+            $this->addError('form', 'Ein Fehler ist aufgetreten: '.$e->getMessage());
         }
     }
 
@@ -146,7 +145,7 @@ final class CreateCareModal extends Component
                 'data' => $validatedData,
             ]);
 
-            throw new InvalidArgumentException('Error creating data: ' . $e->getMessage(), 0, $e);
+            throw new InvalidArgumentException('Error creating data: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -187,8 +186,7 @@ final class CreateCareModal extends Component
             LawnCareType::PEST_CONTROL,
             LawnCareType::SOIL_TEST,
             LawnCareType::LIME,
-            LawnCareType::LEAF_REMOVAL
-            => throw new Exception('To be implemented'),
+            LawnCareType::LEAF_REMOVAL => throw new Exception('To be implemented'),
         };
     }
 }

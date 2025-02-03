@@ -38,7 +38,7 @@ final class WaitingList extends Model
         'status',
         'invited_at',
         'registered_at',
-        'declined_at'
+        'declined_at',
 
     ];
 
@@ -46,7 +46,7 @@ final class WaitingList extends Model
         'status' => WaitingListStatus::class,
         'invited_at' => 'datetime',
         'registered_at' => 'datetime',
-        'declined_at' => 'datetime'
+        'declined_at' => 'datetime',
 
     ];
 }

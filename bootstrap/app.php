@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // Add HTTPS middleware
-        //$middleware->appendToGroup('web', ForceHttps::class);
+        // $middleware->appendToGroup('web', ForceHttps::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

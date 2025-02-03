@@ -6,11 +6,8 @@ namespace Tests\Feature\Auth;
 
 use App\Livewire\Auth\Register;
 use App\Models\User;
-use App\Models\WaitingList;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -19,7 +16,7 @@ final class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Config::set('auth.registration_enabled', true);

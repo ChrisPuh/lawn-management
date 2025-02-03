@@ -65,16 +65,16 @@ final class CareDetailsModal extends Component
 
     public function toggleEdit(): void
     {
-        $this->isEditing = !$this->isEditing;
+        $this->isEditing = ! $this->isEditing;
 
-        if (!$this->isEditing) {
+        if (! $this->isEditing) {
             $this->save();
         }
     }
 
     public function save(): void
     {
-        if (!$this->care) {
+        if (! $this->care) {
             return;
         }
 
@@ -98,7 +98,7 @@ final class CareDetailsModal extends Component
                 'data' => $this->all(),
             ]);
 
-            $this->addError('form', 'Ein Fehler ist aufgetreten: ' . $e->getMessage());
+            $this->addError('form', 'Ein Fehler ist aufgetreten: '.$e->getMessage());
         }
     }
 
@@ -124,7 +124,7 @@ final class CareDetailsModal extends Component
 
     public function rules(): array
     {
-        if (!$this->care) {
+        if (! $this->care) {
             return [];
         }
 
@@ -154,17 +154,15 @@ final class CareDetailsModal extends Component
     {
         return $care->care_data instanceof JsonSerializable
             ? $care->care_data->toArray()
-            : (array)$care->care_data;
+            : (array) $care->care_data;
     }
 
     /**
-     * @param array $validatedData
-     * @return UpdateMowingData|UpdateFertilizingData|UpdateWateringData
      * @throws InvalidArgumentException
      */
     private function createUpdateData(array $validatedData): UpdateMowingData|UpdateFertilizingData|UpdateWateringData
     {
-        if (!$this->care) {
+        if (! $this->care) {
             throw new InvalidArgumentException('No care instance available');
         }
 
@@ -191,7 +189,7 @@ final class CareDetailsModal extends Component
                 'data' => $validatedData,
             ]);
 
-            throw new InvalidArgumentException('Error creating update data: ' . $e->getMessage(), 0, $e);
+            throw new InvalidArgumentException('Error creating update data: '.$e->getMessage(), 0, $e);
         }
     }
 

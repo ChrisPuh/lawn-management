@@ -13,12 +13,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
-use Filament\Resources\Pages\PageRegistration;
 
 /**
  * @property-read WaitingList $record
@@ -54,6 +54,7 @@ final class WaitingListResource extends Resource
                     WaitingListStatus::cases(),
                     static function (array $carry, WaitingListStatus $status): array {
                         $carry[$status->value] = $status->label();
+
                         return $carry;
                     },
                     []
@@ -85,8 +86,8 @@ final class WaitingListResource extends Resource
 
             TextColumn::make('status')
                 ->badge()
-                ->color(fn(WaitingListStatus $state): string => $state->color())
-                ->formatStateUsing(fn(WaitingListStatus $state): string => $state->label())
+                ->color(fn (WaitingListStatus $state): string => $state->color())
+                ->formatStateUsing(fn (WaitingListStatus $state): string => $state->label())
                 ->label('Status'),
 
             TextColumn::make('created_at')
@@ -106,6 +107,7 @@ final class WaitingListResource extends Resource
                         WaitingListStatus::cases(),
                         static function (array $carry, WaitingListStatus $status): array {
                             $carry[$status->value] = $status->label();
+
                             return $carry;
                         },
                         []
@@ -126,7 +128,7 @@ final class WaitingListResource extends Resource
                         ]);
                     })
                     ->requiresConfirmation()
-                    ->visible(fn(WaitingList $record): bool => $record->status === WaitingListStatus::Pending),
+                    ->visible(fn (WaitingList $record): bool => $record->status === WaitingListStatus::Pending),
 
                 Tables\Actions\Action::make('register')
                     ->icon('heroicon-o-check-circle')
@@ -137,7 +139,7 @@ final class WaitingListResource extends Resource
                         ]);
                     })
                     ->requiresConfirmation()
-                    ->visible(fn(WaitingList $record): bool => $record->status === WaitingListStatus::Invited),
+                    ->visible(fn (WaitingList $record): bool => $record->status === WaitingListStatus::Invited),
 
                 Tables\Actions\Action::make('decline')
                     ->icon('heroicon-o-x-circle')
@@ -149,7 +151,7 @@ final class WaitingListResource extends Resource
                         ]);
                     })
                     ->requiresConfirmation()
-                    ->visible(fn(WaitingList $record): bool => in_array($record->status, [WaitingListStatus::Pending, WaitingListStatus::Invited], true)
+                    ->visible(fn (WaitingList $record): bool => in_array($record->status, [WaitingListStatus::Pending, WaitingListStatus::Invited], true)
                     ),
             ])
             ->bulkActions([
