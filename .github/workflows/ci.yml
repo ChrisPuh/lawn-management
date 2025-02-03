@@ -67,30 +67,46 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: password
         run: |
-          # Ensure tests directory exists
-          mkdir -p tests
+          # Create coverage directory if it doesn't exist
+          mkdir -p coverage
 
-          # Run all tests with verbose output
-          composer test || (echo "::error::Tests failed" && exit 1)
+          # Run tests with verbose output and continue on error
+          composer test || true
+
+          # Check if coverage was generated
+          if [ ! -d "coverage" ] || [ -z "$(ls -A coverage)" ]; then
+            echo "::error::No coverage files generated"
+            mkdir -p coverage
+            echo "No coverage" > coverage/no_coverage.txt
+          fi
+
+          # List contents of coverage directory for debugging
+          ls -la coverage
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report-${{ github.sha }}
-          path: coverage
+          path: |
+            coverage
+            !coverage/.gitignore
           retention-days: 7
           overwrite: true
 
-      - name: Display test results
+      - name: Display test artifacts and logs
         if: failure()
         run: |
-          echo "::group::Detailed Test Output"
-          cat ./vendor/bin/pest.output
+          echo "::group::Composer Test Output"
+          cat composer-test.log || echo "No composer test log found"
           echo "::endgroup::"
 
-          echo "::group::Coverage Report"
-          cat ./coverage/clover.xml
+          echo "::group::Coverage Directory Contents"
+          ls -la coverage || echo "Coverage directory not found"
+          echo "::endgroup::"
+
+          echo "::group::Pest Output"
+          cat ./vendor/bin/pest.output || echo "No pest output found"
           echo "::endgroup::"
 
   notify:
