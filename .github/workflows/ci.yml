@@ -67,9 +67,17 @@ jobs:
           DB_PASSWORD: password
         run: |
           cp .env.testing.example .env.testing
+
+          # Generate a secure app key for testing
+          APP_KEY=$(php -r "echo 'base64:' . base64_encode(random_bytes(32));")
+          sed -i "s|APP_KEY=|APP_KEY=$APP_KEY|" .env.testing
+
           php artisan key:generate --env=testing
           php artisan config:clear
           php artisan config:cache
+
+          # Debug: show the contents of .env.testing
+          cat .env.testing
 
       - name: Run Database Migrations
         env:
