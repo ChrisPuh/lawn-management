@@ -29,7 +29,8 @@ jobs:
           --health-retries=3
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -37,6 +38,16 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, pdo, pdo_mysql
           coverage: xdebug
+          tools: composer:v2
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
 
       - name: Install Composer dependencies
         run: |
@@ -55,10 +66,44 @@ jobs:
           DB_DATABASE: testing
           DB_USERNAME: root
           DB_PASSWORD: password
-        run: composer test
+        run: |
+          # Ensure tests directory exists
+          mkdir -p tests
+
+          # Run all tests with verbose output
+          composer test || (echo "::error::Tests failed" && exit 1)
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: coverage-report
+          name: coverage-report-${{ github.sha }}
           path: coverage
+          retention-days: 7
+          overwrite: true
+
+      - name: Display test results
+        if: failure()
+        run: |
+          echo "::group::Detailed Test Output"
+          cat ./vendor/bin/pest.output
+          echo "::endgroup::"
+
+          echo "::group::Coverage Report"
+          cat ./coverage/clover.xml
+          echo "::endgroup::"
+
+  notify:
+    needs: test
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify on Failure
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Tests failed on ${{ github.ref }}'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
