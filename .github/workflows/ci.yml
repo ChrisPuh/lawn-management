@@ -60,19 +60,12 @@ jobs:
         run: |
           cp .env.testing.example .env.testing
           cp .env.testing .env
-          php artisan key:generate
+          php artisan key:generate --env=testing
           php artisan config:clear
           php artisan config:cache
 
 
       - name: Run Database Migrations
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: testing
-          DB_USERNAME: root
-          DB_PASSWORD: password
         run: |
           php artisan migrate:fresh --force
           php artisan db:seed --force
