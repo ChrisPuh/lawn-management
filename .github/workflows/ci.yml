@@ -3,9 +3,9 @@ name: Comprehensive Code Quality Check
 # Trigger on main development workflows
 on:
   push:
-    branches: [main, dev]
+    branches: [ main, dev ]
   pull_request:
-    branches: [main, dev]
+    branches: [ main, dev ]
 
 # Workflow to ensure code quality, test coverage, and system integrity
 jobs:
@@ -29,6 +29,15 @@ jobs:
           --health-retries=3
 
     steps:
+      - name: Debug Environment Information
+        run: |
+          echo "GitHub Ref: ${{ github.ref }}"
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Current User: $(whoami)"
+          php --version
+          node --version
+          npm --version
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -53,7 +62,7 @@ jobs:
       - name: Install PHP Dependencies
         run: |
           composer validate --strict
-          composer install --prefer-dist --no-progress --no-suggest
+          composer install --prefer-dist --no-progress --no-suggest -v
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -93,8 +102,8 @@ jobs:
 
       - name: Run Test Suite
         run: |
-          php -d memory_limit=-1 vendor/bin/pest --coverage --exactly=61.0
-          php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5
+          php -d memory_limit=-1 vendor/bin/pest --coverage --exactly=61.0 -v
+          php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5 -v
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
