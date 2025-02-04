@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\RegisterUserAction;
-use App\Enums\WaitlistStatus;
+use App\Enums\WaitingListStatus;
 use App\Models\User;
-use App\Models\Waitlist;
+use App\Models\WaitingList;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -53,7 +53,7 @@ final class Register extends Component implements HasForms
                     ->maxLength(255)
                     ->autocomplete('email')
                     ->placeholder('ihre@email.com')
-                    ->unique($this->registrationEnabled ? User::class : Waitlist::class),
+                    ->unique($this->registrationEnabled ? User::class : WaitingList::class),
 
                 ...($this->registrationEnabled ? [
                     TextInput::make('password')
@@ -92,11 +92,11 @@ final class Register extends Component implements HasForms
         }
 
         // Add to waitlist
-        Waitlist::create([
+        WaitingList::query()->create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'reason' => $validated['reason'] ?? null,
-            'status' => WaitlistStatus::Pending,
+            'status' => WaitingListStatus::Pending,
         ]);
 
         // Both Filament Notification and Session Flash

@@ -16,7 +16,6 @@ use App\Enums\LawnCare\TimeOfDay;
 use App\Enums\LawnCare\WateringMethod;
 use App\Enums\LawnCare\WeatherCondition;
 use App\Rules\LawnCareRules;
-use DateTime;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -150,23 +149,10 @@ final class CreateCareModal extends Component
         }
     }
 
-    private function parseDateTime($dateTime): ?string
-    {
-        if (is_string($dateTime)) {
-            return $dateTime;
-        }
-
-        if ($dateTime instanceof DateTime) {
-            return $dateTime->format('Y-m-d H:i:s');
-        }
-
-        return null;
-    }
-
     /**
      * @throws Exception
      */
-    private function initializeCareData()
+    private function initializeCareData(): void
     {
         // The keys must exactly match validation rules
         $this->care_data = match ($this->selectedType) {
@@ -193,13 +179,13 @@ final class CreateCareModal extends Component
                 'weather_condition' => null,   // care_data.weather_condition
                 'time_of_day' => null,        // care_data.time_of_day
             ],
-            LawnCareType::AERATE => throw new Exception('To be implemented'),
-            LawnCareType::SCARIFY => throw new Exception('To be implemented'),
-            LawnCareType::OVERSEED => throw new Exception('To be implemented'),
-            LawnCareType::WEED => throw new Exception('To be implemented'),
-            LawnCareType::PEST_CONTROL => throw new Exception('To be implemented'),
-            LawnCareType::SOIL_TEST => throw new Exception('To be implemented'),
-            LawnCareType::LIME => throw new Exception('To be implemented'),
+            LawnCareType::AERATE,
+            LawnCareType::WEED,
+            LawnCareType::SCARIFY,
+            LawnCareType::OVERSEED,
+            LawnCareType::PEST_CONTROL,
+            LawnCareType::SOIL_TEST,
+            LawnCareType::LIME,
             LawnCareType::LEAF_REMOVAL => throw new Exception('To be implemented'),
         };
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\LawnCare;
 
 use App\Contracts\LawnCare\UpdateLawnCareActionContract;
-use App\DataObjects\LawnCare\BaseLawnCareData;
 use App\DataObjects\LawnCare\UpdateFertilizingData;
 use App\DataObjects\LawnCare\UpdateMowingData;
 use App\DataObjects\LawnCare\UpdateWateringData;
@@ -158,8 +157,15 @@ final class CareDetailsModal extends Component
             : (array) $care->care_data;
     }
 
-    private function createUpdateData(array $validatedData): BaseLawnCareData
+    /**
+     * @throws InvalidArgumentException
+     */
+    private function createUpdateData(array $validatedData): UpdateMowingData|UpdateFertilizingData|UpdateWateringData
     {
+        if (! $this->care) {
+            throw new InvalidArgumentException('No care instance available');
+        }
+
         $dataClass = match ($this->care->type) {
             LawnCareType::MOW => UpdateMowingData::class,
             LawnCareType::FERTILIZE => UpdateFertilizingData::class,
@@ -168,6 +174,7 @@ final class CareDetailsModal extends Component
         };
 
         try {
+            /** @var UpdateMowingData|UpdateFertilizingData|UpdateWateringData */
             return $dataClass::fromArray([
                 'lawn_id' => $validatedData['lawn_id'],
                 'care_data' => $validatedData['care_data'],
