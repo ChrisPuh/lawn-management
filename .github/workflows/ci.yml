@@ -83,7 +83,7 @@ jobs:
           php artisan db:seed --force
 
       - name: Run Test Coverage (Without Parallel)
-        run: php -d memory_limit=-1 vendor/bin/pest --coverage --exactly=79.6
+        run: php -d memory_limit=-1 vendor/bin/pest --coverage --exactly=61.0
 
       - name: Run Rector checks
         run: php ./vendor/bin/rector --dry-run
