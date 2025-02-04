@@ -1,7 +1,7 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "chrispuh/lawn-management",
-    "version": "0.1.0-alpha.1",
+    "version": "0.2.0-alpha.1",
     "type": "project",
     "description": "A comprehensive lawn care management application for tracking, monitoring, and maintaining healthy lawns and gardens.",
     "keywords": [
