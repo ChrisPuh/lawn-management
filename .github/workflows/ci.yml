@@ -1,24 +1,24 @@
-name: Comprehensive Code Quality Check
+name: Lawn Management CI
 
-# Trigger on main development workflows
 on:
   push:
-    branches: [ main, dev ]
+    branches:
+      - main
+      - dev
   pull_request:
-    branches: [ main, dev ]
+    branches:
+      - main
+      - dev
 
-# Workflow to ensure code quality, test coverage, and system integrity
 jobs:
-  code-validation:
-    name: Validate Code and Run Tests
+  test:
     runs-on: ubuntu-latest
 
-    # MySQL service for database testing
     services:
-      database:
+      mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: testing
         ports:
           - 3306:3306
@@ -29,21 +29,10 @@ jobs:
           --health-retries=3
 
     steps:
-      - name: Debug Environment Information
-        run: |
-          echo "GitHub Ref: ${{ github.ref }}"
-          echo "Runner OS: ${{ runner.os }}"
-          echo "Current User: $(whoami)"
-          php --version
-          node --version
-          npm --version
-
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      - name: Setup PHP Environment
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -51,18 +40,14 @@ jobs:
           coverage: xdebug
           tools: composer:v2
 
-      - name: Cache Composer Dependencies
+      - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
           path: /tmp/composer-cache
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
 
-      - name: Install PHP Dependencies
-        run: |
-          composer validate --strict
-          composer install --prefer-dist --no-progress --no-suggest -v
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -70,60 +55,66 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install Frontend Dependencies
+      - name: Install NPM dependencies
         run: npm ci
 
-      - name: Build Frontend Assets
+      - name: Build frontend assets
         run: npm run build
 
-      - name: Prepare Testing Database
+      - name: Prepare Database Connection
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-client
-          mysql -h 127.0.0.1 -u root -p${{ secrets.DB_ROOT_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS testing;"
+          mysql -h 127.0.0.1 -u root -ppassword -e "CREATE DATABASE IF NOT EXISTS testing;"
+          mysql -h 127.0.0.1 -u root -ppassword -e "SHOW DATABASES;"
 
-      - name: Configure Laravel Testing Environment
+      - name: Set Laravel Testing Environment
         run: |
           cp .env.testing.example .env.testing
+          cp .env.testing .env
           php artisan key:generate --env=testing
           php artisan config:clear
           php artisan config:cache
+
 
       - name: Run Database Migrations
         run: |
           php artisan migrate:fresh --force
           php artisan db:seed --force
 
-      - name: Static Code Analysis
-        run: |
-          php ./vendor/bin/rector --dry-run
-          php ./vendor/bin/pint --test
-          php -d memory_limit=-1 ./vendor/bin/phpstan analyse
+      - name: Run Test Coverage (Without Parallel)
+        run: php -d memory_limit=-1 vendor/bin/pest --coverage --exactly=61.0
 
-      - name: Run Test Suite
-        run: |
-          php -d memory_limit=-1 vendor/bin/pest --coverage --exactly=61.0 -v
-          php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5 -v
+      - name: Run Rector checks
+        run: php ./vendor/bin/rector --dry-run
 
-      - name: Upload Coverage Report
+      - name: Run Linting checks
+        run: php ./vendor/bin/pint --test
+
+      - name: Run Type Coverage
+        run: php -d memory_limit=-1 vendor/bin/pest --type-coverage --min=97.5
+
+      - name: Run PHPStan Analysis
+        run: php -d memory_limit=-1 ./vendor/bin/phpstan analyse --configuration=phpstan.neon
+
+      - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
-          name: code-coverage-report
+          name: coverage-report-${{ github.sha }}
           path: coverage
           retention-days: 7
-          compression-level: 6
 
-  notify-failure:
-    name: Notify on Workflow Failure
-    needs: code-validation
+  notify:
+    needs: test
     if: failure()
     runs-on: ubuntu-latest
     steps:
-      - name: Send Slack Notification
+      - name: Notify on Failure
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          text: 'Code validation failed on ${{ github.ref }}'
+          text: 'Tests failed on ${{ github.ref }}'
           webhook_url: ${{ secrets.SLACK_WEBHOOK }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
